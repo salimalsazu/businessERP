@@ -1,4 +1,3 @@
-
 import SideBar from "@/components/sidebar/SideBar";
 import { Container, Content } from "rsuite";
 

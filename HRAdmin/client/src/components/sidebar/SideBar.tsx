@@ -5,7 +5,6 @@ import CogIcon from "@rsuite/icons/legacy/Cog";
 import AngleLeftIcon from "@rsuite/icons/legacy/AngleLeft";
 import AngleRightIcon from "@rsuite/icons/legacy/AngleRight";
 import DashboardIcon from "@rsuite/icons/Dashboard";
-import MagicIcon from "@rsuite/icons/legacy/Magic";
 import { useState } from "react";
 import { CgDetailsMore } from "react-icons/cg";
 import { Icon } from "@rsuite/icons";
