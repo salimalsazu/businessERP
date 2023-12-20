@@ -1,14 +1,20 @@
 "use client";
 
-import { Container, Sidebar, Sidenav, Navbar, Nav } from "rsuite";
+import { Sidebar, Sidenav, Navbar, Nav } from "rsuite";
 import CogIcon from "@rsuite/icons/legacy/Cog";
 import AngleLeftIcon from "@rsuite/icons/legacy/AngleLeft";
 import AngleRightIcon from "@rsuite/icons/legacy/AngleRight";
-import GearCircleIcon from "@rsuite/icons/legacy/GearCircle";
 import DashboardIcon from "@rsuite/icons/Dashboard";
-import GroupIcon from "@rsuite/icons/legacy/Group";
 import MagicIcon from "@rsuite/icons/legacy/Magic";
 import { useState } from "react";
+import { CgDetailsMore } from "react-icons/cg";
+import { Icon } from "@rsuite/icons";
+import { IoMan } from "react-icons/io5";
+import { CiMobile1 } from "react-icons/ci";
+import { FaCar } from "react-icons/fa";
+import { IoFastFood } from "react-icons/io5";
+import { FaPrint } from "react-icons/fa";
+import { SiBetfair } from "react-icons/si";
 
 const NavToggle = ({ expand, onChange }: any) => {
   return (
@@ -51,7 +57,7 @@ const SideBar = () => {
               <Nav.Item eventKey="1" active icon={<DashboardIcon />}>
                 Dashboard
               </Nav.Item>
-              <Nav.Item eventKey="2" icon={<DashboardIcon />}>
+              <Nav.Item eventKey="2" icon={<Icon as={CgDetailsMore} />}>
                 My Details
               </Nav.Item>
 
@@ -59,27 +65,29 @@ const SideBar = () => {
                 eventKey="3"
                 trigger="hover"
                 title="Attendance"
-                icon={<MagicIcon />}
+                icon={<Icon as={IoMan} />}
                 placement="rightStart"
               >
                 <Nav.Item eventKey="3-1">Request for Leave</Nav.Item>
                 <Nav.Item eventKey="3-2">Leave History</Nav.Item>
               </Nav.Menu>
+
               <Nav.Menu
                 eventKey="4"
                 trigger="hover"
                 title="Mobile Bill"
-                icon={<MagicIcon />}
+                icon={<Icon as={CiMobile1} />}
                 placement="rightStart"
               >
                 <Nav.Item eventKey="3-1">Mobile bill Overview</Nav.Item>
                 <Nav.Item eventKey="3-2">Request for balance update</Nav.Item>
               </Nav.Menu>
+
               <Nav.Menu
                 eventKey="5"
                 trigger="hover"
                 title="Food"
-                icon={<MagicIcon />}
+                icon={<Icon as={IoFastFood} />}
                 placement="rightStart"
               >
                 <Nav.Item eventKey="3-1">Meal Details</Nav.Item>
@@ -89,7 +97,7 @@ const SideBar = () => {
                 eventKey="6"
                 trigger="hover"
                 title="Transport"
-                icon={<MagicIcon />}
+                icon={<Icon as={FaCar} />}
                 placement="rightStart"
               >
                 <Nav.Item eventKey="3-1">Purchase List of Fuel</Nav.Item>
@@ -100,7 +108,7 @@ const SideBar = () => {
                 eventKey="7"
                 trigger="hover"
                 title="Printing & Stationary"
-                icon={<MagicIcon />}
+                icon={<Icon as={FaPrint} />}
                 placement="rightStart"
               >
                 <Nav.Item eventKey="3-1">Item Wise Stock</Nav.Item>
@@ -112,7 +120,7 @@ const SideBar = () => {
                 eventKey="8"
                 trigger="hover"
                 title="Conveyance"
-                icon={<MagicIcon />}
+                icon={<Icon as={SiBetfair} />}
                 placement="rightStart"
               >
                 <Nav.Item eventKey="3-1">Pending Conveyance</Nav.Item>
