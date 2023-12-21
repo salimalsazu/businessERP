@@ -4,9 +4,9 @@ import { Container, Content } from "rsuite";
 const dashboardLayout = ({ children }: any) => {
   return (
     <div className="flex">
-      <Container>
+      <div>
         <SideBar />
-      </Container>
+      </div>
       <Container>
         <Content>{children}</Content>
       </Container>

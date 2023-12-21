@@ -96,7 +96,7 @@ const SideBar = () => {
                 icon={<Icon as={IoFastFood} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="5-1" as={Link} href="/meal/monthwise">
+                <Nav.Item eventKey="5-1" as={Link} href="/food/monthwise">
                   {" "}
                   Employee Meal (Month Wise)
                 </Nav.Item>
