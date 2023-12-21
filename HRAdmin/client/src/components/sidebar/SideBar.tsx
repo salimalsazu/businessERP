@@ -14,6 +14,7 @@ import { FaCar } from "react-icons/fa";
 import { IoFastFood } from "react-icons/io5";
 import { FaPrint } from "react-icons/fa";
 import { SiBetfair } from "react-icons/si";
+import Link from "next/link";
 
 const NavToggle = ({ expand, onChange }: any) => {
   return (
@@ -44,7 +45,7 @@ const SideBar = () => {
   const [expand, setExpand] = useState(true);
 
   return (
-    <div className="show-fake-browser sidebar-page">
+    <div className="show-fake-browser sidebar-page bg-sidebar h-screen shadow-sm">
       <Sidebar
         style={{ display: "flex", flexDirection: "column" }}
         width={expand ? 260 : 56}
@@ -53,7 +54,13 @@ const SideBar = () => {
         <Sidenav expanded={expand} defaultOpenKeys={["3"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
-              <Nav.Item eventKey="1" active icon={<DashboardIcon />}>
+              <Nav.Item
+                as={Link}
+                href="/dashboard"
+                eventKey="1"
+                active
+                icon={<DashboardIcon />}
+              >
                 Dashboard
               </Nav.Item>
               <Nav.Item eventKey="2" icon={<Icon as={CgDetailsMore} />}>
@@ -89,8 +96,12 @@ const SideBar = () => {
                 icon={<Icon as={IoFastFood} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="3-1">Meal Details</Nav.Item>
-                <Nav.Item eventKey="3-2">Add or List of Bazar</Nav.Item>
+                <Nav.Item eventKey="5-1" as={Link} href="/meal/monthwise">
+                  {" "}
+                  Employee Meal (Month Wise)
+                </Nav.Item>
+                <Nav.Item eventKey="5-2">Meal Cost (Daily)</Nav.Item>
+                <Nav.Item eventKey="5-3">Add Exp</Nav.Item>
               </Nav.Menu>
               <Nav.Menu
                 eventKey="6"
