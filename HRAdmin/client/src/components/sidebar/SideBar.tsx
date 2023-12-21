@@ -44,8 +44,17 @@ const NavToggle = ({ expand, onChange }: any) => {
 const SideBar = () => {
   const [expand, setExpand] = useState(true);
 
+  const sidebarWidth = expand ? 260 : 56;
+
   return (
-    <div className="show-fake-browser sidebar-page bg-sidebar h-screen shadow-sm">
+    <div
+      style={{ width: `${sidebarWidth}px`, transition: "width 0.2s ease" }}
+      className={`${
+        expand
+          ? "h-screen shadow-md sticky top-0 overflow-y-auto bg-secondary"
+          : "sticky top-0 shadow-md z-[100]"
+      }`}
+    >
       <Sidebar
         style={{ display: "flex", flexDirection: "column" }}
         width={expand ? 260 : 56}

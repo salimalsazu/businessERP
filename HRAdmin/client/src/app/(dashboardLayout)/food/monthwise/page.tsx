@@ -4,10 +4,10 @@ import MonthWiseTable from "@/components/food/monthwise/MonthWiseTable";
 const MealMonthWisePage = () => {
   return (
     <div className="p-5 w-full">
-      <div className="bg-white shadow-sm rounded-md p-10 m-2 w-full">
+      <div className="bg-white shadow-sm rounded-md p-2 m-2 w-full border">
         <MonthWiseChart />
       </div>
-      <div className="bg-white shadow-sm rounded-md p-10 m-2 w-full">
+      <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full border">
         <MonthWiseTable />
       </div>
     </div>

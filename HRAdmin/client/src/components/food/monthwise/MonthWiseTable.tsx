@@ -1,8 +1,18 @@
 "use client";
 
-import { DatePicker, Table } from "rsuite";
-
+import {
+  Button,
+  ButtonToolbar,
+  DatePicker,
+  Dropdown,
+  Popover,
+  Table,
+  Whisper,
+} from "rsuite";
 import { useState } from "react";
+import DocPassIcon from "@rsuite/icons/DocPass";
+import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
+import { saveExcel } from "./ExcepReport";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -62,6 +72,27 @@ const MonthWiseTable = () => {
     }, 500);
   };
 
+  //Report Generate
+
+  const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
+    const handleSelect = () => {
+      onClose();
+    };
+    return (
+      <Popover ref={ref} className={className} style={{ left, top }} full>
+        <Dropdown.Menu onSelect={handleSelect}>
+          <Dropdown.Item
+            // disabled={!isLoading && !allOrders?.data?.length}
+            onClick={saveExcel}
+            eventKey={4}
+          >
+            Export to Excel
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Popover>
+    );
+  };
+
   return (
     <div>
       <div className="mb-5 flex justify-start gap-5">
@@ -96,13 +127,35 @@ const MonthWiseTable = () => {
             />
           </div>
         </div>
-        <DatePicker
-          size="md"
-          format="yyyy-MM"
-          ranges={[]}
-          style={{ width: 400 }}
-          placeholder="Filter By Month"
-        />
+        <div>
+          <DatePicker
+            size="md"
+            format="yyyy-MM"
+            ranges={[]}
+            style={{ width: 400 }}
+            placeholder="Filter By Month"
+          />
+        </div>
+
+        <div>
+          <ButtonToolbar>
+            <Whisper
+              placement="bottomEnd"
+              speaker={renderMenu}
+              trigger={["click"]}
+            >
+              <Button
+                appearance="default"
+                className="!bg-secondary  outline outline-1 font-medium text-gray-700 !rounded "
+                // color="blue"
+                startIcon={<DocPassIcon className="text-sm" />}
+                endIcon={<ArrowDownLineIcon className="text-xl" />}
+              >
+                Report
+              </Button>
+            </Whisper>
+          </ButtonToolbar>
+        </div>
       </div>
 
       <div>
@@ -116,7 +169,7 @@ const MonthWiseTable = () => {
           loading={loading}
         >
           <Column width={70} align="center" fixed sortable>
-            <HeaderCell>SL</HeaderCell>
+            <HeaderCell className="bg-sidebar ">SL</HeaderCell>
             <Cell dataKey="sl" />
           </Column>
 
