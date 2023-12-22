@@ -13,6 +13,7 @@ import { useState } from "react";
 import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { saveExcel } from "./ExcepReport";
+import Link from "next/link";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -155,6 +156,31 @@ const MonthWiseTable = () => {
               </Button>
             </Whisper>
           </ButtonToolbar>
+        </div>
+
+        <div>
+          <Button
+            className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
+            type="button"
+          >
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="#fff"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </span>
+            <span className="text-sm font-semibold">Add Expense</span>
+          </Button>
         </div>
       </div>
 
