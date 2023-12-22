@@ -5,6 +5,8 @@ import {
   ButtonToolbar,
   DatePicker,
   Dropdown,
+  Modal,
+  Placeholder,
   Popover,
   Table,
   Whisper,
@@ -13,7 +15,7 @@ import { useState } from "react";
 import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { saveExcel } from "./ExcepReport";
-import Link from "next/link";
+import AddExpensesModal from "./AddExpensesModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -42,6 +44,13 @@ const MonthWiseTable = () => {
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
+
+  // Modal
+
+  const [open, setOpen] = useState(false);
+  const [backdrop, setBackdrop] = useState("static");
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const getData = () => {
     if (sortColumn && sortType) {
@@ -96,7 +105,7 @@ const MonthWiseTable = () => {
 
   return (
     <div>
-      <div className="mb-5 flex justify-start gap-5">
+      <div className="mb-5 flex justify-start gap-7">
         <div className="w-[40%]">
           <label htmlFor="voice-search" className="sr-only">
             Search
@@ -162,6 +171,7 @@ const MonthWiseTable = () => {
           <Button
             className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
             type="button"
+            onClick={handleOpen}
           >
             <span>
               <svg
@@ -184,51 +194,111 @@ const MonthWiseTable = () => {
         </div>
       </div>
 
-      <div>
+      <div className="border rounded-md">
         <Table
           height={420}
-          width={1000}
           data={getData()}
           sortColumn={sortColumn}
           sortType={sortType}
           onSortColumn={handleSortColumn}
           loading={loading}
         >
-          <Column width={70} align="center" fixed sortable>
-            <HeaderCell className="bg-sidebar ">SL</HeaderCell>
+          <Column width={100} align="center" fixed sortable>
+            <HeaderCell
+              style={{
+                backgroundColor: `var(--primary)`,
+                color: "#ffff",
+                fontWeight: 900,
+              }}
+            >
+              SL
+            </HeaderCell>
             <Cell dataKey="sl" />
           </Column>
 
-          <Column width={100} align="center" fixed>
-            <HeaderCell>Month</HeaderCell>
+          <Column width={150} align="center" fixed>
+            <HeaderCell
+              style={{
+                backgroundColor: `var(--primary)`,
+                color: "#ffff",
+                fontWeight: 900,
+              }}
+            >
+              Month
+            </HeaderCell>
             <Cell dataKey="month" />
           </Column>
 
-          <Column width={100} align="center" fixed sortable>
-            <HeaderCell>Job ID</HeaderCell>
+          <Column width={150} align="center" fixed sortable>
+            <HeaderCell
+              style={{
+                backgroundColor: `var(--primary)`,
+                color: "#ffff",
+                fontWeight: 900,
+              }}
+            >
+              Job ID
+            </HeaderCell>
             <Cell dataKey="jobId" />
           </Column>
 
-          <Column width={250} fixed>
-            <HeaderCell>Name</HeaderCell>
+          <Column width={275} fixed>
+            <HeaderCell
+              style={{
+                backgroundColor: `var(--primary)`,
+                color: "#ffff",
+                fontWeight: 900,
+              }}
+            >
+              Name
+            </HeaderCell>
             <Cell dataKey="employeeName" />
           </Column>
 
-          <Column width={130} fixed sortable>
-            <HeaderCell>Launch</HeaderCell>
+          <Column width={200} fixed sortable>
+            <HeaderCell
+              style={{
+                backgroundColor: `var(--primary)`,
+                color: "#ffff",
+                fontWeight: 900,
+              }}
+            >
+              Launch
+            </HeaderCell>
             <Cell dataKey="lunch" />
           </Column>
 
-          <Column width={120} sortable>
-            <HeaderCell>Meal Rate</HeaderCell>
+          <Column width={200} sortable>
+            <HeaderCell
+              style={{
+                backgroundColor: `var(--primary)`,
+                color: "#ffff",
+                fontWeight: 900,
+              }}
+            >
+              Meal Rate
+            </HeaderCell>
             <Cell dataKey="mealRate" />
           </Column>
 
           <Column width={200} sortable>
-            <HeaderCell>Total Cost</HeaderCell>
+            <HeaderCell
+              style={{
+                backgroundColor: `var(--primary)`,
+                color: "#ffff",
+                fontWeight: 900,
+              }}
+            >
+              Total Cost
+            </HeaderCell>
             <Cell dataKey="totalCost" />
           </Column>
         </Table>
+      </div>
+
+      {/* Modal */}
+      <div>
+        <AddExpensesModal handleClose={handleClose} open={open} />
       </div>
     </div>
   );
