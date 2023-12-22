@@ -60,7 +60,7 @@ const SideBar = () => {
         width={expand ? 260 : 56}
         collapsible
       >
-        <Sidenav expanded={expand} defaultOpenKeys={["3"]} appearance="subtle">
+        <Sidenav expanded={expand} defaultOpenKeys={["1"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
               <Nav.Item
@@ -94,8 +94,8 @@ const SideBar = () => {
                 icon={<Icon as={CiMobile1} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="3-1">Mobile bill Overview</Nav.Item>
-                <Nav.Item eventKey="3-2">Request for balance update</Nav.Item>
+                <Nav.Item eventKey="4-1">Mobile bill Overview</Nav.Item>
+                <Nav.Item eventKey="4-2">Request for balance update</Nav.Item>
               </Nav.Menu>
 
               <Nav.Menu
@@ -109,8 +109,9 @@ const SideBar = () => {
                   {" "}
                   Employee Meal (Month Wise)
                 </Nav.Item>
-                <Nav.Item eventKey="5-2">Meal Cost (Daily)</Nav.Item>
-                <Nav.Item eventKey="5-3">Add Exp</Nav.Item>
+                <Nav.Item eventKey="5-2" as={Link} href="/food/daywise">
+                  Meal Cost (Daily)
+                </Nav.Item>
               </Nav.Menu>
               <Nav.Menu
                 eventKey="6"
@@ -119,9 +120,9 @@ const SideBar = () => {
                 icon={<Icon as={FaCar} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="3-1">Purchase List of Fuel</Nav.Item>
-                <Nav.Item eventKey="3-2">List of Documents</Nav.Item>
-                <Nav.Item eventKey="3-2">Add Vehicle</Nav.Item>
+                <Nav.Item eventKey="6-1">Purchase List of Fuel</Nav.Item>
+                <Nav.Item eventKey="6-2">List of Documents</Nav.Item>
+                <Nav.Item eventKey="6-3">Add Vehicle</Nav.Item>
               </Nav.Menu>
               <Nav.Menu
                 eventKey="7"
@@ -130,9 +131,9 @@ const SideBar = () => {
                 icon={<Icon as={FaPrint} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="3-1">Item Wise Stock</Nav.Item>
-                <Nav.Item eventKey="3-2">Request for Stationary</Nav.Item>
-                <Nav.Item eventKey="3-2">Add Stationary</Nav.Item>
+                <Nav.Item eventKey="7-1">Item Wise Stock</Nav.Item>
+                <Nav.Item eventKey="7-2">Request for Stationary</Nav.Item>
+                <Nav.Item eventKey="7-3">Add Stationary</Nav.Item>
               </Nav.Menu>
 
               <Nav.Menu
@@ -142,8 +143,8 @@ const SideBar = () => {
                 icon={<Icon as={SiBetfair} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="3-1">Pending Conveyance</Nav.Item>
-                <Nav.Item eventKey="3-2">Conveyance History</Nav.Item>
+                <Nav.Item eventKey="8-1">Pending Conveyance</Nav.Item>
+                <Nav.Item eventKey="8-2">Conveyance History</Nav.Item>
               </Nav.Menu>
             </Nav>
           </Sidenav.Body>
