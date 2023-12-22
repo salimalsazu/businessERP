@@ -15,12 +15,20 @@ import {
 const data = [
   {
     name: "10",
+    cost: 150,
+  },
+  {
+    name: "5",
+    cost: 90,
+  },
+  {
+    name: "5",
     cost: 120,
   },
   {
     name: "8",
-    cost: 98,
-  }
+    cost: 78,
+  },
 ];
 
 const customToolTip = ({ active, payload }: any) => {

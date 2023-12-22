@@ -1,16 +1,22 @@
+"use client";
+
 import SideBar from "@/components/sidebar/SideBar";
+import store from "@/redux/store";
+import { Provider } from "react-redux";
 import { Container, Content } from "rsuite";
 
 const dashboardLayout = ({ children }: any) => {
   return (
-    <div className="flex">
-      <div>
-        <SideBar />
+    <Provider store={store}>
+      <div className="flex">
+        <div>
+          <SideBar />
+        </div>
+        <Container>
+          <Content>{children}</Content>
+        </Container>
       </div>
-      <Container>
-        <Content>{children}</Content>
-      </Container>
-    </div>
+    </Provider>
   );
 };
 

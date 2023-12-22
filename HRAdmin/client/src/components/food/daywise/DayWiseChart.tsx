@@ -56,10 +56,10 @@ const DayWiseChart = () => {
             <YAxis dataKey="mealRate" />
             <Tooltip />
             <Legend />
-            <Bar dataKey="employeeCost" fill="#003E6B">
-              <LabelList dataKey="employeeCost" position="top" />
+            <Bar dataKey="employeeCost" fill="#003E6B" barSize={50}>
+              <LabelList dataKey="employeeCost" />
             </Bar>
-            <Bar dataKey="mealRate" fill="#2680C2">
+            <Bar dataKey="mealRate" fill="#2680C2" barSize={50}>
               <LabelList dataKey="mealRate" position="top" />
             </Bar>
           </BarChart>
