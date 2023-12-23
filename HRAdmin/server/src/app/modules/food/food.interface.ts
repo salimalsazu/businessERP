@@ -1,17 +1,17 @@
-export type ICourierFilterRequest = {
+export type IFoodExpFilterRequest = {
   searchTerm?: string | undefined;
-  awbNo?: string | undefined;
-  styleNo?: string | undefined;
   startDate?: string | null;
   endDate?: string | null;
 };
-export type ICourierCreateRequest = {
-  courierName: string;
-  awbNo: string;
-  courierDate: Date;
-  courierDetails: string;
-  styleNo: string;
+export type IFoodExpCreateRequest = {
+  totalCost: number;
+  userFood: string[];
+  foodExpDate: Date;
+  totalMeal: number;
+  employeeCost: number;
+  mealRate: number;
 };
+
 
 export type ICourierUpdateRequest = {
   styleNo?: string;

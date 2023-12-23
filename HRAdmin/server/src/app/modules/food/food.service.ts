@@ -1,49 +1,71 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Courier, Prisma } from '@prisma/client';
+import { Foods, Prisma } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-
-import { IStylesFilterRequest } from '../styles/styles.interface';
-import {
-  CourierSearchableFields,
-  StyleWiseCourierSearchableFields,
-  courierRelationalFields,
-  courierRelationalFieldsMapper,
-} from './courier.constants';
-import { ICourierCreateRequest, ICourierFilterRequest, ICourierUpdateRequest, IStyleWiseCourier } from './courier.interface';
+import { CourierSearchableFields, FoodExpRelationalFields, FoodExpRelationalFieldsMapper, StyleWiseCourierSearchableFields } from './food.constants';
+import { ICourierUpdateRequest, IFoodExpCreateRequest, IFoodExpFilterRequest, IStyleWiseCourier } from './food.interface';
 
 // modules
 
 // !----------------------------------Create New Courier---------------------------------------->>>
-const createNewCourier = async (data: ICourierCreateRequest): Promise<Courier> => {
-  const portDetails = {
-    courierName: data.courierName,
-    awbNo: data.awbNo,
-    courierDate: data.courierDate,
-    courierDetails: data.courierDetails,
-    styleNo: data?.styleNo,
-  };
-
-  const isStyleExist = await prisma.styles.findUnique({
+const createNewFoodExp = async (data: IFoodExpCreateRequest): Promise<Foods> => {
+  // Check if the user exists
+  const isUsersExist = await prisma.user.findMany({
     where: {
-      styleNo: data?.styleNo,
+      userId: {
+        in: data?.userFood,
+      },
     },
   });
-  if (!isStyleExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Style not Found');
+
+  if (!isUsersExist || isUsersExist.length === 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User not found');
   }
-  const result = await prisma.courier.create({
-    data: portDetails,
+
+  // Create userFood records
+  const userFoodRecords = data?.userFood.map(userId => ({
+    userId,
+  }));
+
+  console.log('userFoodRecords', userFoodRecords);
+
+  // Calculate the count of meals
+  const countMeal: number = data?.userFood?.length || 0;
+
+  // Calculate daily employee cost and per meal rate
+  const dailyEmployeeCost = data?.totalCost / 2;
+  const perMealRate = dailyEmployeeCost / countMeal;
+
+  // Prepare data for creating food expenses
+  const foodExpenses = {
+    totalCost: data?.totalCost,
+    userFood: {
+      create: userFoodRecords,
+    },
+    foodExpDate: data?.foodExpDate,
+    totalMeal: countMeal,
+    employeeCost: dailyEmployeeCost,
+    mealRate: perMealRate,
+  };
+
+  // Create food expenses record
+  const result = await prisma.foods.create({
+    data: foodExpenses,
   });
+
+  if (!result) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Food Exp');
+  }
 
   return result;
 };
+
 // !----------------------------------get all Courier---------------------------------------->>>
-const getAllCouriers = async (filters: ICourierFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Courier[]>> => {
+const getFoodExpDaily = async (filters: IFoodExpFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Foods[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -51,7 +73,7 @@ const getAllCouriers = async (filters: ICourierFilterRequest, options: IPaginati
   const { searchTerm, startDate, endDate, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.CourierWhereInput[] = [];
+  const andConditions: Prisma.FoodsWhereInput[] = [];
 
   // Add search term condition if provided
   if (searchTerm) {
@@ -69,7 +91,7 @@ const getAllCouriers = async (filters: ICourierFilterRequest, options: IPaginati
 
   if (startDate && endDate) {
     andConditions.push({
-      courierDate: {
+      foodExpDate: {
         gte: startDate, // Greater than or equal to startDate
         lte: endDate, // Less than or equal to endDate
       },
@@ -80,10 +102,10 @@ const getAllCouriers = async (filters: ICourierFilterRequest, options: IPaginati
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (courierRelationalFields.includes(key)) {
+        if (FoodExpRelationalFields.includes(key)) {
           return {
-            [courierRelationalFieldsMapper[key]]: {
-              styleNo: (filterData as any)[key],
+            [FoodExpRelationalFieldsMapper[key]]: {
+              foodExpDate: (filterData as any)[key],
             },
           };
         } else {
@@ -98,12 +120,12 @@ const getAllCouriers = async (filters: ICourierFilterRequest, options: IPaginati
   }
 
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.CourierWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.FoodsWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.courier.findMany({
+  const result = await prisma.foods.findMany({
     include: {
-      style: true,
+      userFood: true,
     },
     where: whereConditions,
     skip,
@@ -112,7 +134,7 @@ const getAllCouriers = async (filters: ICourierFilterRequest, options: IPaginati
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.courier.count({
+  const total = await prisma.foods.count({
     where: whereConditions,
   });
 
@@ -260,9 +282,9 @@ const getStyleWiseNoOfCourier = async (
   };
 };
 
-export const CourierService = {
-  createNewCourier,
-  getAllCouriers,
+export const FoodExpService = {
+  createNewFoodExp,
+  getFoodExpDaily,
   getSingleCourier,
   updateCourierInformation,
   getStyleWiseNoOfCourier,

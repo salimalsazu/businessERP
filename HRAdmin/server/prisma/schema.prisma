@@ -16,22 +16,48 @@ model User {
   updatedAt  DateTime   @updatedAt @db.Timestamptz(0)
   profileId  String?    @unique
   profile    Profile?   @relation(fields: [profileId], references: [profileId])
+  userFood   UserFood[]
+
   @@map("users")
 }
 
 model Profile {
-  profileId            String                 @id @default(uuid())
-  firstName            String
-  lastName             String
-  profileImage         String?
-  role                 UserRoles              @default(USER)
-  isMeal               isMeal                 @default(Yes)
-  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
-  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
-  User                 User?
+  profileId    String    @id @default(uuid())
+  firstName    String
+  lastName     String
+  profileImage String?
+  role         UserRoles @default(USER)
+  isMeal       isMeal    @default(Yes)
+  createdAt    DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime  @updatedAt @db.Timestamptz(0)
+  User         User?
+
   @@map("profiles")
 }
 
+model Foods {
+  foodExpId String     @id @default(uuid())
+  totalCost Int
+  foodExpDate  DateTime @db.Timestamptz(0)
+  totalMeal Int
+  employeeCost Int
+  mealRate Int
+  createdAt DateTime   @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(0)
+  userFood  UserFood[]
+
+  @@map("foods")
+}
+
+model UserFood {
+  userFoodId String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [userId])
+  food       Foods    @relation(fields: [foodExpId], references: [foodExpId])
+  userId     String
+  foodExpId  String
+  createdAt  DateTime @default(now()) @db.Timestamptz(0)
+  @@map("user_foods")
+}
 
 enum UserRoles {
   SUPERADMIN
@@ -50,4 +76,3 @@ enum isMeal {
   Yes
   No
 }
-
