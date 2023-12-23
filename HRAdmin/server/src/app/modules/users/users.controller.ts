@@ -44,6 +44,7 @@ const updateProfileInfo = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const updateUserInfo = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
 

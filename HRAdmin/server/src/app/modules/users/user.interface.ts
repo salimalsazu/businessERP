@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Orders, Profile, Styles, UserRoles, UserStatus } from '@prisma/client';
+import { Profile, UserRoles, UserStatus, isMeal } from '@prisma/client';
 
 export type IRequestUser = {
   role: UserRoles;
@@ -25,8 +25,6 @@ export type UserProfile = {
   profileImage: string | null;
   createdAt: Date;
   updatedAt: Date;
-  Orders: Orders[];
-  Styles: Styles[];
 };
 
 export type IUsersResponse = {
@@ -41,7 +39,7 @@ export type IUpdateProfileReqAndResponse = {
   firstName?: string;
   lastName?: string;
   profileImage?: string;
-  role?: UserRoles;
+  isMeal?: isMeal;
 };
 export type IUserUpdateReqAndResponse = {
   firstName?: string;
@@ -51,4 +49,5 @@ export type IUserUpdateReqAndResponse = {
   userStatus?: UserStatus;
   role?: UserRoles;
   profileId?: string;
+  isMeal?: isMeal;
 };

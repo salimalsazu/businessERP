@@ -7,6 +7,7 @@ import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 import { ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from './auth.interface';
+import { UserStatus } from '@prisma/client';
 
 const createNewUser = async (req: Request) => {
   const data = req.body as IUserCreate;
@@ -32,6 +33,7 @@ const createNewUser = async (req: Request) => {
     const profileData = {
       firstName: data.firstName,
       lastName: data.lastName,
+      role: data.role,
     };
 
     const createdProfile = await transactionClient.profile.create({
@@ -93,6 +95,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
           profileImage: true,
           firstName: true,
           lastName: true,
+          isMeal: true,
         },
       },
     },
@@ -108,6 +111,13 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect !!');
   }
 
+  if (isUserExist.userStatus === UserStatus.Pending) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Pending ! Account is not verified Yet');
+  }
+  if (isUserExist.userStatus === UserStatus.Suspended) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Your Account is Suspended');
+  }
+
   const { userId, profile, email: loggedInEmail } = isUserExist;
 
   // create access token & refresh token
@@ -120,6 +130,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
       profileImage: profile?.profileImage,
       firstName: profile?.firstName,
       lastName: profile?.lastName,
+      isMeal: profile?.isMeal,
     },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
@@ -133,6 +144,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
       profileImage: profile?.profileImage,
       firstName: profile?.firstName,
       lastName: profile?.lastName,
+      isMeal: profile?.isMeal,
     },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
@@ -203,63 +215,3 @@ export const AuthService = {
   refreshToken,
 };
 
-// const createNewUser = async (payload: IUserCreate) => {
-//   const { password, email } = payload;
-//   const hashedPassword = await bcrypt.hash(
-//     password,
-//     Number(config.bcrypt_salt_rounds)
-//   );
-
-//   // transaction start
-//   const newUser = await prisma.$transaction(async transactionClient => {
-//     const isUserExist = await transactionClient.user.findFirst({
-//       where: { email },
-//     });
-
-//     if (isUserExist) {
-//       throw new ApiError(httpStatus.BAD_REQUEST, 'Email is already in use');
-//     }
-
-//     const profileData = {
-//       firstName: payload.firstName,
-//       lastName: payload.lastName,
-//       profileImage: payload?.profileImage,
-//       role: payload?.role,
-//     };
-
-//     const createdProfile = await transactionClient.profile.create({
-//       data: profileData,
-//     });
-
-//     if (!createdProfile) {
-//       throw new ApiError(httpStatus.BAD_REQUEST, 'Profile creation failed');
-//     }
-
-//     const createdUser = await transactionClient.user.create({
-//       data: {
-//         email,
-//         password: hashedPassword,
-//         profile: {
-//           connect: {
-//             profileId: createdProfile.profileId,
-//           },
-//         },
-//       },
-//       select: {
-//         userId: true,
-//         email: true,
-//         createdAt: true,
-//         userStatus: true,
-//         profile: true,
-//       },
-//     });
-
-//     if (!createdUser) {
-//       throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
-//     }
-
-//     return createdUser;
-//   });
-
-//   return newUser;
-// };

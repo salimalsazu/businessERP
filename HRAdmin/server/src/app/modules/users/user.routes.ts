@@ -8,18 +8,10 @@ import { UserController } from './users.controller';
 const router = express.Router();
 
 // !  get all Users ------------------------------>>>
-router.get(
-  '/',
-  auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  UserController.getAllUsersController
-);
+router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), UserController.getAllUsersController);
 
 // !  get My Profile ------------------------------>>>
-router.get(
-  '/my-profile',
-  auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  UserController.getMyProfile
-);
+router.get('/my-profile', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN, UserRoles.USER), UserController.getMyProfile);
 // !  Update  User data ------------------------------>>>
 router.patch(
   '/update-user/:userId',
@@ -35,10 +27,6 @@ router.patch(
   UserController.updateProfileInfo
 );
 // !  get single user ------------------------------>>>
-router.get(
-  '/:userId',
-  auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  UserController.getSingleUser
-);
+router.get('/:userId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), UserController.getSingleUser);
 
 export const UserRoutes = router;
