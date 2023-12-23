@@ -1,6 +1,5 @@
-import express, { NextFunction, Request, Response } from 'express';
-import { FileUploadHelper } from '../../../helpers/FileUploadHelper';
-import { UserValidation } from '../users/user.validations';
+import express from 'express';
+
 import { AuthController } from './auth.controller';
 
 const router = express.Router();
@@ -8,12 +7,17 @@ const router = express.Router();
 router.post(
   '/create-user',
   // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  FileUploadHelper.uploadProfileImage.single('file'),
-  (req: Request, res: Response, next: NextFunction) => {
-    req.body = UserValidation.createUser.parse(JSON.parse(req.body.data));
-    return AuthController.createNewUser(req, res, next);
-  }
+  AuthController.createNewUser
 );
+// router.post(
+//   '/create-user',
+//   // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
+//   FileUploadHelper.uploadProfileImage.single('file'),
+//   (req: Request, res: Response, next: NextFunction) => {
+//     req.body = UserValidation.createUser.parse(JSON.parse(req.body.data));
+//     return AuthController.createNewUser(req, res, next);
+//   }
+// );
 
 router.post('/login', AuthController.userLogin);
 
