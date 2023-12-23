@@ -199,7 +199,9 @@ const updateUserInfo = async (
     },
     data: updatedData,
   });
+
   const updatedProfileData: Partial<Profile> = {};
+
   if (firstName) updatedProfileData['firstName'] = firstName;
   if (lastName) updatedProfileData['lastName'] = lastName;
   if (role) updatedProfileData['role'] = role;
