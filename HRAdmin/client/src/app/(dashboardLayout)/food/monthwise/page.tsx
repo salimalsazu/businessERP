@@ -7,7 +7,7 @@ const MealMonthWisePage = () => {
       <div className="bg-white shadow-sm rounded-md p-2 m-2 w-full border">
         <MonthWiseChart />
       </div>
-      <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full border">
+      <div className="">
         <MonthWiseTable />
       </div>
     </div>

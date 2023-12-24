@@ -6,6 +6,7 @@ import {
   DatePicker,
   Dropdown,
   Modal,
+  Pagination,
   Placeholder,
   Popover,
   Table,
@@ -16,6 +17,7 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { saveExcel } from "./ExcepReport";
 import AddExpensesModal from "./AddExpensesModal";
+import { headerCss } from "../daywise/DayWiseCSS";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -25,7 +27,7 @@ const data = [
     month: "January",
     jobId: 10,
     employeeName: "Salim Al Sazu",
-    lunch: 5,
+    launch: 5,
     mealRate: 18.5,
     totalCost: 120.0,
   },
@@ -34,7 +36,7 @@ const data = [
     month: "January",
     jobId: 8,
     employeeName: "Tafseer Al Yaad",
-    lunch: 4,
+    launch: 4,
     mealRate: 18.5,
     totalCost: 98.0,
   },
@@ -111,8 +113,8 @@ const MonthWiseTable = () => {
   };
 
   return (
-    <div>
-      <div className="mb-5 flex justify-between ">
+    <div className="">
+      <div className="my-5 flex justify-between mx-2 ">
         <div className="flex items-center gap-5">
           <div className="w-[400px]">
             <label htmlFor="voice-search" className="sr-only">
@@ -205,106 +207,135 @@ const MonthWiseTable = () => {
         </div>
       </div>
 
-      <div className="border rounded-md">
-        <Table
-          height={420}
-          data={getData()}
-          sortColumn={sortColumn}
-          sortType={sortType}
-          onSortColumn={handleSortColumn}
-          loading={loading}
-        >
-          <Column width={100} align="center" fixed sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              SL
-            </HeaderCell>
-            <Cell dataKey="sl" />
-          </Column>
+      {/* main section for table */}
+      <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full border">
+        <>
+          <Table
+            rowHeight={60}
+            headerHeight={48}
+            autoHeight={true}
+            data={data}
+            // loading={isLoadingCouriersData || isFetchingCourierData}
+            bordered={true}
+            cellBordered={true}
+            onSortColumn={handleSortColumn}
+            // sortType={sortOrder}
+            // sortColumn={sortBy}
+            id="table"
+          >
+            {/* SL No*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>SL</HeaderCell>
+              <Cell
+                dataKey="sl"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              >
+                {/* {(rowData) => `${rowData.variants}`} */}
+              </Cell>
+            </Column>
 
-          <Column width={150} align="center" fixed>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Month
-            </HeaderCell>
-            <Cell dataKey="month" />
-          </Column>
+            {/* Date*/}
+            <Column flexGrow={1} sortable>
+              <HeaderCell style={headerCss}>Month</HeaderCell>
+              <Cell
+                dataKey="month"
+                verticalAlign="middle"
+                style={{ fontSize: 14, fontWeight: 500, padding: 10 }}
+              >
+                {/* {(rowData) => `${moment(rowData?.courierDate).format("ll")}`} */}
+              </Cell>
+            </Column>
 
-          <Column width={150} align="center" fixed sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Job ID
-            </HeaderCell>
-            <Cell dataKey="jobId" />
-          </Column>
+            {/* Style No*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Job Id</HeaderCell>
+              <Cell
+                dataKey="jobId"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              >
+                {/* {(rowData) => `${rowData.variants}`} */}
+              </Cell>
+            </Column>
 
-          <Column width={275} fixed>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Name
-            </HeaderCell>
-            <Cell dataKey="employeeName" />
-          </Column>
+            {/* Courier Name*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Employee Name</HeaderCell>
+              <Cell
+                dataKey="employeeName"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
+            {/* AWB No*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Launch</HeaderCell>
+              <Cell
+                dataKey="launch"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
 
-          <Column width={200} fixed sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Launch
-            </HeaderCell>
-            <Cell dataKey="lunch" />
-          </Column>
+            {/* Meal Rate*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Meal Rate</HeaderCell>
+              <Cell
+                dataKey="mealRate"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
 
-          <Column width={200} sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Meal Rate
-            </HeaderCell>
-            <Cell dataKey="mealRate" />
-          </Column>
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Total Cost</HeaderCell>
+              <Cell
+                dataKey="totalCost"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
 
-          <Column width={200} sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Total Cost
-            </HeaderCell>
-            <Cell dataKey="totalCost" />
-          </Column>
-        </Table>
+            {/* {role !== "USER" && (
+                  <Column width={70}>
+                    <HeaderCell style={headerCss}>Action</HeaderCell>
+                    <Cell style={cellCss} verticalAlign="middle" align="center">
+                      {(rowData: any) => (
+                        <IconButton
+                          onClick={() => {
+                            setCourierEditModalOpen(true);
+                            setCourierEditData(rowData);
+                          }}
+                          circle
+                          icon={<RiEdit2Line size={20} />}
+                        />
+                      )}
+                    </Cell>
+                  </Column>
+                )} */}
+          </Table>
+        </>
+
+        <div style={{ padding: "20px 10px 0px 10px" }}>
+          <Pagination
+            // total={couriersData?.meta?.total}
+            prev
+            next
+            first
+            last
+            ellipsis
+            boundaryLinks
+            maxButtons={5}
+            size="lg"
+            layout={["total", "-", "limit", "|", "pager", "skip"]}
+            limitOptions={[10, 20, 30, 50]}
+            // limit={size}
+            // onChangeLimit={(limitChange) => setSize(limitChange)}
+            // activePage={page}
+            // onChangePage={setPage}
+          />
+        </div>
       </div>
 
       {/* Modal */}

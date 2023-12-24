@@ -7,7 +7,7 @@ const MealDayWisePage = () => {
       <div className="bg-white shadow-sm rounded-md p-2 m-2 w-full border">
         <DayWiseChart />
       </div>
-      <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full border">
+      <div className="">
         <DayWiseTable />
       </div>
     </div>

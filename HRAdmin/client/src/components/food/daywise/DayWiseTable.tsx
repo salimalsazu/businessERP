@@ -7,6 +7,7 @@ import {
   DateRangePicker,
   Dropdown,
   Modal,
+  Pagination,
   Placeholder,
   Popover,
   Table,
@@ -17,6 +18,7 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import AddExpensesModal from "../monthwise/AddExpensesModal";
 import { saveExcel } from "../monthwise/ExcepReport";
+import { headerCss } from "./DayWiseCSS";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -24,7 +26,7 @@ const data = [
   {
     sl: 1,
     date: "22/12/2023",
-    totalBazar: 500,
+    totalCost: 500,
     totalMeal: 7,
     employeeCost: 250,
     mealRate: 18.5,
@@ -32,7 +34,7 @@ const data = [
   {
     sl: 2,
     date: "21/12/2023",
-    totalBazar: 600,
+    totalCost: 600,
     totalMeal: 7,
     employeeCost: 150,
     mealRate: 15.5,
@@ -151,7 +153,7 @@ const DayWiseTable = () => {
 
   return (
     <div>
-      <div className="mb-5 flex justify-between ">
+      <div className="my-5 mx-2 flex justify-between ">
         <div>
           <DateRangePicker
             // @ts-ignore
@@ -220,93 +222,126 @@ const DayWiseTable = () => {
         </div>
       </div>
 
-      <div className="border rounded-md">
-        <Table
-          height={420}
-          data={getData()}
-          sortColumn={sortColumn}
-          sortType={sortType}
-          onSortColumn={handleSortColumn}
-          loading={loading}
-        >
-          <Column width={100} align="center" fixed sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              SL
-            </HeaderCell>
-            <Cell dataKey="sl" />
-          </Column>
+      {/* main section for table */}
+      <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full border">
+        <>
+          <Table
+            rowHeight={60}
+            headerHeight={48}
+            autoHeight={true}
+            data={data}
+            // loading={isLoadingCouriersData || isFetchingCourierData}
+            bordered={true}
+            cellBordered={true}
+            onSortColumn={handleSortColumn}
+            // sortType={sortOrder}
+            // sortColumn={sortBy}
+            id="table"
+          >
+            {/* SL No*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>SL</HeaderCell>
+              <Cell
+                dataKey="sl"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              >
+                {/* {(rowData) => `${rowData.variants}`} */}
+              </Cell>
+            </Column>
 
-          <Column width={150} align="center" fixed>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Date
-            </HeaderCell>
-            <Cell dataKey="date" />
-          </Column>
+            {/* Date*/}
+            <Column flexGrow={1} sortable>
+              <HeaderCell style={headerCss}> Date</HeaderCell>
+              <Cell
+                dataKey="date"
+                verticalAlign="middle"
+                style={{ fontSize: 14, fontWeight: 500, padding: 10 }}
+              >
+                {/* {(rowData) => `${moment(rowData?.courierDate).format("ll")}`} */}
+              </Cell>
+            </Column>
 
-          <Column width={150} align="center" fixed sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Total Bazar
-            </HeaderCell>
-            <Cell dataKey="totalBazar" />
-          </Column>
+            {/* Style No*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Total Cost</HeaderCell>
+              <Cell
+                dataKey="totalCost"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              >
+                {/* {(rowData) => `${rowData.variants}`} */}
+              </Cell>
+            </Column>
 
-          <Column width={275} fixed>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Total Meal
-            </HeaderCell>
-            <Cell dataKey="totalMeal" />
-          </Column>
+            {/* Courier Name*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Total Meal</HeaderCell>
+              <Cell
+                dataKey="totalMeal"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
+            {/* AWB No*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Employee Cost</HeaderCell>
+              <Cell
+                dataKey="employeeCost"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
 
-          <Column width={300} fixed sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Employee Cost
-            </HeaderCell>
-            <Cell dataKey="employeeCost" />
-          </Column>
+            {/* Details*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Meal Rate</HeaderCell>
+              <Cell
+                dataKey="mealRate"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
 
-          <Column width={300} sortable>
-            <HeaderCell
-              style={{
-                backgroundColor: `var(--primary)`,
-                color: "#ffff",
-                fontWeight: 900,
-              }}
-            >
-              Meal Rate
-            </HeaderCell>
-            <Cell dataKey="mealRate" />
-          </Column>
-        </Table>
+            {/* {role !== "USER" && (
+                  <Column width={70}>
+                    <HeaderCell style={headerCss}>Action</HeaderCell>
+                    <Cell style={cellCss} verticalAlign="middle" align="center">
+                      {(rowData: any) => (
+                        <IconButton
+                          onClick={() => {
+                            setCourierEditModalOpen(true);
+                            setCourierEditData(rowData);
+                          }}
+                          circle
+                          icon={<RiEdit2Line size={20} />}
+                        />
+                      )}
+                    </Cell>
+                  </Column>
+                )} */}
+          </Table>
+        </>
+
+        <div style={{ padding: "20px 10px 0px 10px" }}>
+          <Pagination
+            // total={couriersData?.meta?.total}
+            prev
+            next
+            first
+            last
+            ellipsis
+            boundaryLinks
+            maxButtons={5}
+            size="lg"
+            layout={["total", "-", "limit", "|", "pager", "skip"]}
+            limitOptions={[10, 20, 30, 50]}
+            // limit={size}
+            // onChangeLimit={(limitChange) => setSize(limitChange)}
+            // activePage={page}
+            // onChangePage={setPage}
+          />
+        </div>
       </div>
 
       {/* Modal */}
