@@ -12,7 +12,7 @@ const dashboardLayout = ({ children }: any) => {
         <div>
           <SideBar />
         </div>
-        <Container>
+        <Container className="!bg-secondary" >
           <Content>{children}</Content>
         </Container>
       </div>

@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { CourierFilterableFields, StyleWiseCourierFilterableFields } from './food.constants';
+import { FoodExpFilterableFields, StyleWiseCourierFilterableFields } from './food.constants';
 import { FoodExpService } from './food.service';
 
 // !----------------------------------Create New Courier---------------------------------------->>>
@@ -21,7 +21,7 @@ const createNewFoodExp = catchAsync(async (req: Request, res: Response) => {
 
 // !----------------------------------get all Courier---------------------------------------->>>
 const getFoodExpDaily = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, CourierFilterableFields);
+  const filters = pick(req.query, FoodExpFilterableFields);
 
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
@@ -37,19 +37,18 @@ const getFoodExpDaily = catchAsync(async (req: Request, res: Response) => {
 });
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const getAllFoodExpDayWise = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, CourierFilterableFields);
+const getAllFoodExpMonthly = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, FoodExpFilterableFields);
 
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
-  const result = await CourierService.getAllCouriers(filters, options);
+  const result = await FoodExpService.getFoodExpMonthly(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Courier fetched successfully',
-    meta: result.meta,
-    data: result.data,
+    message: 'Monthly Expenses Fetched successfully',
+    data: result,
   });
 });
 
@@ -99,7 +98,7 @@ const getStyleWiseNoOfCourier = catchAsync(async (req: Request, res: Response) =
 export const FoodExpController = {
   createNewFoodExp,
   getFoodExpDaily,
-  getAllFoodExpDayWise,
+  getAllFoodExpMonthly,
   getSingleCourier,
   updateCourierInformation,
   getStyleWiseNoOfCourier,

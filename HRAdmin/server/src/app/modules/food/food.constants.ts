@@ -1,5 +1,5 @@
-export const CourierFilterableFields: string[] = ['searchTerm', 'styleNo', 'createdAt', 'courierDate', 'startDate', 'endDate'];
-export const CourierSearchableFields: string[] = ['styleNo', 'courierName', 'awbNo'];
+export const FoodExpFilterableFields: string[] = ['searchTerm', 'firstName', 'lastName', 'month'];
+export const FoodExpSearchableFields: string[] = ['firstName', 'lastName'];
 
 export const StyleWiseCourierFilterableFields: string[] = ['searchTerm', 'styleNo'];
 

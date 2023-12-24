@@ -41,6 +41,7 @@ const getAllUserService = async (options: IPaginationOptions): Promise<IGenericR
       },
       createdAt: true,
       updatedAt: true,
+      userFood: true,
     },
   });
   const total = await prisma.user.count();

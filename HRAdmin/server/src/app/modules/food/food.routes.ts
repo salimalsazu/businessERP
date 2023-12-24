@@ -15,12 +15,11 @@ router.post(
   FoodExpController.createNewFoodExp
 );
 
-
 // ! Get all Food Exp Month Wise----------------------------------->>>
 router.get('/daily', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), FoodExpController.getFoodExpDaily);
 
 // ! Get all Food Exp Day Wise-s---------------------------------->>>
-// router.get('/monthwise', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), CourierController.getAllFoodExpDayWise);
+router.get('/monthly', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), FoodExpController.getAllFoodExpMonthly);
 
 // ! Get all getStyleWiseNoOfCourier----------------------------------->>>
 // router.get('/daywise', auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN), CourierController.getStyleWiseNoOfCourier);

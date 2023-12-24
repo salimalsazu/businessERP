@@ -51,7 +51,7 @@ const SideBar = () => {
       style={{ width: `${sidebarWidth}px`, transition: "width 0.2s ease" }}
       className={`${
         expand
-          ? "h-screen shadow-md sticky top-0 overflow-y-auto bg-secondary"
+          ? "h-screen shadow-md sticky top-0 overflow-y-auto !bg-sidebar"
           : "sticky top-0 shadow-md z-[100]"
       }`}
     >
