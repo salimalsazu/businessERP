@@ -95,8 +95,12 @@ const SideBar = () => {
                 icon={<Icon as={CiMobile1} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="4-1">Mobile bill Overview</Nav.Item>
-                <Nav.Item eventKey="4-2">Request for balance update</Nav.Item>
+                <Nav.Item eventKey="4-1" as={Link} href="/mobile/bill">
+                  Mobile bill Overview
+                </Nav.Item>
+                <Nav.Item eventKey="4-2" as={Link} href="/mobile/request">
+                  Request for balance update
+                </Nav.Item>
               </Nav.Menu>
 
               <Nav.Menu
