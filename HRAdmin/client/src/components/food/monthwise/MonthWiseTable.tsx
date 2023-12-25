@@ -17,7 +17,7 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { saveExcel } from "./ExcepReport";
 import AddExpensesModal from "./AddExpensesModal";
-import { headerCss } from "../daywise/DayWiseCSS";
+import { headerCss } from "../../../utils/TableCSS";
 
 const { Column, HeaderCell, Cell } = Table;
 

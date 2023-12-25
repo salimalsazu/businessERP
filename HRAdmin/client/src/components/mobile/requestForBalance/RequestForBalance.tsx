@@ -16,9 +16,7 @@ import {
 import { useState } from "react";
 import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
-import AddExpensesModal from "../monthwise/AddExpensesModal";
-import { saveExcel } from "../monthwise/ExcepReport";
-import { headerCss } from "../../../utils/TableCSS";
+import { headerCss } from "@/utils/TableCSS";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -41,11 +39,9 @@ const data = [
   },
 ];
 
-const DayWiseTable = () => {
+const RequestForBalance = () => {
   const query: Record<string, any> = {};
 
-  const [sortColumn, setSortColumn] = useState();
-  const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
   // Modal
@@ -55,27 +51,6 @@ const DayWiseTable = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
-
   const handleSortColumn = (sortColumn: any, sortType: any) => {
     setLoading(true);
     setTimeout(() => {
@@ -83,34 +58,6 @@ const DayWiseTable = () => {
       setSortColumn(sortColumn);
       setSortType(sortType);
     }, 500);
-  };
-
-  //Report Generate
-
-  const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
-    const handleSelect = () => {
-      onClose();
-    };
-    return (
-      <Popover ref={ref} className={className} style={{ left, top }} full>
-        <Dropdown.Menu onSelect={handleSelect}>
-          <Dropdown.Item
-            // disabled={!isLoading && !allOrders?.data?.length}
-            onClick={saveExcel}
-            eventKey={4}
-          >
-            Export to Excel
-          </Dropdown.Item>
-          <Dropdown.Item
-            // disabled={!isLoading && !allOrders?.data?.length}
-            onClick={saveExcel}
-            eventKey={4}
-          >
-            Save to PDF
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Popover>
-    );
   };
 
   const [selectedDate, setSelectedDate] = useState({
@@ -154,46 +101,41 @@ const DayWiseTable = () => {
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between ">
-        <div>
-          <DateRangePicker
-            // @ts-ignore
-            // ranges={predefinedRanges}
-            placement="auto"
-            onChange={(value: Date[] | null): void => {
-              handleFilterDate(value);
-            }}
-            onClean={() =>
-              handleFilterDate({
-                startDate: "",
-                endDate: "",
-              })
-            }
-            size="lg"
-            style={{ width: 400 }}
-            placeholder="Filter By Date"
-          />
+        <div className="flex items-center gap-5">
+          <div className="w-[400px]">
+            <label htmlFor="voice-search" className="sr-only">
+              Search
+            </label>
+            <div className="relative w-full">
+              <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="#919eab"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </div>
+              <input
+                //   onChange={(e) => setSearchTerm(e.target.value)}
+                type="text"
+                id="searchTerm"
+                className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
+                placeholder="Search with Name"
+                required
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-center gap-5">
-          <div>
-            <ButtonToolbar>
-              <Whisper
-                placement="bottomEnd"
-                speaker={renderMenu}
-                trigger={["click"]}
-              >
-                <Button
-                  appearance="default"
-                  className="!bg-secondary  outline outline-1 font-medium text-gray-700 !rounded "
-                  // color="blue"
-                  startIcon={<DocPassIcon className="text-sm" />}
-                  endIcon={<ArrowDownLineIcon className="text-xl" />}
-                >
-                  Report
-                </Button>
-              </Whisper>
-            </ButtonToolbar>
-          </div>
           <div>
             <Button
               className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
@@ -216,14 +158,14 @@ const DayWiseTable = () => {
                   />
                 </svg>
               </span>
-              <span className="text-sm font-semibold">Add Expense</span>
+              <span className="text-sm font-semibold">Add Mobile Bill</span>
             </Button>
           </div>
         </div>
       </div>
 
       {/* main section for table */}
-      <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full border">
+      <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full">
         <>
           <Table
             rowHeight={60}
@@ -231,7 +173,7 @@ const DayWiseTable = () => {
             autoHeight={true}
             data={data}
             // loading={isLoadingCouriersData || isFetchingCourierData}
-            bordered={true}
+            // bordered={true}
             cellBordered={true}
             onSortColumn={handleSortColumn}
             // sortType={sortOrder}
@@ -252,9 +194,9 @@ const DayWiseTable = () => {
 
             {/* Date*/}
             <Column flexGrow={1} sortable>
-              <HeaderCell style={headerCss}> Date</HeaderCell>
+              <HeaderCell style={headerCss}> JobId</HeaderCell>
               <Cell
-                dataKey="date"
+                dataKey="jobId"
                 verticalAlign="middle"
                 style={{ fontSize: 14, fontWeight: 500, padding: 10 }}
               >
@@ -264,9 +206,9 @@ const DayWiseTable = () => {
 
             {/* Style No*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Total Cost</HeaderCell>
+              <HeaderCell style={headerCss}>Name</HeaderCell>
               <Cell
-                dataKey="totalCost"
+                dataKey="employeeName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
@@ -276,18 +218,18 @@ const DayWiseTable = () => {
 
             {/* Courier Name*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Total Meal</HeaderCell>
+              <HeaderCell style={headerCss}>Previous Balance</HeaderCell>
               <Cell
-                dataKey="totalMeal"
+                dataKey="previousBalance"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
             {/* AWB No*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Employee Cost</HeaderCell>
+              <HeaderCell style={headerCss}>Request for Balance</HeaderCell>
               <Cell
-                dataKey="employeeCost"
+                dataKey="requestForBalance"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -295,9 +237,9 @@ const DayWiseTable = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Meal Rate</HeaderCell>
+              <HeaderCell style={headerCss}>Status</HeaderCell>
               <Cell
-                dataKey="mealRate"
+                dataKey="status"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -345,11 +287,9 @@ const DayWiseTable = () => {
       </div>
 
       {/* Modal */}
-      <div>
-        <AddExpensesModal handleClose={handleClose} open={open} />
-      </div>
+      <div></div>
     </div>
   );
 };
 
-export default DayWiseTable;
+export default RequestForBalance;
