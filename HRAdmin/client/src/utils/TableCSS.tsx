@@ -1,11 +1,11 @@
 export const cellCss = { fontSize: 14, fontWeight: 500, padding: 10 };
 export const headerCss = {
-  backgroundColor: "var(--primary)",
+  backgroundColor: "var(--table)",
   fontSize: "14px",
   display: "flex",
   alignItems: "center",
   // gap: "4px",
-  color: "#ffff",
+  color: "#374151",
   fontWeight: "600",
 };
 export const tableHeaderCss =

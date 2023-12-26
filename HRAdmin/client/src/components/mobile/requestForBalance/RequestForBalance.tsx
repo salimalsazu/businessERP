@@ -17,6 +17,7 @@ import { useState } from "react";
 import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
+import NewMobileBillModal from "../bill/NewMobileBillModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -158,7 +159,7 @@ const RequestForBalance = () => {
                   />
                 </svg>
               </span>
-              <span className="text-sm font-semibold">Add Mobile Bill</span>
+              <span className="text-sm font-semibold">New Mobile Bill</span>
             </Button>
           </div>
         </div>
@@ -287,7 +288,9 @@ const RequestForBalance = () => {
       </div>
 
       {/* Modal */}
-      <div></div>
+      <div>
+        <NewMobileBillModal open={open} handleClose={handleClose} />
+      </div>
     </div>
   );
 };
