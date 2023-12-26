@@ -1,3 +1,5 @@
+"use client";
+
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
   Button,
@@ -12,8 +14,9 @@ import {
   Tooltip,
   Whisper,
 } from "rsuite";
-import PlusIcon from "@rsuite/icons/Plus";
+import TrashIcon from "@rsuite/icons/Trash";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
+import { useState } from "react";
 
 const NewMobileBillModal = ({ handleClose, open }: any) => {
   interface IAddExp {
@@ -50,7 +53,14 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
   ].map((item) => ({ label: item, value: item }));
 
   return (
-    <Modal backdrop="static" keyboard={false} open={open} onClose={handleClose}>
+    <Modal
+      backdrop="static"
+      overflow={false}
+      keyboard={false}
+      open={open}
+      onClose={handleClose}
+      size={"md"}
+    >
       <Modal.Header>
         <Modal.Title>New Mobile Bill</Modal.Title>
       </Modal.Header>
@@ -106,19 +116,7 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
             </div>
           </div>
 
-          <div className="my-3">
-            <ButtonToolbar>
-              <Button appearance="link">Add more Employee</Button>
-              {/* <IconButton
-                icon={<PlusIcon />}
-                circle
-                color="blue"
-                appearance="primary"
-              ></IconButton> */}
-            </ButtonToolbar>
-          </div>
-
-          <div className="flex justify-between  gap-[24px] mb-5">
+          <div className="flex justify-between gap-[24px]">
             {/* Employee Name */}{" "}
             <div className="flex flex-col gap-3 w-full ">
               <div>
@@ -133,22 +131,17 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
                 name="employeeName"
                 control={control}
                 defaultValue={""}
-                rules={{ required: "Employee Name is required" }}
+                rules={{ required: "Employee Name is required." }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <SelectPicker
                       size="lg"
                       data={data}
-                      // value={field.value}
-                      onChange={(value: string | null) => field.onChange(value)}
                       style={{
                         width: "100%",
                       }}
                       placement="leftStart"
                       placeholder="Employee Name"
-                      // renderMenu={(menu) =>
-                      //   renderLoading(menu, isLoadingStyleNo)
-                      // }
                     />
                     {/* <Form.ErrorMessage
                       show={
@@ -216,6 +209,10 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
                 )}
               />
             </div>
+          </div>
+
+          <div className="my-3">
+            <button className="text-blue-600"> + Add More Employee</button>
           </div>
 
           <div className="flex justify-end mt-5">
