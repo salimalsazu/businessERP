@@ -17,8 +17,29 @@ import {
 import TrashIcon from "@rsuite/icons/Trash";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToField,
+  removeFromField,
+} from "@/redux/slice/addEmployeeFieldSlice";
 
 const NewMobileBillModal = ({ handleClose, open }: any) => {
+  const dispatch = useDispatch();
+  const employees = useSelector((state: any) => state.field.employeeField);
+
+  const handleAddEmployee = () => {
+    const incrementId: string = employees.length + 1;
+    dispatch(
+      //@ts-ignore
+      addToField({ fieldId: incrementId, employeeName: "", totalCost: 0 })
+    );
+  };
+
+  const handleRemoveEmployee = (fieldId: any) => {
+    console.log(fieldId);
+    dispatch(removeFromField(fieldId));
+  };
+
   interface IAddExp {
     date: Date;
     totalCost: number;
@@ -211,8 +232,127 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
             </div>
           </div>
 
+          <div>
+            {employees.map((employee: any, index: any) => (
+              <div
+                key={employee.fieldId}
+                className="flex justify-center items-center gap-[24px] my-5"
+              >
+                {/* Employee Name */}{" "}
+                <div className="flex flex-col gap-3 w-full ">
+                  <div>
+                    <Whisper speaker={<Tooltip>Employee Name</Tooltip>}>
+                      <label
+                        htmlFor={`employeeName-${index}`}
+                        className="text-sm font-medium"
+                      >
+                        Employee Name
+                        <InfoOutlineIcon />
+                      </label>
+                    </Whisper>
+                  </div>
+                  <Controller
+                    name={`employees[${index}].employeeName`}
+                    control={control}
+                    defaultValue={""}
+                    rules={{ required: "Employee Name is required." }}
+                    render={({ field }) => (
+                      <div className="rs-form-control-wrapper">
+                        <SelectPicker
+                          size="lg"
+                          data={data}
+                          style={{
+                            width: "100%",
+                          }}
+                          placement="auto"
+                          placeholder="Employee Name"
+                        />
+                        {/* <Form.ErrorMessage
+                       show={
+                         (!!errors?.styleNo && !!errors?.styleNo?.message) ||
+                         false
+                       }
+                       placement="topEnd"
+                     >
+                       {errors?.styleNo?.message}
+                     </Form.ErrorMessage> */}
+                      </div>
+                    )}
+                  />{" "}
+                </div>
+                {/* Mobile Bill */}
+                <div className="flex flex-col gap-3 w-full ">
+                  <div>
+                    <Whisper
+                      speaker={
+                        <Tooltip>
+                          <span className="text-[11px]">
+                            Expenses greater than 0
+                          </span>
+                        </Tooltip>
+                      }
+                    >
+                      <label
+                        htmlFor={`totalPack-${index}`}
+                        className="text-sm font-medium"
+                      >
+                        Mobile Bill <InfoOutlineIcon />
+                      </label>
+                    </Whisper>
+                  </div>
+
+                  <Controller
+                    name={`employees[${index}].totalCost`}
+                    control={control}
+                    rules={{
+                      required: "Mobile Bill is required",
+                      min: {
+                        value: 1,
+                        message: "Mobile bill must be greater than 0",
+                      },
+                    }}
+                    render={({ field }: any) => (
+                      <div className="rs-form-control-wrapper ">
+                        <InputNumber
+                          {...field}
+                          inputMode="numeric"
+                          min={1}
+                          size="lg"
+                          id="totalPack"
+                          type="number"
+                          placeholder="Mobile Bill"
+                          style={{ width: "100%" }}
+                        />
+                        {/* <Form.ErrorMessage
+                       show={
+                         (!!errors?.totalPack && !!errors?.totalPack?.message) ||
+                         false
+                       }
+                       placement="topEnd"
+                     >
+                       {errors?.totalPack?.message}
+                     </Form.ErrorMessage> */}
+                      </div>
+                    )}
+                  />
+                </div>
+                <div className="mt-8">
+                  <IconButton
+                    icon={<TrashIcon />}
+                    circle
+                    size="lg"
+                    onClick={() => handleRemoveEmployee(employee.fieldId)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
           <div className="my-3">
-            <button className="text-blue-600"> + Add More Employee</button>
+            <button className="text-blue-600" onClick={handleAddEmployee}>
+              {" "}
+              + Add More Employee
+            </button>
           </div>
 
           <div className="flex justify-end mt-5">

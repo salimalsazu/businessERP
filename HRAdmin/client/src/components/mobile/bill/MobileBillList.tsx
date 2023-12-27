@@ -18,6 +18,7 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import NewMobileBillModal from "./NewMobileBillModal";
+import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 
 const { Column, HeaderCell, Cell } = Table;
 

@@ -52,14 +52,14 @@ const RequestForBalance = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSortColumn = (sortColumn: any, sortType: any) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSortColumn(sortColumn);
-      setSortType(sortType);
-    }, 500);
-  };
+  // const handleSortColumn = (sortColumn: any, sortType: any) => {
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     setSortColumn(sortColumn);
+  //     setSortType(sortType);
+  //   }, 500);
+  // };
 
   const [selectedDate, setSelectedDate] = useState({
     startDate: "",
@@ -176,7 +176,7 @@ const RequestForBalance = () => {
             // loading={isLoadingCouriersData || isFetchingCourierData}
             // bordered={true}
             cellBordered={true}
-            onSortColumn={handleSortColumn}
+            // onSortColumn={handleSortColumn}
             // sortType={sortOrder}
             // sortColumn={sortBy}
             id="table"
