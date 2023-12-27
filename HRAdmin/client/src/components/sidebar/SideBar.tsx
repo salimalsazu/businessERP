@@ -125,9 +125,12 @@ const SideBar = () => {
                 icon={<Icon as={FaCar} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="6-1">Purchase List of Fuel</Nav.Item>
-                <Nav.Item eventKey="6-2">List of Documents</Nav.Item>
-                <Nav.Item eventKey="6-3">Add Vehicle</Nav.Item>
+                <Nav.Item eventKey="6-1" as={Link} href="/transport/fuel">
+                  Purchase Fuel and Consumption
+                </Nav.Item>
+                <Nav.Item eventKey="6-2" as={Link} href="/transport/documents">
+                  Vehicle Documents List
+                </Nav.Item>
               </Nav.Menu>
               <Nav.Menu
                 eventKey="7"
