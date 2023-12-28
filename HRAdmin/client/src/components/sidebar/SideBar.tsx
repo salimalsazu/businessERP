@@ -142,7 +142,7 @@ const SideBar = () => {
                 <Nav.Item eventKey="7-1" as={Link} href="/stationary/stock">
                   List of Stationary
                 </Nav.Item>
-                <Nav.Item eventKey="7-2" as={Link} href="/stationary/request">
+                <Nav.Item eventKey="7-2" as={Link} href="/stationary/assign">
                   Request for Stationary
                 </Nav.Item>
               </Nav.Menu>

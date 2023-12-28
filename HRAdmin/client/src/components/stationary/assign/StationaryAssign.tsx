@@ -19,11 +19,12 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
-import AddStationaryModal from "./AddStationaryModal";
+import AddStationaryModal from "../stock/AddStationaryModal";
+
 
 const { Column, HeaderCell, Cell } = Table;
 
-const StationaryStockListTable = () => {
+const StationaryAssign = () => {
   const query: Record<string, any> = {};
 
   const [sortColumn, setSortColumn] = useState();
@@ -386,4 +387,4 @@ const StationaryStockListTable = () => {
   );
 };
 
-export default StationaryStockListTable;
+export default StationaryAssign;

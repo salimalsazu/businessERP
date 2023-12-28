@@ -1,4 +1,4 @@
-import VehicleDocumentsTableSection from "@/components/transport/documents/VehicleDocuments";
+import StationaryAssign from "@/components/stationary/assign/StationaryAssign";
 
 const StationaryAssignList = () => {
   return (
@@ -7,7 +7,7 @@ const StationaryAssignList = () => {
       
       </div> */}
       <div className="">
-        <VehicleDocumentsTableSection />
+        <StationaryAssign />
       </div>
     </div>
   );
