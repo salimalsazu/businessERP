@@ -139,9 +139,12 @@ const SideBar = () => {
                 icon={<Icon as={FaPrint} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="7-1">Item Wise Stock</Nav.Item>
-                <Nav.Item eventKey="7-2">Request for Stationary</Nav.Item>
-                <Nav.Item eventKey="7-3">Add Stationary</Nav.Item>
+                <Nav.Item eventKey="7-1" as={Link} href="/stationary/stock">
+                  List of Stationary
+                </Nav.Item>
+                <Nav.Item eventKey="7-2" as={Link} href="/stationary/request">
+                  Request for Stationary
+                </Nav.Item>
               </Nav.Menu>
 
               <Nav.Menu
@@ -151,8 +154,25 @@ const SideBar = () => {
                 icon={<Icon as={SiBetfair} />}
                 placement="rightStart"
               >
-                <Nav.Item eventKey="8-1">Pending Conveyance</Nav.Item>
-                <Nav.Item eventKey="8-2">Conveyance History</Nav.Item>
+                <Nav.Item eventKey="8-1" as={Link} href="/conveyance/list">
+                  List of Conveyance
+                </Nav.Item>
+                {/* <Nav.Item eventKey="8-2">Conveyance History</Nav.Item> */}
+              </Nav.Menu>
+
+              <Nav.Menu
+                eventKey="8"
+                trigger="hover"
+                title="Assets"
+                icon={<Icon as={SiBetfair} />}
+                placement="rightStart"
+              >
+                <Nav.Item eventKey="8-1" as={Link} href="/assets/list">
+                  Assets List
+                </Nav.Item>
+                <Nav.Item eventKey="8-2" as={Link} href="/assets/assign">
+                  Repair and Assign
+                </Nav.Item>
               </Nav.Menu>
             </Nav>
           </Sidenav.Body>

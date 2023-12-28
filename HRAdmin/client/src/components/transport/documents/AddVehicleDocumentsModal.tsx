@@ -7,6 +7,7 @@ import {
   SelectPicker,
   TagPicker,
   Tooltip,
+  Uploader,
   Whisper,
 } from "rsuite";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -64,8 +65,19 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
     value: item,
   }));
 
+  const VehicleDoc = ["Tax Token", "Fitness"].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
   return (
-    <Modal backdrop="static" keyboard={false} open={open} onClose={handleClose}>
+    <Modal
+      overflow={false}
+      backdrop="static"
+      keyboard={false}
+      open={open}
+      onClose={handleClose}
+    >
       <Modal.Header>
         <Modal.Title>Add Documents</Modal.Title>
       </Modal.Header>
@@ -77,9 +89,9 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
             {/* Date */}{" "}
             <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper speaker={<Tooltip>Date</Tooltip>}>
+                <Whisper speaker={<Tooltip>Expire Date</Tooltip>}>
                   <label htmlFor="buyerEtd" className="text-sm font-medium">
-                    Date <InfoOutlineIcon />
+                    Expire Date <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
@@ -105,7 +117,7 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
                         width: "100%",
                       }}
                       size="lg"
-                      placeholder="Expense Date"
+                      placeholder=" Expire Date"
                       editable={false}
                       placement="auto"
                     />
@@ -166,163 +178,62 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
             {/* Input Field */}
             <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper
-                  speaker={
-                    <Tooltip>
-                      <span className="text-[11px]">
-                        Expenses greater than 0
-                      </span>
-                    </Tooltip>
-                  }
-                >
-                  <label htmlFor="currentKM" className="text-sm font-medium">
-                    Current KM <InfoOutlineIcon />
+                <Whisper speaker={<Tooltip>Document Type</Tooltip>}>
+                  <label htmlFor="styleNo" className="text-sm font-medium">
+                    Document Type <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
-
               <Controller
-                name="currentKM"
+                name="styleNo"
                 control={control}
-                rules={{
-                  required: " Current KM is required",
-                  min: {
-                    value: 1,
-                    message: "Current KM must be greater than 0",
-                  },
-                }}
-                render={({ field }: any) => (
-                  <div className="rs-form-control-wrapper ">
-                    <InputNumber
-                      {...field}
-                      inputMode="numeric"
-                      min={1}
+                defaultValue={""}
+                rules={{ required: "Document Type is required" }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <SelectPicker
                       size="lg"
-                      id="totalPack"
-                      type="number"
-                      placeholder=" Current KM"
-                      style={{ width: "100%" }}
+                      data={VehicleDoc}
+                      value={field.value}
+                      onChange={(value: string | null) => field.onChange(value)}
+                      style={{
+                        width: "80%",
+                      }}
+                      // renderMenu={(menu) =>
+                      //   renderLoading(menu, isLoadingStyleNo)
+                      // }
                     />
                     {/* <Form.ErrorMessage
-                          show={
-                            (!!errors?.totalPack && !!errors?.totalPack?.message) ||
-                            false
-                          }
-                          placement="topEnd"
-                        >
-                          {errors?.totalPack?.message}
-                        </Form.ErrorMessage> */}
+                        show={
+                          (!!errors?.styleNo && !!errors?.styleNo?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.styleNo?.message}
+                      </Form.ErrorMessage> */}
                   </div>
                 )}
-              />
+              />{" "}
             </div>
 
             {/* Input Field */}
             <div className="flex flex-col gap-3 w-full ">
-              <div>
-                <Whisper
-                  speaker={
-                    <Tooltip>
-                      <span className="text-[11px]">
-                        Expenses greater than 0
-                      </span>
-                    </Tooltip>
-                  }
+              <Uploader
+                action="//jsonplaceholder.typicode.com/posts/"
+                draggable
+              >
+                <div
+                  style={{
+                    height: 200,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  <label htmlFor="fuelCost" className="text-sm font-medium">
-                    Fuel Cost <InfoOutlineIcon />
-                  </label>
-                </Whisper>
-              </div>
-
-              <Controller
-                name="fuelCost"
-                control={control}
-                rules={{
-                  required: "Fuel Cost is required",
-                  min: {
-                    value: 1,
-                    message: "Fuel Cost must be greater than 0",
-                  },
-                }}
-                render={({ field }: any) => (
-                  <div className="rs-form-control-wrapper ">
-                    <InputNumber
-                      {...field}
-                      inputMode="numeric"
-                      min={1}
-                      size="lg"
-                      id="totalPack"
-                      type="number"
-                      placeholder="Fuel Cost"
-                      style={{ width: "100%" }}
-                    />
-                    {/* <Form.ErrorMessage
-                          show={
-                            (!!errors?.totalPack && !!errors?.totalPack?.message) ||
-                            false
-                          }
-                          placement="topEnd"
-                        >
-                          {errors?.totalPack?.message}
-                        </Form.ErrorMessage> */}
-                  </div>
-                )}
-              />
-            </div>
-
-            {/* Input Field */}
-            <div className="flex flex-col gap-3 w-full ">
-              <div>
-                <Whisper
-                  speaker={
-                    <Tooltip>
-                      <span className="text-[11px]">
-                        Expenses greater than 0
-                      </span>
-                    </Tooltip>
-                  }
-                >
-                  <label htmlFor="totalPack" className="text-sm font-medium">
-                    Ltr <InfoOutlineIcon />
-                  </label>
-                </Whisper>
-              </div>
-
-              <Controller
-                name="ltr"
-                control={control}
-                rules={{
-                  required: "Ltr is required",
-                  min: {
-                    value: 1,
-                    message: "Ltr must be greater than 0",
-                  },
-                }}
-                render={({ field }: any) => (
-                  <div className="rs-form-control-wrapper ">
-                    <InputNumber
-                      {...field}
-                      inputMode="numeric"
-                      min={1}
-                      size="lg"
-                      id="totalPack"
-                      type="number"
-                      placeholder="Ltr"
-                      style={{ width: "100%" }}
-                    />
-                    {/* <Form.ErrorMessage
-                          show={
-                            (!!errors?.totalPack && !!errors?.totalPack?.message) ||
-                            false
-                          }
-                          placement="topEnd"
-                        >
-                          {errors?.totalPack?.message}
-                        </Form.ErrorMessage> */}
-                  </div>
-                )}
-              />
+                  <span>Click or Drag files to upload PDF File</span>
+                </div>
+              </Uploader>
             </div>
           </div>
 
