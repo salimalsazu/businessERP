@@ -1,5 +1,7 @@
+import { CSSProperties } from "react";
+
 export const cellCss = { fontSize: 14, fontWeight: 500, padding: 10 };
-export const headerCss = {
+export const headerCss: CSSProperties = {
   backgroundColor: "var(--table)",
   fontSize: "12px",
   display: "flex",

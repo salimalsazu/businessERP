@@ -21,7 +21,6 @@ import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddStationaryModal from "../stock/AddStationaryModal";
 
-
 const { Column, HeaderCell, Cell } = Table;
 
 const StationaryAssign = () => {
@@ -156,8 +155,59 @@ const StationaryAssign = () => {
 
   return (
     <div>
-      <div className="my-5 mx-2 flex justify-between ">
-        <div className="flex justify-center gap-5">
+      <div className="my-5 mx-2 flex justify-between  ">
+        <div className="flex items-center gap-5">
+          <div className="w-[300px]">
+            <label htmlFor="voice-search" className="sr-only">
+              Search
+            </label>
+            <div className="relative w-full">
+              <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="#919eab"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </div>
+              <input
+                //   onChange={(e) => setSearchTerm(e.target.value)}
+                type="text"
+                id="searchTerm"
+                className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
+                placeholder="Search with Name"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <DateRangePicker
+              // @ts-ignore
+              // ranges={predefinedRanges}
+              placement="auto"
+              onChange={(value: Date[] | null): void => {
+                handleFilterDate(value);
+              }}
+              onClean={() =>
+                handleFilterDate({
+                  startDate: "",
+                  endDate: "",
+                })
+              }
+              size="lg"
+              style={{ width: 300 }}
+              placeholder="Filter By Date"
+            />
+          </div>
+
           <div>
             <SelectPicker
               // onChange={(value: string | null): void =>
@@ -269,7 +319,7 @@ const StationaryAssign = () => {
 
             {/* Style No*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Item Name</HeaderCell>
+              <HeaderCell style={headerCss}>Date</HeaderCell>
               <Cell
                 dataKey="item_name"
                 verticalAlign="middle"
@@ -281,7 +331,7 @@ const StationaryAssign = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Last Purchased Date</HeaderCell>
+              <HeaderCell style={headerCss}>Job Id</HeaderCell>
               <Cell
                 dataKey="last_purchased_date"
                 verticalAlign="middle"
@@ -291,7 +341,7 @@ const StationaryAssign = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Purchase (Qty)</HeaderCell>
+              <HeaderCell style={headerCss}>Employee Name</HeaderCell>
               <Cell
                 dataKey="purchase_quantity"
                 verticalAlign="middle"
@@ -301,7 +351,7 @@ const StationaryAssign = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Last Assign Date </HeaderCell>
+              <HeaderCell style={headerCss}>Item Name</HeaderCell>
               <Cell
                 dataKey="last_assign_date"
                 verticalAlign="middle"
@@ -311,7 +361,7 @@ const StationaryAssign = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Assign (Qty) </HeaderCell>
+              <HeaderCell style={headerCss}>Quantity </HeaderCell>
               <Cell
                 dataKey="last_assign_qty"
                 verticalAlign="middle"
@@ -319,21 +369,11 @@ const StationaryAssign = () => {
               ></Cell>
             </Column>
 
-            {/* Details*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Now Stock(Qty)</HeaderCell>
-              <Cell
-                dataKey="purchase_quantity"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
             {/* Status*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Status </HeaderCell>
+              <HeaderCell style={headerCss}>Status</HeaderCell>
               <Cell
-                dataKey="status"
+                dataKey="purchase_quantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
