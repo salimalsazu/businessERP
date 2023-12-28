@@ -19,7 +19,8 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
-import AddFuelExpModal from "./AddFuelExpModal";
+import AddVehicleDocumentsModal from "./AddVehicleDocumentsModal";
+import AddFuelExpModal from "../fuel/AddFuelExpModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -42,7 +43,7 @@ const data = [
   },
 ];
 
-const FuelPurchaseAndConsumptionSection = () => {
+const VehicleDocumentsTableSection = () => {
   const query: Record<string, any> = {};
 
   const [sortColumn, setSortColumn] = useState();
@@ -162,25 +163,6 @@ const FuelPurchaseAndConsumptionSection = () => {
       <div className="my-5 mx-2 flex justify-between ">
         <div className="flex justify-center gap-5">
           <div>
-            <DateRangePicker
-              // @ts-ignore
-              // ranges={predefinedRanges}
-              placement="auto"
-              onChange={(value: Date[] | null): void => {
-                handleFilterDate(value);
-              }}
-              onClean={() =>
-                handleFilterDate({
-                  startDate: "",
-                  endDate: "",
-                })
-              }
-              size="lg"
-              style={{ width: 400 }}
-              placeholder="Filter By Date"
-            />
-          </div>
-          <div>
             <SelectPicker
               // onChange={(value: string | null): void =>
               //   setSelectedStyleNo(value as string)
@@ -298,18 +280,6 @@ const FuelPurchaseAndConsumptionSection = () => {
               </Cell>
             </Column>
 
-            {/* Date*/}
-            <Column flexGrow={1} sortable>
-              <HeaderCell style={headerCss}> Date</HeaderCell>
-              <Cell
-                dataKey="jobId"
-                verticalAlign="middle"
-                style={{ fontSize: 14, fontWeight: 500, padding: 10 }}
-              >
-                {/* {(rowData) => `${moment(rowData?.courierDate).format("ll")}`} */}
-              </Cell>
-            </Column>
-
             {/* Style No*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Vehicle No</HeaderCell>
@@ -322,18 +292,19 @@ const FuelPurchaseAndConsumptionSection = () => {
               </Cell>
             </Column>
 
-            {/* Courier Name*/}
+            {/* Document Type*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>KM (Previous)</HeaderCell>
+              <HeaderCell style={headerCss}>Document Type</HeaderCell>
               <Cell
                 dataKey="month"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
+
             {/* AWB No*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>KM (Current)</HeaderCell>
+              <HeaderCell style={headerCss}>Expire Date(Current)</HeaderCell>
               <Cell
                 dataKey="mobileNumber"
                 verticalAlign="middle"
@@ -343,7 +314,7 @@ const FuelPurchaseAndConsumptionSection = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Fuel (Ltr)</HeaderCell>
+              <HeaderCell style={headerCss}>Status</HeaderCell>
               <Cell
                 dataKey="limit"
                 verticalAlign="middle"
@@ -351,65 +322,16 @@ const FuelPurchaseAndConsumptionSection = () => {
               ></Cell>
             </Column>
 
-            {/* Mobile Bill*/}
+            {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Cost (Tk)</HeaderCell>
+              <HeaderCell style={headerCss}>PDF</HeaderCell>
               <Cell
-                dataKey="mobileBill"
+                dataKey="limit"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
 
-            {/* Usages*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Per Ltr (Tk)</HeaderCell>
-              <Cell
-                dataKey="usage"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Deduction*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>KM (Consumption)</HeaderCell>
-              <Cell
-                dataKey="deduction"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Deduction*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>KM (Last Month Used)</HeaderCell>
-              <Cell
-                dataKey="deduction"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Deduction*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>KM (This Month)</HeaderCell>
-              <Cell
-                dataKey="deduction"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Deduction*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Usage</HeaderCell>
-              <Cell
-                dataKey="deduction"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
             {/* {role !== "USER" && (
                   <Column width={70}>
                     <HeaderCell style={headerCss}>Action</HeaderCell>
@@ -455,8 +377,11 @@ const FuelPurchaseAndConsumptionSection = () => {
       <div>
         <AddFuelExpModal open={open} handleClose={handleClose} />
       </div>
+      <div>
+        <AddVehicleDocumentsModal open={open} handleClose={handleClose} />
+      </div>
     </div>
   );
 };
 
-export default FuelPurchaseAndConsumptionSection;
+export default VehicleDocumentsTableSection;

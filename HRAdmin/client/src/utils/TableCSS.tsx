@@ -1,12 +1,13 @@
 export const cellCss = { fontSize: 14, fontWeight: 500, padding: 10 };
 export const headerCss = {
   backgroundColor: "var(--table)",
-  fontSize: "14px",
+  fontSize: "12px",
   display: "flex",
   alignItems: "center",
   // gap: "4px",
   color: "#374151",
   fontWeight: "600",
+  textWrap: "wrap",
 };
 export const tableHeaderCss =
   "px-3 py-3.5 text-left text-sm font-semibold text-[#637581]";
