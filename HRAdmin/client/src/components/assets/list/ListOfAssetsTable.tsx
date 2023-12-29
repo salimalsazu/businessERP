@@ -19,11 +19,10 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
-import AddStationaryModal from "../stock/AddStationaryModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const StationaryAssign = () => {
+const ListOfAssetsTable = () => {
   const query: Record<string, any> = {};
 
   const [sortColumn, setSortColumn] = useState();
@@ -138,17 +137,19 @@ const StationaryAssign = () => {
     value: item,
   }));
 
-  const inventory = [
+  const assetsAssignData = [
     {
       sl: 1,
-      item_name: "Box - Tissue",
-      stock_quantity: 100,
-      expire_date: "2023-12-31",
-      last_purchased_date: "2023-12-28",
-      purchase_quantity: 500,
-      last_assign_date: "2023-12-28",
-      last_assign_qty: 1,
-      status: "Excellent",
+      jobId: 12,
+      image: "Salim Al Sazu",
+      assetName: "Laptop",
+      assetId: "Laptop-M-103",
+      assetsType: "Laptop",
+      assetModel: "-",
+      quantity: 1,
+      assetLocation: "Office",
+      purchaseDate: "31-12-2023",
+      barcode: "-",
     },
     // Add more items as needed
   ];
@@ -157,7 +158,7 @@ const StationaryAssign = () => {
     <div>
       <div className="my-5 mx-2 flex justify-between  ">
         <div className="flex items-center gap-5">
-          <div className="w-[300px]">
+          <div className="w-[400px]">
             <label htmlFor="voice-search" className="sr-only">
               Search
             </label>
@@ -183,61 +184,10 @@ const StationaryAssign = () => {
                 type="text"
                 id="searchTerm"
                 className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
-                placeholder="Search with Name"
+                placeholder="Search with Name and Assets id"
                 required
               />
             </div>
-          </div>
-          <div>
-            <DateRangePicker
-              // @ts-ignore
-              // ranges={predefinedRanges}
-              placement="auto"
-              onChange={(value: Date[] | null): void => {
-                handleFilterDate(value);
-              }}
-              onClean={() =>
-                handleFilterDate({
-                  startDate: "",
-                  endDate: "",
-                })
-              }
-              size="lg"
-              style={{ width: 300 }}
-              placeholder="Filter By Date"
-            />
-          </div>
-
-          <div>
-            <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
-              // onClean={() => setSelectedStyleNo(null)}
-              size="lg"
-              data={VehicleNo}
-              style={{ width: 150 }}
-              // searchable={false}
-              placeholder="Filter By Status"
-              searchable={false}
-              // renderMenu={(menu) => renderLoading(menu, isLoadingAllStyleNames)}
-            />
-          </div>
-
-          <div>
-            <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
-              // onClean={() => setSelectedStyleNo(null)}
-              size="lg"
-              data={VehicleNo}
-              style={{ width: 150 }}
-              // searchable={false}
-              placeholder="Filter By Item"
-              searchable={false}
-              // renderMenu={(menu) => renderLoading(menu, isLoadingAllStyleNames)}
-            />
           </div>
         </div>
 
@@ -261,6 +211,7 @@ const StationaryAssign = () => {
               </Whisper>
             </ButtonToolbar>
           </div>
+
           <div>
             <Button
               className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
@@ -283,7 +234,7 @@ const StationaryAssign = () => {
                   />
                 </svg>
               </span>
-              <span className="text-sm font-semibold">Add Stationary</span>
+              <span className="text-sm font-semibold">Add Asset</span>
             </Button>
           </div>
         </div>
@@ -296,7 +247,7 @@ const StationaryAssign = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={inventory}
+            data={assetsAssignData}
             // loading={isLoadingCouriersData || isFetchingCourierData}
             // bordered={true}
             cellBordered={true}
@@ -317,11 +268,31 @@ const StationaryAssign = () => {
               </Cell>
             </Column>
 
+            {/* Details*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Asset id</HeaderCell>
+              <Cell
+                dataKey="assetId"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
+
+            {/* Details*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Image</HeaderCell>
+              <Cell
+                dataKey="image"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
+
             {/* Style No*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Date</HeaderCell>
+              <HeaderCell style={headerCss}>Asset Name</HeaderCell>
               <Cell
-                dataKey="item_name"
+                dataKey="assetName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
@@ -329,55 +300,56 @@ const StationaryAssign = () => {
               </Cell>
             </Column>
 
-            {/* Details*/}
+            {/* Model*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Job Id</HeaderCell>
+              <HeaderCell style={headerCss}>Model </HeaderCell>
               <Cell
-                dataKey="last_purchased_date"
+                dataKey="assetModel"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
 
-            {/* Details*/}
+            {/* Quantity*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Employee Name</HeaderCell>
+              <HeaderCell style={headerCss}>Quantity</HeaderCell>
               <Cell
-                dataKey="purchase_quantity"
+                dataKey="quantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
 
-            {/* Details*/}
+            {/* Location*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Item Name</HeaderCell>
+              <HeaderCell style={headerCss}>Asset Location</HeaderCell>
               <Cell
-                dataKey="last_assign_date"
+                dataKey="assetLocation"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
 
-            {/* Details*/}
+            {/* Date of Purchase*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Quantity </HeaderCell>
+              <HeaderCell style={headerCss}>Purchase Date</HeaderCell>
               <Cell
-                dataKey="last_assign_qty"
+                dataKey="purchaseDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
 
-            {/* Status*/}
+            {/* Barcode*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Status</HeaderCell>
+              <HeaderCell style={headerCss}>Barcode</HeaderCell>
               <Cell
-                dataKey="purchase_quantity"
+                dataKey="barcode"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
             </Column>
+
             {/* {role !== "USER" && (
                   <Column width={70}>
                     <HeaderCell style={headerCss}>Action</HeaderCell>
@@ -418,13 +390,8 @@ const StationaryAssign = () => {
           />
         </div>
       </div>
-
-      {/* Modal */}
-      <div>
-        <AddStationaryModal open={open} handleClose={handleClose} />
-      </div>
     </div>
   );
 };
 
-export default StationaryAssign;
+export default ListOfAssetsTable;

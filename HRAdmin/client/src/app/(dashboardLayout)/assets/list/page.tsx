@@ -1,5 +1,4 @@
-import ConveyanceListTable from "@/components/conveyance/list/ConveyanceListTable";
-
+import ListOfAssetsTable from "@/components/assets/list/ListOfAssetsTable";
 
 const ConveyancePage = () => {
   return (
@@ -8,7 +7,7 @@ const ConveyancePage = () => {
       
       </div> */}
       <div className="">
-        <ConveyanceListTable />
+        <ListOfAssetsTable />
       </div>
     </div>
   );
