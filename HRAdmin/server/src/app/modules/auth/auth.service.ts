@@ -83,6 +83,12 @@ const createNewUser = async (req: Request) => {
 const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => {
   const { email, password } = loginData;
 
+  console.log('data', loginData);
+
+  if (!email) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email is required !!');
+  }
+
   const isUserExist = await prisma.user.findUnique({
     where: {
       email,
@@ -214,4 +220,3 @@ export const AuthService = {
   userLogin,
   refreshToken,
 };
-

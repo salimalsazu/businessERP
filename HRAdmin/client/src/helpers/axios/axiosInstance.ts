@@ -1,56 +1,61 @@
-import {
-  IGenericErrorResponse,
-  ResponseSuccessType,
-  authKey,
-} from "@/constant/common";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import axios from "axios";
-import { getFromLocalStorage } from "../utils";
 
-const instance = axios.create();
-instance.defaults.headers.post["Content-Type"] = "application/json";
-instance.defaults.headers["Accept"] = "application/json";
-instance.defaults.timeout = 60000;
 
+import { getNewAccessToken } from "../../hooks/services/auth.service";
+import { setToLocalStorage } from "../../utils/local-storage";
+import { getAuthKey } from "../config/envConfig";
+import { IGenericErrorResponse, ResponseSuccessType } from "@/constant/common";
+
+export const axiosInstance = axios.create();
+axiosInstance.defaults.headers.post["Content-Type"] = "application/json";
+axiosInstance.defaults.headers.post.Accept = "application/json";
+axiosInstance.defaults.timeout = 60000;
 // Add a request interceptor
-instance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
-    const accessToken = getFromLocalStorage(authKey);
+    const accessToken = localStorage.getItem(getAuthKey());
     if (accessToken) {
       config.headers.Authorization = accessToken;
     }
     return config;
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error);
   }
 );
-
-// Add a response interceptor
-instance.interceptors.response.use(
-  //@ts-ignore
+axiosInstance.interceptors.response.use(
+  // @ts-ignore
   function (response) {
     const responseObject: ResponseSuccessType = {
-      data: response?.data?.data,
+      data: response?.data,
       meta: response?.data?.meta,
+      status: response?.data?.statusCode,
+      message: response?.data?.message,
+      success: response?.data?.success,
     };
+
     return responseObject;
   },
   async function (error) {
-    if (error?.response?.status === 403) {
+    const config = error?.config;
+
+    if (error?.response?.status === 403 && !config?.sent) {
+      config.sent = true;
+      const response = await getNewAccessToken();
+      const accessToken = response?.data?.accessToken;
+      config.headers["Authorization"] = accessToken;
+      setToLocalStorage(getAuthKey(), accessToken);
+      return axiosInstance(config);
     } else {
       const responseObject: IGenericErrorResponse = {
         statusCode: error?.response?.status || 500,
-        message: error?.response?.data?.message || "Something went wrong",
-        errorMessages: error?.response?.data?.message,
+        message: error?.response?.data?.message || "Something went wrong!!",
+        errorMessages: error?.response?.data?.errorMessages,
       };
-      // console.log(error?.response?.status, "ssssssssssssss");
-      throw responseObject;
-    }
 
-    // return Promise.reject(error);
+      return Promise.reject(responseObject);
+    }
   }
 );
-
-export { instance };

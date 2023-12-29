@@ -15,6 +15,8 @@ import { IoFastFood } from "react-icons/io5";
 import { FaPrint } from "react-icons/fa";
 import { SiBetfair } from "react-icons/si";
 import Link from "next/link";
+import { getFromLocalStorage, storeSideBarMode } from "@/utils/local-storage";
+import { sideBarModeKey } from "@/helpers/config/envConfig";
 
 const NavToggle = ({ expand, onChange }: any) => {
   return (
@@ -42,7 +44,16 @@ const NavToggle = ({ expand, onChange }: any) => {
 };
 
 const SideBar = () => {
-  const [expand, setExpand] = useState(true);
+  const [expand, setExpand] = useState<boolean>(
+    !!getFromLocalStorage(sideBarModeKey())
+      ? JSON.parse(getFromLocalStorage(sideBarModeKey()) as string)
+      : true
+  );
+
+  const handleSidebarExpand = () => {
+    setExpand(!expand);
+    storeSideBarMode({ expanded: JSON.stringify(!expand) });
+  };
 
   const sidebarWidth = expand ? 260 : 56;
 
@@ -72,7 +83,12 @@ const SideBar = () => {
               >
                 Dashboard
               </Nav.Item>
-              <Nav.Item eventKey="2" icon={<Icon as={CgDetailsMore} />}>
+              <Nav.Item
+                eventKey="2"
+                icon={<Icon as={CgDetailsMore} />}
+                as={Link}
+                href="/details"
+              >
                 My Details
               </Nav.Item>
 
@@ -177,7 +193,11 @@ const SideBar = () => {
             </Nav>
           </Sidenav.Body>
         </Sidenav>
-        <NavToggle expand={expand} onChange={() => setExpand(!expand)} />
+        <NavToggle
+          onChange={handleSidebarExpand}
+          expand={expand}
+          // onChange={() => setExpand(!expand)}
+        />
       </Sidebar>
     </div>
   );

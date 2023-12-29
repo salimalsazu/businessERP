@@ -8,6 +8,9 @@ export interface IMeta {
 
 export type ResponseSuccessType = {
   data: any;
+  message: string;
+  success: boolean;
+  status: number;
   meta?: IMeta;
 };
 
@@ -21,5 +24,3 @@ export type IGenericErrorMessage = {
   path: string | number;
   message: string;
 };
-
-

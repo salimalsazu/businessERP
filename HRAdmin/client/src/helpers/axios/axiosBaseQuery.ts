@@ -1,7 +1,8 @@
 import type { AxiosRequestConfig, AxiosError } from "axios";
-import { instance as axiosInstance } from "./axiosInstance";
+import { axiosInstance } from "./axiosInstance";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { IMeta } from "@/constant/common";
+
 
 export const axiosBaseQuery =
   (
@@ -12,6 +13,10 @@ export const axiosBaseQuery =
       method: AxiosRequestConfig["method"];
       data?: AxiosRequestConfig["data"];
       params?: AxiosRequestConfig["params"];
+      message?: string;
+      status?: number;
+      statusText?: string;
+      errorMessages?: string[];
       meta?: IMeta;
       contentType?: string;
     },
@@ -30,15 +35,10 @@ export const axiosBaseQuery =
         },
         withCredentials: true,
       });
-      console.log(result, "axios errorrr");
+
       return result;
     } catch (axiosError) {
-      let err = axiosError as AxiosError;
-      return {
-        error: {
-          status: err.response?.status,
-          data: err.response?.data || err.message,
-        },
-      };
+      const err = axiosError as AxiosError;
+      return Promise.reject(err);
     }
   };
