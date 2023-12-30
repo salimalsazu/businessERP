@@ -12,6 +12,12 @@ import {
 } from "rsuite";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
+import CreatableSelect from "react-select/creatable";
+import { itemOptions } from "./itemData";
+import {
+  useCreateStationaryItemMutation,
+  useGetStationaryItemQuery,
+} from "@/redux/api/features/stationaryItemApr";
 
 const AddStationaryModal = ({ handleClose, open }: any) => {
   interface IAddExp {
@@ -60,10 +66,21 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
   //   }
   // }, []);
 
-  const item = ["Tissue Box", "A4 Paper"].map((item) => ({
-    label: item,
-    value: item,
-  }));
+  // const item = ["Tissue Box", "A4 Paper"].map((item) => ({
+  //   label: item,
+  //   value: item,
+  // }));
+
+  // Stationary Item Data Fetching
+
+  const { data } = useGetStationaryItemQuery(null, { pollingInterval: 8000 });
+
+  // Sttaionary Item Data Posting
+  const [createItem] = useCreateStationaryItemMutation();
+
+  const handleCreateItem = async (name: string) => {
+    await createItem({ itemName: name });
+  };
 
   return (
     <Modal
@@ -126,34 +143,32 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
                 )}
               />
             </div>
-            {/* Input Field */}
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Item Name</Tooltip>}>
-                  <label htmlFor="styleNo" className="text-sm font-medium">
+                  <label htmlFor="itemName" className="text-sm font-medium">
                     Item Name
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="styleNo"
+                name="itemName"
                 control={control}
                 defaultValue={""}
                 rules={{ required: "Item Name required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <SelectPicker
-                      size="lg"
-                      data={item}
-                      value={field.value}
-                      onChange={(value: string | null) => field.onChange(value)}
-                      style={{
-                        width: "100%",
-                      }}
-                      // renderMenu={(menu) =>
-                      //   renderLoading(menu, isLoadingStyleNo)
-                      // }
+                    <CreatableSelect
+                      className="z-20"
+                      isClearable
+                      isCreatable
+                      onCreateOption={handleCreateItem}
+                      // isSearchable={true}
+                      options={data?.data?.map((item: string) => ({
+                        label: item.itemName,
+                        value: item.stationaryItemId,
+                      }))}
                     />
                     {/* <Form.ErrorMessage
                           show={
@@ -241,3 +256,48 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
 };
 
 export default AddStationaryModal;
+
+{
+  /* Input Field */
+}
+//  <div className="flex flex-col gap-3 w-full ">
+//  <div>
+//    <Whisper speaker={<Tooltip>Item Name</Tooltip>}>
+//      <label htmlFor="styleNo" className="text-sm font-medium">
+//        Item Name
+//        <InfoOutlineIcon />
+//      </label>
+//    </Whisper>
+//  </div>
+//  <Controller
+//    name="styleNo"
+//    control={control}
+//    defaultValue={""}
+//    rules={{ required: "Item Name required" }}
+//    render={({ field }) => (
+//      <div className="rs-form-control-wrapper">
+//        <SelectPicker
+//          size="lg"
+//          data={item}
+//          value={field.value}
+//          onChange={(value: string | null) => field.onChange(value)}
+//          style={{
+//            width: "100%",
+//          }}
+//          // renderMenu={(menu) =>
+//          //   renderLoading(menu, isLoadingStyleNo)
+//          // }
+//        />
+//        {/* <Form.ErrorMessage
+//              show={
+//                (!!errors?.styleNo && !!errors?.styleNo?.message) ||
+//                false
+//              }
+//              placement="topEnd"
+//            >
+//              {errors?.styleNo?.message}
+//            </Form.ErrorMessage> */}
+//      </div>
+//    )}
+//  />{" "}
+// </div>

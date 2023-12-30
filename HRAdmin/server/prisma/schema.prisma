@@ -36,15 +36,15 @@ model Profile {
 }
 
 model Foods {
-  foodExpId String     @id @default(uuid())
-  totalCost Int
-  foodExpDate  DateTime @db.Timestamptz(0)
-  totalMeal Int
+  foodExpId    String     @id @default(uuid())
+  totalCost    Int
+  foodExpDate  DateTime   @db.Timestamptz(0)
+  totalMeal    Int
   employeeCost Int
-  mealRate Int
-  createdAt DateTime   @default(now()) @db.Timestamptz(0)
-  updatedAt DateTime   @updatedAt @db.Timestamptz(0)
-  userFood  UserFood[]
+  mealRate     Int
+  createdAt    DateTime   @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime   @updatedAt @db.Timestamptz(0)
+  userFood     UserFood[]
 
   @@map("foods")
 }
@@ -56,7 +56,34 @@ model UserFood {
   userId     String
   foodExpId  String
   createdAt  DateTime @default(now()) @db.Timestamptz(0)
+
   @@map("user_foods")
+}
+
+model StationaryItemList {
+  stationaryListId String          @id @default(uuid())
+  purchaseDate     DateTime        @db.Timestamptz(0)
+  lastAssignedDate DateTime        @db.Timestamptz(0)
+  assignQuantity   Int
+  purchaseQuantity     Int
+  stockQuantity    Int
+  stationaryItemId String
+  status itemStatus
+  stationaryItem   StationaryItem? @relation(fields: [stationaryItemId], references: [stationaryItemId])
+  createdAt        DateTime        @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime        @updatedAt @db.Timestamptz(0)
+
+  @@map("stationary_list")
+}
+
+model StationaryItem {
+  stationaryItemId   String               @id @default(uuid())
+  itemName           String               @unique
+  createdAt          DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt          DateTime             @updatedAt @db.Timestamptz(0)
+  StationaryItemList StationaryItemList[]
+
+  @@map("stationary_item")
 }
 
 enum UserRoles {
@@ -75,4 +102,10 @@ enum UserStatus {
 enum isMeal {
   Yes
   No
+}
+
+enum itemStatus {
+  Excellent
+  Good
+  Poor
 }

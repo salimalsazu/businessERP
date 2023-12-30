@@ -19,29 +19,29 @@ import Link from "next/link";
 import { getFromLocalStorage, storeSideBarMode } from "@/utils/local-storage";
 import { sideBarModeKey } from "@/helpers/config/envConfig";
 
-const NavToggle = ({ expand, onChange }: any) => {
-  return (
-    <Navbar appearance="subtle" className="nav-toggle">
-      <Nav>
-        <Nav.Menu
-          noCaret
-          placement="topStart"
-          trigger="click"
-          title={<CogIcon style={{ width: 20, height: 20 }} />}
-        >
-          <Nav.Item>Settings</Nav.Item>
-          <Nav.Item>Sign out</Nav.Item>
-        </Nav.Menu>
-      </Nav>
+// const NavToggle = ({ expand, onChange }: any) => {
+//   return (
+//     <Navbar appearance="subtle" className="nav-toggle">
+//       <Nav>
+//         <Nav.Menu
+//           noCaret
+//           placement="topStart"
+//           trigger="click"
+//           title={<CogIcon style={{ width: 20, height: 20 }} />}
+//         >
+//           <Nav.Item>Settings</Nav.Item>
+//           <Nav.Item>Sign out</Nav.Item>
+//         </Nav.Menu>
+//       </Nav>
 
-      <Nav pullRight>
-        <Nav.Item onClick={onChange} style={{ width: 56, textAlign: "center" }}>
-          {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
-        </Nav.Item>
-      </Nav>
-    </Navbar>
-  );
-};
+//       <Nav pullRight>
+//         <Nav.Item onClick={onChange} style={{ width: 56, textAlign: "center" }}>
+//           {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
+//         </Nav.Item>
+//       </Nav>
+//     </Navbar>
+//   );
+// };
 
 const SideBar = () => {
   const [expand, setExpand] = useState<boolean>(
@@ -71,7 +71,7 @@ const SideBar = () => {
         width={expand ? 260 : 56}
         collapsible
       >
-        <Sidenav expanded={expand} defaultOpenKeys={["1"]} appearance="subtle">
+        <Sidenav expanded={expand} className="h-screen">
           <Sidenav.Body>
             <Nav>
               <Nav.Item
@@ -193,21 +193,23 @@ const SideBar = () => {
             </Nav>
           </Sidenav.Body>
           <Sidenav.Toggle
-            className="sticky bottom-0 z-20 bg-[#f7f7fa]"
+            className="sticky !bottom-0 z-20 bg-[#f7f7fa]"
             // expanded={expanded}
             onToggle={handleSidebarExpand}
           />
         </Sidenav>
-
-        {/* <NavToggle
-          className="sticky bottom-0 z-20 bg-[#f7f7fa]"
-          onChange={handleSidebarExpand}
-          expand={expand}
-          // onChange={() => setExpand(!expand)}
-        /> */}
       </Sidebar>
     </div>
   );
 };
 
 export default SideBar;
+
+{
+  /* <NavToggle
+          className="sticky bottom-0 z-20 bg-[#f7f7fa]"
+          onChange={handleSidebarExpand}
+          expand={expand}
+          // onChange={() => setExpand(!expand)}
+        /> */
+}
