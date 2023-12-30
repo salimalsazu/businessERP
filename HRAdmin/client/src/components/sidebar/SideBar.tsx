@@ -12,6 +12,7 @@ import { IoMan } from "react-icons/io5";
 import { CiMobile1 } from "react-icons/ci";
 import { FaCar } from "react-icons/fa";
 import { IoFastFood } from "react-icons/io5";
+import { FaComputer } from "react-icons/fa6";
 import { FaPrint } from "react-icons/fa";
 import { SiBetfair } from "react-icons/si";
 import Link from "next/link";
@@ -28,7 +29,6 @@ const NavToggle = ({ expand, onChange }: any) => {
           trigger="click"
           title={<CogIcon style={{ width: 20, height: 20 }} />}
         >
-          <Nav.Item>Help</Nav.Item>
           <Nav.Item>Settings</Nav.Item>
           <Nav.Item>Sign out</Nav.Item>
         </Nav.Menu>
@@ -63,7 +63,7 @@ const SideBar = () => {
       className={`${
         expand
           ? "h-screen shadow-md sticky top-0 overflow-y-auto !bg-sidebar"
-          : "sticky top-0 shadow-md z-[100]"
+          : "h-screen sticky top-0 shadow-md z-[100]"
       }`}
     >
       <Sidebar
@@ -180,7 +180,7 @@ const SideBar = () => {
                 eventKey="8"
                 trigger="hover"
                 title="Assets"
-                icon={<Icon as={SiBetfair} />}
+                icon={<Icon as={FaComputer} />}
                 placement="rightStart"
               >
                 <Nav.Item eventKey="8-1" as={Link} href="/assets/list">
@@ -192,12 +192,19 @@ const SideBar = () => {
               </Nav.Menu>
             </Nav>
           </Sidenav.Body>
+          <Sidenav.Toggle
+            className="sticky bottom-0 z-20 bg-[#f7f7fa]"
+            // expanded={expanded}
+            onToggle={handleSidebarExpand}
+          />
         </Sidenav>
-        <NavToggle
+
+        {/* <NavToggle
+          className="sticky bottom-0 z-20 bg-[#f7f7fa]"
           onChange={handleSidebarExpand}
           expand={expand}
           // onChange={() => setExpand(!expand)}
-        />
+        /> */}
       </Sidebar>
     </div>
   );

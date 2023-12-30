@@ -1,9 +1,20 @@
 "use client";
-
 import SideBar from "@/components/sidebar/SideBar";
+import { isLoggedIn } from "@/hooks/services/auth.service";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Container, Content } from "rsuite";
 
-const dashboardLayout = ({ children }: any) => {
+const DashboardLayout = ({ children }: any) => {
+  const userLoggedIn = isLoggedIn();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!userLoggedIn) {
+      router.push("/");
+    }
+  }, [router, userLoggedIn]);
+
   return (
     <div className="flex">
       <div>
@@ -16,4 +27,4 @@ const dashboardLayout = ({ children }: any) => {
   );
 };
 
-export default dashboardLayout;
+export default DashboardLayout;

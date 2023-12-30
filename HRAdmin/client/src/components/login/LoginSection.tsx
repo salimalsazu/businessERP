@@ -7,6 +7,7 @@ import { useUserLoginMutation } from "@/redux/api/authApi";
 import { isLoggedIn, storeUserInfo } from "@/hooks/services/auth.service";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const LoginSection = () => {
   const userLoggedIn = isLoggedIn();
@@ -24,7 +25,7 @@ const LoginSection = () => {
     formState: { errors },
   } = useForm<ILogin>();
 
-  const [login, {}] = useUserLoginMutation();
+  const [login, { isLoading, isError, error }] = useUserLoginMutation();
 
   const handleLogin: SubmitHandler<ILogin> = async (user) => {
     const data = { email: user.email, password: user.password };
@@ -43,12 +44,17 @@ const LoginSection = () => {
 
         router.push("/dashboard");
         // message.("User logged in successfully!");
+        toast.success("User logged in successfully!");
       }
     } catch (error) {
       router.push("/");
-      //   message.error(error?.data?.message);
+      //@ts-ignore
+      // if (error && isError) {
+      //   //@ts-ignore
+      //   toast.error(error?.errorMessages[0]?.message);
+      // }
     }
-  }, [userLoggedIn, router]);
+  }, [userLoggedIn, router, isError]);
 
   return (
     <div className="border p-5 rounded w-[400px] shadow-sm bg-sidebar">
@@ -155,6 +161,7 @@ const LoginSection = () => {
             type="submit"
             // loading={isLoading}
             size="lg"
+            loading={isLoading}
             className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
           >
             Login
