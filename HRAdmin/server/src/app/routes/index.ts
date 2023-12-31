@@ -3,6 +3,7 @@ import { AuthRoutes } from '../modules/auth/auth.routes';
 import { UserRoutes } from '../modules/users/user.routes';
 import { FoodRoutes } from '../modules/food/food.routes';
 import { StationaryItemRoutes } from '../modules/stationaryItem/stationaryItem.routes';
+import { StationaryListRoutes } from '../modules/stationarylist/stationarylist.routes';
 
 const router = express.Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: '/item',
     route: StationaryItemRoutes,
+  },
+  {
+    path: '/stationaryList',
+    route: StationaryListRoutes,
   },
 ];
 

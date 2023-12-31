@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  userId     String     @id @default(uuid())
-  email      String     @unique
-  password   String
-  userStatus UserStatus @default(Pending)
-  createdAt  DateTime   @default(now()) @db.Timestamptz(0)
-  updatedAt  DateTime   @updatedAt @db.Timestamptz(0)
-  profileId  String?    @unique
-  profile    Profile?   @relation(fields: [profileId], references: [profileId])
-  userFood   UserFood[]
+  userId               String                 @id @default(uuid())
+  email                String                 @unique
+  password             String
+  userStatus           UserStatus             @default(Pending)
+  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
+  profileId            String?                @unique
+  profile              Profile?               @relation(fields: [profileId], references: [profileId])
+  userFood             UserFood[]
+  stationaryItemAssign StationaryItemAssign[]
 
   @@map("users")
 }
@@ -25,12 +26,13 @@ model Profile {
   profileId    String    @id @default(uuid())
   firstName    String
   lastName     String
+  jobId        String?
   profileImage String?
   role         UserRoles @default(USER)
   isMeal       isMeal    @default(Yes)
   createdAt    DateTime  @default(now()) @db.Timestamptz(0)
   updatedAt    DateTime  @updatedAt @db.Timestamptz(0)
-  User         User?
+  user         User?
 
   @@map("profiles")
 }
@@ -63,12 +65,8 @@ model UserFood {
 model StationaryItemList {
   stationaryListId String          @id @default(uuid())
   purchaseDate     DateTime        @db.Timestamptz(0)
-  lastAssignedDate DateTime        @db.Timestamptz(0)
-  assignQuantity   Int
-  purchaseQuantity     Int
-  stockQuantity    Int
+  purchaseQuantity Int
   stationaryItemId String
-  status itemStatus
   stationaryItem   StationaryItem? @relation(fields: [stationaryItemId], references: [stationaryItemId])
   createdAt        DateTime        @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime        @updatedAt @db.Timestamptz(0)
@@ -76,12 +74,26 @@ model StationaryItemList {
   @@map("stationary_list")
 }
 
+model StationaryItemAssign {
+  assignId         String         @id @default(uuid())
+  lastAssignedDate DateTime       @db.Timestamptz(0)
+  assignItemStatus assignStatus
+  assignQuantity   Int
+  userId           String
+  user             User           @relation(fields: [userId], references: [userId])
+  stationaryItemId String
+  stationaryItem   StationaryItem @relation(fields: [stationaryItemId], references: [stationaryItemId])
+}
+
 model StationaryItem {
-  stationaryItemId   String               @id @default(uuid())
-  itemName           String               @unique
-  createdAt          DateTime             @default(now()) @db.Timestamptz(0)
-  updatedAt          DateTime             @updatedAt @db.Timestamptz(0)
-  StationaryItemList StationaryItemList[]
+  stationaryItemId     String                 @id @default(uuid())
+  itemName             String                 @unique
+  stockQuantity    Int
+  stockItemStatus  itemStatus?
+  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
+  StationaryItemList   StationaryItemList[]
+  StationaryItemAssign StationaryItemAssign[]
 
   @@map("stationary_item")
 }
@@ -108,4 +120,10 @@ enum itemStatus {
   Excellent
   Good
   Poor
+}
+
+enum assignStatus {
+  Pending
+  Approval
+  Rejected
 }

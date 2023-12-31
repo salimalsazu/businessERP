@@ -3,33 +3,33 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { StationaryItemFilterableFields } from './stationaryItem.constants';
-import { StationaryItemService } from './stationaryItem.service';
+import { StationaryListFilterableFields } from './stationarylist.constants';
+import { StationaryItemListService } from './stationaryIist.service';
 
 // !----------------------------------Create New Courier---------------------------------------->>>
-const createStationaryItem = catchAsync(async (req: Request, res: Response) => {
+const createStationaryList = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
-  const result = await StationaryItemService.createStationaryItem(payload);
+  const result = await StationaryItemListService.createStationaryItemList(payload);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Stationary Item created successfully',
+    message: 'Stationary Added successfully',
     data: result,
   });
 });
 // !----------------------------------get all Courier---------------------------------------->>>
-const getAllStationaryItem = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, StationaryItemFilterableFields);
+const getAllStationaryList = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, StationaryListFilterableFields);
 
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
-  const result = await StationaryItemService.getAllStationaryItem(filters, options);
+  const result = await StationaryItemListService.getAllStationaryItemList(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Stationary Item fetched successfully',
+    message: 'All Stationary items fetched successfully',
     meta: result.meta,
     data: result.data,
   });
@@ -76,7 +76,7 @@ const getAllStationaryItem = catchAsync(async (req: Request, res: Response) => {
 //   });
 // });
 
-export const StationaryItemController = {
-  createStationaryItem,
-  getAllStationaryItem,
+export const StationaryListController = {
+  createStationaryList,
+  getAllStationaryList,
 };

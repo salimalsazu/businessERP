@@ -20,6 +20,8 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddStationaryModal from "./AddStationaryModal";
+import { useGetStationaryItemQuery } from "@/redux/api/features/stationaryItemApr";
+import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -30,8 +32,9 @@ const StationaryStockListTable = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  // Modal
+  const { data: stationaryItem } = useGetStationaryItemQuery({ ...query });
 
+  // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
@@ -138,21 +141,6 @@ const StationaryStockListTable = () => {
     value: item,
   }));
 
-  const inventory = [
-    {
-      sl: 1,
-      item_name: "Box - Tissue",
-      stock_quantity: 100,
-      expire_date: "2023-12-31",
-      last_purchased_date: "2023-12-28",
-      purchase_quantity: 500,
-      last_assign_date: "2023-12-28",
-      last_assign_qty: 1,
-      status: "Excellent",
-    },
-    // Add more items as needed
-  ];
-
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between ">
@@ -245,7 +233,7 @@ const StationaryStockListTable = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={inventory}
+            data={stationaryItem?.data}
             // loading={isLoadingCouriersData || isFetchingCourierData}
             // bordered={true}
             cellBordered={true}
@@ -262,7 +250,7 @@ const StationaryStockListTable = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
               </Cell>
             </Column>
 
@@ -270,7 +258,7 @@ const StationaryStockListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Item Name</HeaderCell>
               <Cell
-                dataKey="item_name"
+                dataKey="itemName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
@@ -282,17 +270,25 @@ const StationaryStockListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Last Purchased Date</HeaderCell>
               <Cell
-                dataKey="last_purchased_date"
+                dataKey="StationaryItemList[0].purchaseDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) =>
+                  rowData?.StationaryItemList.length > 0
+                    ? moment(rowData.StationaryItemList[0].purchaseDate).format(
+                        "ll"
+                      )
+                    : " "
+                }
+              </Cell>
             </Column>
 
             {/* Details*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Purchase (Qty)</HeaderCell>
               <Cell
-                dataKey="purchase_quantity"
+                dataKey="StationaryItemList[0].purchaseQuantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -322,7 +318,7 @@ const StationaryStockListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Now Stock(Qty)</HeaderCell>
               <Cell
-                dataKey="purchase_quantity"
+                dataKey="stockQuantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -332,7 +328,7 @@ const StationaryStockListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Status </HeaderCell>
               <Cell
-                dataKey="status"
+                dataKey="stockItemStatus"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -359,7 +355,7 @@ const StationaryStockListTable = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={stationaryItem?.meta?.total}
             prev
             next
             first

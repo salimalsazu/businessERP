@@ -1,10 +1,17 @@
-export type IStationaryItemFilterRequest = {
+import { itemStatus } from '@prisma/client';
+
+export type IStationaryItemListFilterRequest = {
   searchTerm?: string | undefined;
   itemName?: string | undefined;
+  stockItemStatus?: itemStatus | undefined;
 };
-export type IStationaryItemCreateRequest = {
-  itemName: string;
+
+export type IStationaryListCreateRequest = {
+  purchaseDate: Date;
+  purchaseQuantity: number;
   stockQuantity: number;
+  stockItemStatus: itemStatus;
+  stationaryItemId: string;
 };
 
 export type ICourierUpdateRequest = {

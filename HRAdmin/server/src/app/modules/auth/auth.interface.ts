@@ -12,6 +12,7 @@ export type IUserProfileResponse = {
   profileId: string;
   firstName: string;
   lastName: string;
+  jobId: string;
   profileImage?: string | null | undefined;
   role: UserRoles | null;
   createdAt: Date;

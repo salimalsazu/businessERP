@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Prisma, StationaryItem } from '@prisma/client';
+import { Prisma, StationaryItem, StationaryItemList, itemStatus } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -7,39 +7,72 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { StationaryItemSearchableFields, stationaryItemRelationalFields, stationaryItemRelationalFieldsMapper } from './stationaryItem.constants';
-import { IStationaryItemCreateRequest, IStationaryItemFilterRequest } from './stationaryItem.interface';
+import {
+  StationaryItemListSearchableFields,
+  stationaryItemListRelationalFields,
+  stationaryItemListRelationalFieldsMapper,
+} from './stationarylist.constants';
+import { IStationaryItemListFilterRequest, IStationaryListCreateRequest } from './stationarylist.interface';
 
 // modules
 
 // !----------------------------------Create New Stationary---------------------------------------->>>
-const createStationaryItem = async (data: IStationaryItemCreateRequest): Promise<StationaryItem> => {
-  const item = {
-    itemName: data.itemName,
-    stockQuantity: 0,
-  };
-
-  const isItemExist = await prisma.stationaryItem.findUnique({
+const createStationaryItemList = async (data: IStationaryListCreateRequest): Promise<StationaryItemList> => {
+  const findStationaryItem = await prisma.stationaryItem.findUnique({
     where: {
-      itemName: data.itemName,
+      stationaryItemId: data.stationaryItemId,
     },
   });
 
-  if (isItemExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Item Already Created');
+  if (!findStationaryItem) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Stationary Item Not Found!!');
   }
-  const result = await prisma.stationaryItem.create({
-    data: item,
+
+  const newStockQuantity = findStationaryItem?.stockQuantity + data.purchaseQuantity;
+
+  let newStockItemStatus: itemStatus;
+
+  if (newStockQuantity >= 20) {
+    newStockItemStatus = 'Excellent';
+  } else if (newStockQuantity >= 10) {
+    newStockItemStatus = 'Good';
+  } else {
+    newStockItemStatus = 'Poor';
+  }
+
+  // Update stock quantity and stock item status
+  const updatedStationaryItem = await prisma.stationaryItem.update({
+    where: {
+      stationaryItemId: data.stationaryItemId,
+    },
+    data: {
+      stockQuantity: newStockQuantity,
+      stockItemStatus: newStockItemStatus,
+    },
+  });
+
+  if (!updatedStationaryItem) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update stock quantity');
+  }
+
+  const stationaryItemList = {
+    purchaseDate: data.purchaseDate,
+    purchaseQuantity: data.purchaseQuantity,
+    stationaryItemId: findStationaryItem.stationaryItemId,
+  };
+
+  const result = await prisma.stationaryItemList.create({
+    data: stationaryItemList,
   });
 
   return result;
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const getAllStationaryItem = async (
-  filters: IStationaryItemFilterRequest,
+const getAllStationaryItemList = async (
+  filters: IStationaryItemListFilterRequest,
   options: IPaginationOptions
-): Promise<IGenericResponse<StationaryItem[]>> => {
+): Promise<IGenericResponse<StationaryItemList[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -47,12 +80,12 @@ const getAllStationaryItem = async (
   const { searchTerm, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.StationaryItemWhereInput[] = [];
+  const andConditions: Prisma.StationaryItemListWhereInput[] = [];
 
   // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: StationaryItemSearchableFields.map((field: any) => ({
+      OR: StationaryItemListSearchableFields.map((field: any) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -65,9 +98,9 @@ const getAllStationaryItem = async (
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (stationaryItemRelationalFields.includes(key)) {
+        if (stationaryItemListRelationalFields.includes(key)) {
           return {
-            [stationaryItemRelationalFieldsMapper[key]]: {
+            [stationaryItemListRelationalFieldsMapper[key]]: {
               itemName: (filterData as any)[key],
             },
           };
@@ -83,12 +116,12 @@ const getAllStationaryItem = async (
   }
 
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.StationaryItemWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.StationaryItemListWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.stationaryItem.findMany({
+  const result = await prisma.stationaryItemList.findMany({
     include: {
-      StationaryItemList: true,
+      stationaryItem: true,
     },
     where: whereConditions,
     skip,
@@ -97,7 +130,7 @@ const getAllStationaryItem = async (
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.stationaryItem.count({
+  const total = await prisma.stationaryItemList.count({
     where: whereConditions,
   });
 
@@ -245,7 +278,7 @@ const getAllStationaryItem = async (
 //   };
 // };
 
-export const StationaryItemService = {
-  createStationaryItem,
-  getAllStationaryItem,
+export const StationaryItemListService = {
+  createStationaryItemList,
+  getAllStationaryItemList,
 };

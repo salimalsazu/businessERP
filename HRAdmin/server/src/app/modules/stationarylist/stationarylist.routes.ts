@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { StationaryItemController } from './stationaryItem.controller';
+import { StationaryListController } from './stationarylist.controller';
 
 const router = express.Router();
 
@@ -9,13 +9,13 @@ router.post(
   '/',
   // validateRequest(CourierValidation.createCourier),
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  StationaryItemController.createStationaryItem
+  StationaryListController.createStationaryList
 );
 // ! Get all Orders----------------------------------->>>
 router.get(
   '/',
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  StationaryItemController.getAllStationaryItem
+  StationaryListController.getAllStationaryList
 );
 // // ! Get all getStyleWiseNoOfCourier----------------------------------->>>
 // router.get(
@@ -38,4 +38,4 @@ router.get(
 //   CourierController.updateCourierInformation
 // );
 
-export const StationaryItemRoutes = router;
+export const StationaryListRoutes = router;

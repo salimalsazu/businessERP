@@ -10,6 +10,9 @@ CREATE TYPE "isMeal" AS ENUM ('Yes', 'No');
 -- CreateEnum
 CREATE TYPE "itemStatus" AS ENUM ('Excellent', 'Good', 'Poor');
 
+-- CreateEnum
+CREATE TYPE "assignStatus" AS ENUM ('Pending', 'Approval', 'Rejected');
+
 -- CreateTable
 CREATE TABLE "users" (
     "userId" TEXT NOT NULL,
@@ -28,6 +31,7 @@ CREATE TABLE "profiles" (
     "profileId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
+    "jobId" TEXT NOT NULL,
     "profileImage" TEXT,
     "role" "UserRoles" NOT NULL DEFAULT 'USER',
     "isMeal" "isMeal" NOT NULL DEFAULT 'Yes',
@@ -70,9 +74,11 @@ CREATE TABLE "stationary_list" (
     "purchaseQuantity" INTEGER NOT NULL,
     "stockQuantity" INTEGER NOT NULL,
     "stationaryItemId" TEXT NOT NULL,
-    "status" "itemStatus" NOT NULL,
+    "stockItemStatus" "itemStatus" NOT NULL,
+    "assignItemStatus" "assignStatus" NOT NULL,
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "stationary_list_pkey" PRIMARY KEY ("stationaryListId")
 );
@@ -93,6 +99,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "users_profileId_key" ON "users"("profileId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "stationary_item_itemName_key" ON "stationary_item"("itemName");
+
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -104,3 +113,6 @@ ALTER TABLE "user_foods" ADD CONSTRAINT "user_foods_foodExpId_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "stationary_list" ADD CONSTRAINT "stationary_list_stationaryItemId_fkey" FOREIGN KEY ("stationaryItemId") REFERENCES "stationary_item"("stationaryItemId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "stationary_list" ADD CONSTRAINT "stationary_list_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;

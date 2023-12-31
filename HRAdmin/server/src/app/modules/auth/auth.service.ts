@@ -98,6 +98,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
         select: {
           profileId: true,
           role: true,
+          jobId: true,
           profileImage: true,
           firstName: true,
           lastName: true,
@@ -133,6 +134,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
       role: profile?.role,
       profileId: profile?.profileId,
       email: loggedInEmail,
+      jobId: profile?.jobId,
       profileImage: profile?.profileImage,
       firstName: profile?.firstName,
       lastName: profile?.lastName,
@@ -147,6 +149,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
       role: profile?.role,
       profileId: profile?.profileId,
       email: loggedInEmail,
+      jobId: profile?.jobId,
       profileImage: profile?.profileImage,
       firstName: profile?.firstName,
       lastName: profile?.lastName,
