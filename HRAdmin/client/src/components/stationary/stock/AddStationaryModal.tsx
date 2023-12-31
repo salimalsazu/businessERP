@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Button,
   DatePicker,
@@ -13,33 +15,39 @@ import {
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import CreatableSelect from "react-select/creatable";
-import { itemOptions } from "./itemData";
+
 import {
   useCreateStationaryItemMutation,
   useGetStationaryItemQuery,
-} from "@/redux/api/features/stationaryItemApr";
+} from "@/redux/api/features/stationaryItemApi";
+import { useCreateStationaryItemListMutation } from "@/redux/api/features/stationaryItemListApi";
 
 const AddStationaryModal = ({ handleClose, open }: any) => {
-  interface IAddExp {
-    date: Date;
-    totalCost: number;
-    employee: string[] | null;
+  interface IStationaryList {
+    purchaseDate: Date;
+    purchaseQuantity: number;
+    stationaryItemId: string;
   }
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<IAddExp>();
+  } = useForm<IStationaryList>();
 
-  const handleCreateNewOrder: SubmitHandler<IAddExp> = async (
-    data: IAddExp
+  const [stationaryItemList] = useCreateStationaryItemListMutation();
+
+  const handleCreateItemList: SubmitHandler<IStationaryList> = async (
+    data: IStationaryList
   ) => {
-    const orderDataObj = {
-      date: data.date,
-      totalCost: data.totalCost,
-      employee: data.employee,
+    const stationaryList = {
+      purchaseDate: data.purchaseDate,
+      purchaseQuantity: Number(data.purchaseQuantity),
+      stationaryItemId: data.stationaryItemId,
     };
+
+    // console.log(stationaryList)
+    await stationaryItemList(stationaryList);
   };
 
   // useEffect(() => {
@@ -73,7 +81,7 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
 
   // Stationary Item Data Fetching
 
-  const { data } = useGetStationaryItemQuery(null, { pollingInterval: 8000 });
+  const { data } = useGetStationaryItemQuery(null);
 
   // Sttaionary Item Data Posting
   const [createItem] = useCreateStationaryItemMutation();
@@ -95,27 +103,27 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
       </Modal.Header>
 
       <Modal.Body>
-        <form onSubmit={handleSubmit(handleCreateNewOrder)}>
+        <form onSubmit={handleSubmit(handleCreateItemList)}>
           {/* 1st section */}
           <div className="flex justify-between  gap-[24px] mb-5">
             {/* Date */}{" "}
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Purchase Date</Tooltip>}>
-                  <label htmlFor="buyerEtd" className="text-sm font-medium">
+                  <label htmlFor="purchaseDate" className="text-sm font-medium">
                     Purchase Date <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
 
               <Controller
-                name="date"
+                name="purchaseDate"
                 control={control}
-                rules={{ required: "Purchase is required" }}
+                rules={{ required: "Purchase Date is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <DatePicker
-                      id="buyerEtd"
+                      id="purchaseDate"
                       value={field.value ? new Date(field.value) : null}
                       onChange={(value: Date | null): void => {
                         if (value) {
@@ -146,14 +154,17 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Item Name</Tooltip>}>
-                  <label htmlFor="itemName" className="text-sm font-medium">
+                  <label
+                    htmlFor="stationaryItemId"
+                    className="text-sm font-medium"
+                  >
                     Item Name
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="itemName"
+                name="stationaryItemId"
                 control={control}
                 defaultValue={""}
                 rules={{ required: "Item Name required" }}
@@ -162,10 +173,12 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
                     <CreatableSelect
                       className="z-20"
                       isClearable
-                      isCreatable
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value ?? null);
+                      }}
                       onCreateOption={handleCreateItem}
                       // isSearchable={true}
-                      options={data?.data?.map((item: string) => ({
+                      options={data?.data?.map((item: any) => ({
                         label: item.itemName,
                         value: item.stationaryItemId,
                       }))}
@@ -196,14 +209,17 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
                     </Tooltip>
                   }
                 >
-                  <label htmlFor="quantity" className="text-sm font-medium">
+                  <label
+                    htmlFor="purchaseQuantity"
+                    className="text-sm font-medium"
+                  >
                     Quantity <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
 
               <Controller
-                name="quantity"
+                name="purchaseQuantity"
                 control={control}
                 rules={{
                   required: "Quantity is required",
@@ -219,9 +235,9 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
                       inputMode="numeric"
                       min={1}
                       size="lg"
-                      id="totalPack"
+                      id="purchaseQuantity"
                       type="number"
-                      placeholder="Item Quantity"
+                      placeholder="Purchase Item Quantity"
                       style={{ width: "100%" }}
                     />
                     {/* <Form.ErrorMessage
@@ -240,14 +256,14 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
           </div>
 
           <div className="flex justify-end mt-5">
-            <Button
+            <button
               type="submit"
               // loading={isLoading}
-              size="lg"
+              // size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >
               Save
-            </Button>
+            </button>
           </div>
         </form>
       </Modal.Body>

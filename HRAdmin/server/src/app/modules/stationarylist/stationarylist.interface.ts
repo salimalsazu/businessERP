@@ -1,4 +1,4 @@
-import { itemStatus } from '@prisma/client';
+import { assignStatus, itemStatus } from '@prisma/client';
 
 export type IStationaryItemListFilterRequest = {
   searchTerm?: string | undefined;
@@ -14,13 +14,15 @@ export type IStationaryListCreateRequest = {
   stationaryItemId: string;
 };
 
-export type ICourierUpdateRequest = {
-  styleNo?: string;
-  courierName?: string;
-  awbNo?: string;
-  courierDate?: Date;
-  courierDetails?: string;
+export type IStationaryListAssignRequest = {
+  lastAssignedDate: Date;
+  assignItemStatus: assignStatus;
+  assignQuantity: number;
+  userId: string;
+  stationaryItemId: string;
 };
+
+
 
 export type IStyleWiseCourier = {
   styleNo: string;

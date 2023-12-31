@@ -88,12 +88,17 @@ const getAllStationaryItem = async (
   // Retrieve Courier with filtering and pagination
   const result = await prisma.stationaryItem.findMany({
     include: {
-      StationaryItemList: true,
+      stationaryItemList: {
+        orderBy: { updatedAt: 'desc' }, 
+      },
+      stationaryItemAssign: {
+        orderBy: { updatedAt: 'desc' }, 
+      },
     },
     where: whereConditions,
     skip,
     take: limit,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { updatedAt: 'desc' },
   });
 
   // Count total matching orders for pagination

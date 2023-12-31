@@ -4,18 +4,25 @@ import { StationaryListController } from './stationarylist.controller';
 
 const router = express.Router();
 
-// ! Create New  Order ------------------------------->>>
+// ! Create New  List ------------------------------->>>
 router.post(
   '/',
   // validateRequest(CourierValidation.createCourier),
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
   StationaryListController.createStationaryList
 );
-// ! Get all Orders----------------------------------->>>
+// ! Get all List----------------------------------->>>
 router.get(
   '/',
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
   StationaryListController.getAllStationaryList
+);
+
+// ! Create Stationary Assign----------------------------------->>>
+router.post(
+  '/assign',
+  // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
+  StationaryListController.createStationaryAssignList
 );
 // // ! Get all getStyleWiseNoOfCourier----------------------------------->>>
 // router.get(

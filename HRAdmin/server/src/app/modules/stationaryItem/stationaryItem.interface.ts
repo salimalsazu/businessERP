@@ -7,13 +7,7 @@ export type IStationaryItemCreateRequest = {
   stockQuantity: number;
 };
 
-export type ICourierUpdateRequest = {
-  styleNo?: string;
-  courierName?: string;
-  awbNo?: string;
-  courierDate?: Date;
-  courierDetails?: string;
-};
+
 
 export type IStyleWiseCourier = {
   styleNo: string;

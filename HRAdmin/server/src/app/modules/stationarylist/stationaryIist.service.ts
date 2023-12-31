@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Prisma, StationaryItem, StationaryItemList, itemStatus } from '@prisma/client';
+import { Prisma, StationaryItemAssign, StationaryItemList, assignStatus, itemStatus } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -12,7 +12,7 @@ import {
   stationaryItemListRelationalFields,
   stationaryItemListRelationalFieldsMapper,
 } from './stationarylist.constants';
-import { IStationaryItemListFilterRequest, IStationaryListCreateRequest } from './stationarylist.interface';
+import { IStationaryItemListFilterRequest, IStationaryListAssignRequest, IStationaryListCreateRequest } from './stationarylist.interface';
 
 // modules
 
@@ -126,7 +126,7 @@ const getAllStationaryItemList = async (
     where: whereConditions,
     skip,
     take: limit,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { updatedAt: 'desc' },
   });
 
   // Count total matching orders for pagination
@@ -146,6 +146,69 @@ const getAllStationaryItemList = async (
     },
     data: result,
   };
+};
+
+const createStationaryAssignList = async (data: IStationaryListAssignRequest): Promise<StationaryItemAssign> => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      userId: data.userId,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User Not Found!!');
+  }
+
+  const findStationaryItem = await prisma.stationaryItem.findUnique({
+    where: {
+      stationaryItemId: data.stationaryItemId,
+    },
+  });
+
+  if (!findStationaryItem) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Stationary Item Not Found!!');
+  }
+
+  const newStockQuantity = findStationaryItem?.stockQuantity - data.assignQuantity;
+
+  let newStockItemStatus: itemStatus;
+
+  if (newStockQuantity >= 20) {
+    newStockItemStatus = 'Excellent';
+  } else if (newStockQuantity >= 10) {
+    newStockItemStatus = 'Good';
+  } else {
+    newStockItemStatus = 'Poor';
+  }
+
+  // Update stock quantity and stock item status
+  const updatedStationaryItem = await prisma.stationaryItem.update({
+    where: {
+      stationaryItemId: data.stationaryItemId,
+    },
+    data: {
+      stockQuantity: newStockQuantity,
+      stockItemStatus: newStockItemStatus,
+    },
+  });
+
+  if (!updatedStationaryItem) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update stock quantity');
+  }
+
+  const stationaryItemAssign = {
+    lastAssignedDate: data.lastAssignedDate,
+    assignQuantity: data.assignQuantity,
+    stationaryItemId: findStationaryItem.stationaryItemId,
+    userId: data.userId,
+    assignItemStatus: assignStatus.Pending,
+  };
+
+  const result = await prisma.stationaryItemAssign.create({
+    data: stationaryItemAssign,
+  });
+
+  return result;
 };
 
 // // !----------------------------------get Single Courier---------------------------------------->>>
@@ -281,4 +344,5 @@ const getAllStationaryItemList = async (
 export const StationaryItemListService = {
   createStationaryItemList,
   getAllStationaryItemList,
+  createStationaryAssignList,
 };

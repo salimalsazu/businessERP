@@ -77,12 +77,14 @@ model StationaryItemList {
 model StationaryItemAssign {
   assignId         String         @id @default(uuid())
   lastAssignedDate DateTime       @db.Timestamptz(0)
-  assignItemStatus assignStatus
+  assignItemStatus assignStatus   @default(Pending)
   assignQuantity   Int
   userId           String
   user             User           @relation(fields: [userId], references: [userId])
   stationaryItemId String
   stationaryItem   StationaryItem @relation(fields: [stationaryItemId], references: [stationaryItemId])
+  createdAt        DateTime        @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime        @updatedAt @db.Timestamptz(0)
 }
 
 model StationaryItem {
@@ -92,8 +94,8 @@ model StationaryItem {
   stockItemStatus  itemStatus?
   createdAt            DateTime               @default(now()) @db.Timestamptz(0)
   updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
-  StationaryItemList   StationaryItemList[]
-  StationaryItemAssign StationaryItemAssign[]
+  stationaryItemList   StationaryItemList[]
+  stationaryItemAssign StationaryItemAssign[]
 
   @@map("stationary_item")
 }

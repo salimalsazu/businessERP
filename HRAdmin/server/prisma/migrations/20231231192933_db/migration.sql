@@ -31,7 +31,7 @@ CREATE TABLE "profiles" (
     "profileId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "jobId" TEXT NOT NULL,
+    "jobId" TEXT,
     "profileImage" TEXT,
     "role" "UserRoles" NOT NULL DEFAULT 'USER',
     "isMeal" "isMeal" NOT NULL DEFAULT 'Yes',
@@ -69,24 +69,34 @@ CREATE TABLE "user_foods" (
 CREATE TABLE "stationary_list" (
     "stationaryListId" TEXT NOT NULL,
     "purchaseDate" TIMESTAMPTZ(0) NOT NULL,
-    "lastAssignedDate" TIMESTAMPTZ(0) NOT NULL,
-    "assignQuantity" INTEGER NOT NULL,
     "purchaseQuantity" INTEGER NOT NULL,
-    "stockQuantity" INTEGER NOT NULL,
     "stationaryItemId" TEXT NOT NULL,
-    "stockItemStatus" "itemStatus" NOT NULL,
-    "assignItemStatus" "assignStatus" NOT NULL,
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
-    "userId" TEXT NOT NULL,
 
     CONSTRAINT "stationary_list_pkey" PRIMARY KEY ("stationaryListId")
+);
+
+-- CreateTable
+CREATE TABLE "StationaryItemAssign" (
+    "assignId" TEXT NOT NULL,
+    "lastAssignedDate" TIMESTAMPTZ(0) NOT NULL,
+    "assignItemStatus" "assignStatus" NOT NULL DEFAULT 'Pending',
+    "assignQuantity" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
+    "stationaryItemId" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(0) NOT NULL,
+
+    CONSTRAINT "StationaryItemAssign_pkey" PRIMARY KEY ("assignId")
 );
 
 -- CreateTable
 CREATE TABLE "stationary_item" (
     "stationaryItemId" TEXT NOT NULL,
     "itemName" TEXT NOT NULL,
+    "stockQuantity" INTEGER NOT NULL,
+    "stockItemStatus" "itemStatus",
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
 
@@ -115,4 +125,7 @@ ALTER TABLE "user_foods" ADD CONSTRAINT "user_foods_foodExpId_fkey" FOREIGN KEY 
 ALTER TABLE "stationary_list" ADD CONSTRAINT "stationary_list_stationaryItemId_fkey" FOREIGN KEY ("stationaryItemId") REFERENCES "stationary_item"("stationaryItemId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "stationary_list" ADD CONSTRAINT "stationary_list_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "StationaryItemAssign" ADD CONSTRAINT "StationaryItemAssign_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "StationaryItemAssign" ADD CONSTRAINT "StationaryItemAssign_stationaryItemId_fkey" FOREIGN KEY ("stationaryItemId") REFERENCES "stationary_item"("stationaryItemId") ON DELETE RESTRICT ON UPDATE CASCADE;

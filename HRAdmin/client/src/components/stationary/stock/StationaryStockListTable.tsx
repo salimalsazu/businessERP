@@ -20,7 +20,7 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddStationaryModal from "./AddStationaryModal";
-import { useGetStationaryItemQuery } from "@/redux/api/features/stationaryItemApr";
+import { useGetStationaryItemQuery } from "@/redux/api/features/stationaryItemApi";
 import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
@@ -275,7 +275,7 @@ const StationaryStockListTable = () => {
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
                 {(rowData) =>
-                  rowData?.StationaryItemList.length > 0
+                  rowData.StationaryItemList.length > 0
                     ? moment(rowData.StationaryItemList[0].purchaseDate).format(
                         "ll"
                       )

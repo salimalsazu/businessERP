@@ -18,6 +18,7 @@ const createStationaryList = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 // !----------------------------------get all Courier---------------------------------------->>>
 const getAllStationaryList = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, StationaryListFilterableFields);
@@ -35,6 +36,18 @@ const getAllStationaryList = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// !----------------------------------Create New Courier---------------------------------------->>>
+const createStationaryAssignList = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await StationaryItemListService.createStationaryAssignList(payload);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Stationary Assign successfully',
+    data: result,
+  });
+});
 // // !----------------------------------get Single Courier---------------------------------------->>>
 // const getSingleCourier = catchAsync(async (req: Request, res: Response) => {
 //   const { courierId } = req.params;
@@ -79,4 +92,5 @@ const getAllStationaryList = catchAsync(async (req: Request, res: Response) => {
 export const StationaryListController = {
   createStationaryList,
   getAllStationaryList,
+  createStationaryAssignList,
 };
