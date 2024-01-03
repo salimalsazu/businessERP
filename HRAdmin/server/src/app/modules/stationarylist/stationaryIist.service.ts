@@ -8,11 +8,19 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
 import {
+  StationaryItemAssignSearchableFields,
   StationaryItemListSearchableFields,
+  stationaryItemAssignRelationalFields,
+  stationaryItemAssignRelationalFieldsMapper,
   stationaryItemListRelationalFields,
   stationaryItemListRelationalFieldsMapper,
 } from './stationarylist.constants';
-import { IStationaryItemListFilterRequest, IStationaryListAssignRequest, IStationaryListCreateRequest } from './stationarylist.interface';
+import {
+  IStationaryAssignListFilterRequest,
+  IStationaryItemListFilterRequest,
+  IStationaryListAssignRequest,
+  IStationaryListCreateRequest,
+} from './stationarylist.interface';
 
 // modules
 
@@ -211,6 +219,143 @@ const createStationaryAssignList = async (data: IStationaryListAssignRequest): P
   return result;
 };
 
+// !----------------------------------get all assign items---------------------------------------->>>
+
+const getAllStationaryAssignList = async (
+  filters: IStationaryAssignListFilterRequest,
+  options: IPaginationOptions
+): Promise<IGenericResponse<StationaryItemAssign[]>> => {
+  // Calculate pagination options
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+
+  // Destructure filter properties
+  const { searchTerm, jobId, firstName, itemName, assignItemStatus, ...filterData } = filters;
+
+  // Define an array to hold filter conditions
+  const andConditions: Prisma.StationaryItemAssignWhereInput[] = [];
+
+  // Add search term condition if provided
+  if (searchTerm) {
+    andConditions.push({
+      OR: StationaryItemAssignSearchableFields.map((field: any) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+
+  if (itemName) {
+    console.log('Item Name:', itemName);
+
+    andConditions.push({
+      stationaryItem: {
+        itemName: {
+          contains: itemName,
+        },
+      },
+    });
+  }
+
+  // // Add job id condition if provided
+  // if (jobId) {
+  //   andConditions.push({
+  //     user: {
+  //       profile: {
+  //         jobId: {
+  //           contains: jobId,
+  //           mode: 'insensitive',
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
+
+  if (firstName) {
+    andConditions.push({
+      OR: [
+        {
+          user: {
+            profile: {
+              firstName: {
+                contains: firstName,
+                mode: 'insensitive',
+              },
+            },
+          },
+        },
+      ],
+    });
+  }
+
+  if (assignItemStatus) {
+    andConditions.push({
+      assignItemStatus: {
+        equals: filters.assignItemStatus,
+      },
+    });
+  }
+
+  // Add filterData conditions if filterData is provided
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map(key => {
+        if (stationaryItemAssignRelationalFields.includes(key)) {
+          return {
+            [stationaryItemAssignRelationalFieldsMapper[key]]: {
+              itemName: (filterData as any)[key],
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filterData as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
+
+  // Create a whereConditions object with AND conditions
+  const whereConditions: Prisma.StationaryItemAssignWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+
+  // Retrieve Courier with filtering and pagination
+  const result = await prisma.stationaryItemAssign.findMany({
+    include: {
+      stationaryItem: true,
+      user: {
+        include: {
+          profile: true,
+        },
+      },
+    },
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { updatedAt: 'desc' },
+  });
+
+  // Count total matching orders for pagination
+  const total = await prisma.stationaryItemAssign.count({
+    where: whereConditions,
+  });
+
+  // Calculate total pages
+  const totalPage = Math.ceil(total / limit);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: result,
+  };
+};
+
 // // !----------------------------------get Single Courier---------------------------------------->>>
 // const getSingleCourier = async (courierId: string): Promise<Courier | null> => {
 //   const result = await prisma.courier.findUnique({
@@ -345,4 +490,5 @@ export const StationaryItemListService = {
   createStationaryItemList,
   getAllStationaryItemList,
   createStationaryAssignList,
+  getAllStationaryAssignList,
 };

@@ -24,6 +24,13 @@ router.post(
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
   StationaryListController.createStationaryAssignList
 );
+
+// ! Create Stationary Assign----------------------------------->>>
+router.get(
+  '/assign',
+  // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
+  StationaryListController.getAllStationaryAssign
+);
 // // ! Get all getStyleWiseNoOfCourier----------------------------------->>>
 // router.get(
 //   '/style-wise-courier',

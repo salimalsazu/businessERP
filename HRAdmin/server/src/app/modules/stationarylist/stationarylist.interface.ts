@@ -22,7 +22,15 @@ export type IStationaryListAssignRequest = {
   stationaryItemId: string;
 };
 
-
+export type IStationaryAssignListFilterRequest = {
+  searchTerm?: string | undefined;
+  itemName?: string | undefined;
+  stockItemStatus?: itemStatus | undefined;
+  lastAssignedDate?: Date | undefined;
+  jobId?: string | undefined;
+  firstName?: string | undefined;
+  assignItemStatus?: assignStatus | undefined;
+};
 
 export type IStyleWiseCourier = {
   styleNo: string;

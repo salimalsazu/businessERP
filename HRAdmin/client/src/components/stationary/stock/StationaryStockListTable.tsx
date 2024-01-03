@@ -275,11 +275,14 @@ const StationaryStockListTable = () => {
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
                 {(rowData) =>
-                  rowData.StationaryItemList.length > 0
-                    ? moment(rowData.StationaryItemList[0].purchaseDate).format(
-                        "ll"
-                      )
-                    : " "
+                {
+                  console.log(rowData.StationaryItemList, "rowData")
+                }
+                  // rowData.StationaryItemList.length > 0
+                  //   ? moment(rowData.StationaryItemList[0].purchaseDate).format(
+                  //       "ll"
+                  //     )
+                  //   : " "
                 }
               </Cell>
             </Column>

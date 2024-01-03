@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { StationaryListFilterableFields } from './stationarylist.constants';
+import { StationaryAssignFilterableFields, StationaryListFilterableFields } from './stationarylist.constants';
 import { StationaryItemListService } from './stationaryIist.service';
 
 // !----------------------------------Create New Courier---------------------------------------->>>
@@ -48,6 +48,24 @@ const createStationaryAssignList = catchAsync(async (req: Request, res: Response
     data: result,
   });
 });
+
+// !----------------------------------get all Courier---------------------------------------->>>
+const getAllStationaryAssign = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, StationaryAssignFilterableFields);
+
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
+  const result = await StationaryItemListService.getAllStationaryAssignList(filters, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All Stationary Assign fetched successfully',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 // // !----------------------------------get Single Courier---------------------------------------->>>
 // const getSingleCourier = catchAsync(async (req: Request, res: Response) => {
 //   const { courierId } = req.params;
@@ -93,4 +111,5 @@ export const StationaryListController = {
   createStationaryList,
   getAllStationaryList,
   createStationaryAssignList,
+  getAllStationaryAssign,
 };
