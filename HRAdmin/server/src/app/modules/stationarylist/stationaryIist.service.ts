@@ -229,26 +229,39 @@ const getAllStationaryAssignList = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, jobId, firstName, itemName, assignItemStatus, ...filterData } = filters;
+  const { searchTerm, firstName, itemName, assignItemStatus, ...filterData } = filters;
 
   // Define an array to hold filter conditions
   const andConditions: Prisma.StationaryItemAssignWhereInput[] = [];
 
-  // Add search term condition if provided
+  // Add search term condition if provided....
   if (searchTerm) {
     andConditions.push({
-      OR: StationaryItemAssignSearchableFields.map((field: any) => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
-        },
-      })),
+      OR: StationaryItemAssignSearchableFields.map((field: any) => {
+        if (field === 'itemName') {
+          // Adjust the condition for 'itemName' to reference the 'stationaryItem' relationship
+          return {
+            stationaryItem: {
+              itemName: {
+                contains: searchTerm,
+                mode: 'insensitive',
+              },
+            },
+          };
+        } else {
+          return {
+            [field]: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          };
+        }
+      }),
     });
   }
 
+  // Filter.....
   if (itemName) {
-    console.log('Item Name:', itemName);
-
     andConditions.push({
       stationaryItem: {
         itemName: {
@@ -257,20 +270,6 @@ const getAllStationaryAssignList = async (
       },
     });
   }
-
-  // // Add job id condition if provided
-  // if (jobId) {
-  //   andConditions.push({
-  //     user: {
-  //       profile: {
-  //         jobId: {
-  //           contains: jobId,
-  //           mode: 'insensitive',
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
 
   if (firstName) {
     andConditions.push({

@@ -12,6 +12,14 @@ const stationaryItemApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.stationaryList, tagTypes.item],
     }),
+    getStationaryItemAssign: builder.query({
+      query: (arg: Record<string, any>) => ({
+        url: `${STATIONARY_ITEM_LIST_API}/assign`,
+        method: "GET",
+        params: arg,
+      }),
+      providesTags: [tagTypes.stationaryList, tagTypes.item],
+    }),
 
     // create Item
     createStationaryItemList: builder.mutation({
@@ -54,4 +62,5 @@ const stationaryItemApi = baseApi.injectEndpoints({
 export const {
   useGetStationaryItemListQuery,
   useCreateStationaryItemListMutation,
+  useGetStationaryItemAssignQuery
 } = stationaryItemApi;

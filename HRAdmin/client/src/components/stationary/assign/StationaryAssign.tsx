@@ -20,6 +20,8 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddStationaryModal from "../stock/AddStationaryModal";
+import { useGetStationaryItemAssignQuery } from "@/redux/api/features/stationaryItemListApi";
+import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -30,12 +32,27 @@ const StationaryAssign = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  // Modal
+  //filter
 
+  const [assignItemStatus, setAssignItemStatus] = useState<string | undefined>(
+    undefined
+  );
+  query["assignItemStatus"] = assignItemStatus;
+
+  const assignStatus = ["Pending", "Approval", "Rejected"].map((status) => ({
+    label: status,
+    value: status,
+  }));
+
+  // console.log("assignItemStatus", assignItemStatus.value);
+
+  // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const { data } = useGetStationaryItemAssignQuery({ ...query });
 
   const getData = () => {
     if (sortColumn && sortType) {
@@ -133,11 +150,6 @@ const StationaryAssign = () => {
     }
   };
 
-  const VehicleNo = ["Excellent", "Good", "Low"].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
   const inventory = [
     {
       sl: 1,
@@ -215,7 +227,10 @@ const StationaryAssign = () => {
               // }
               // onClean={() => setSelectedStyleNo(null)}
               size="lg"
-              data={VehicleNo}
+              data={assignStatus}
+              onChange={(value: string | null): void =>
+                setAssignItemStatus(value as string)
+              }
               style={{ width: 150 }}
               // searchable={false}
               placeholder="Filter By Status"
@@ -231,7 +246,7 @@ const StationaryAssign = () => {
               // }
               // onClean={() => setSelectedStyleNo(null)}
               size="lg"
-              data={VehicleNo}
+              // data={VehicleNo}
               style={{ width: 150 }}
               // searchable={false}
               placeholder="Filter By Item"
@@ -296,7 +311,7 @@ const StationaryAssign = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={inventory}
+            data={data?.data}
             // loading={isLoadingCouriersData || isFetchingCourierData}
             // bordered={true}
             cellBordered={true}
@@ -321,11 +336,13 @@ const StationaryAssign = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Date</HeaderCell>
               <Cell
-                dataKey="item_name"
+                dataKey="lastAssignedDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData) =>
+                  `${moment(rowData?.lastAssignedDate).format("ll")}`
+                }
               </Cell>
             </Column>
 
@@ -333,7 +350,7 @@ const StationaryAssign = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Job Id</HeaderCell>
               <Cell
-                dataKey="last_purchased_date"
+                dataKey="user.profile.jobId"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -343,7 +360,7 @@ const StationaryAssign = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Employee Name</HeaderCell>
               <Cell
-                dataKey="purchase_quantity"
+                dataKey="user.profile.firstName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -353,7 +370,7 @@ const StationaryAssign = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Item Name</HeaderCell>
               <Cell
-                dataKey="last_assign_date"
+                dataKey="stationaryItem.itemName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -363,7 +380,7 @@ const StationaryAssign = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Quantity </HeaderCell>
               <Cell
-                dataKey="last_assign_qty"
+                dataKey="assignQuantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -373,7 +390,7 @@ const StationaryAssign = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Status</HeaderCell>
               <Cell
-                dataKey="purchase_quantity"
+                dataKey="assignItemStatus"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
