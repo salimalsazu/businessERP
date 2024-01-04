@@ -10,7 +10,8 @@ export const stationaryItemListRelationalFieldsMapper: { [key: string]: string }
 ///Assign
 export const StationaryAssignFilterableFields: string[] = ['searchTerm', 'itemName', 'firstName', 'createdAt', 'stockItemStatus', 'assignItemStatus'];
 
-export const StationaryItemAssignSearchableFields: string[] = ['itemName', 'itemName'];
+export const StationaryItemAssignSearchableFields: string[] = ['itemName', 'firstName'];
+// export const StationaryItemAssignSearchableFields: string[] = ['itemName', 'stockItemStatus'];
 
 export const stationaryItemAssignRelationalFields: string[] = ['stationaryItem', 'user', 'profile'];
 

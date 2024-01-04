@@ -235,11 +235,38 @@ const getAllStationaryAssignList = async (
   const andConditions: Prisma.StationaryItemAssignWhereInput[] = [];
 
   // Add search term condition if provided....
+  // if (searchTerm) {
+  //   andConditions.push({
+  //     OR: StationaryItemAssignSearchableFields.map((field: any) => {
+  //       if (field === 'itemName') {
+  //         // Adjust the condition for 'itemName' to reference the 'stationaryItem' relationship
+  //         return {
+  //           stationaryItem: {
+  //             itemName: {
+  //               contains: searchTerm,
+  //               mode: 'insensitive',
+  //             },
+  //           },
+  //         };
+  //       } else {
+  //         return {
+  //           [field]: {
+  //             contains: searchTerm,
+  //             mode: 'insensitive',
+  //           },
+  //         };
+  //       }
+  //     }),
+  //   });
+  // }
+
+  //search by jobId
+
+  // Combine all search conditions into a single block
   if (searchTerm) {
     andConditions.push({
       OR: StationaryItemAssignSearchableFields.map((field: any) => {
         if (field === 'itemName') {
-          // Adjust the condition for 'itemName' to reference the 'stationaryItem' relationship
           return {
             stationaryItem: {
               itemName: {
@@ -247,17 +274,28 @@ const getAllStationaryAssignList = async (
                 mode: 'insensitive',
               },
             },
-          };
+          } as Prisma.StationaryItemAssignWhereInput;
+        } else if (field === 'firstName') {
+          return {
+            user: {
+              profile: {
+                firstName: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          } as Prisma.StationaryItemAssignWhereInput;
         } else {
           return {
             [field]: {
               contains: searchTerm,
               mode: 'insensitive',
             },
-          };
+          } as Prisma.StationaryItemAssignWhereInput;
         }
       }),
-    });
+    } as Prisma.StationaryItemAssignWhereInput);
   }
 
   // Filter.....

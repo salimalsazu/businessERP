@@ -44,6 +44,11 @@ const StationaryAssign = () => {
     value: status,
   }));
 
+  // Search by stationaryName and User Name
+
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
+  query["searchTerm"] = searchTerm;
+
   // console.log("assignItemStatus", assignItemStatus.value);
 
   // Modal
@@ -52,7 +57,7 @@ const StationaryAssign = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const { data } = useGetStationaryItemAssignQuery({ ...query });
+  const { data, isLoading } = useGetStationaryItemAssignQuery({ ...query });
 
   const getData = () => {
     if (sortColumn && sortType) {
@@ -191,7 +196,7 @@ const StationaryAssign = () => {
                 </svg>
               </div>
               <input
-                //   onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 id="searchTerm"
                 className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
@@ -312,7 +317,7 @@ const StationaryAssign = () => {
             headerHeight={48}
             autoHeight={true}
             data={data?.data}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
+            loading={isLoading}
             // bordered={true}
             cellBordered={true}
             onSortColumn={handleSortColumn}
