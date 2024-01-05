@@ -63,9 +63,6 @@ const StationaryAssign = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  //table Data
-  const { data, isLoading } = useGetStationaryItemAssignQuery({ ...query });
-
   //Stationary Item Data
   const { data: stationaryItemData, isLoading: isLoadingStationaryItem } =
     useGetStationaryItemQuery(null);
@@ -160,8 +157,8 @@ const StationaryAssign = () => {
       // Set the end time to 23:59:59 (11:59 PM)
       endDate.setHours(23, 59, 59, 999);
 
-      const formattedStartDate = startDate?.toISOString();
-      const formattedEndDate = endDate?.toISOString();
+      const formattedStartDate = startDate.toISOString();
+      const formattedEndDate = endDate.toISOString();
 
       if (startDate !== null && endDate !== null) {
         setSelectedDate({
@@ -171,6 +168,11 @@ const StationaryAssign = () => {
       }
     }
   };
+
+  console.log("date", selectedDate.startDate);
+
+  //table Data
+  const { data, isLoading } = useGetStationaryItemAssignQuery({ ...query });
 
   return (
     <div>
@@ -215,12 +217,12 @@ const StationaryAssign = () => {
               onChange={(value: Date[] | null): void => {
                 handleFilterDate(value);
               }}
-              onClean={() =>
-                handleFilterDate({
-                  startDate: "",
-                  endDate: "",
-                })
-              }
+              // onClean={() =>
+              //   handleFilterDate({
+              //     startDate: "",
+              //     endDate: "",
+              //   })
+              // }
               size="lg"
               style={{ width: 300 }}
               placeholder="Filter By Date"
@@ -332,7 +334,7 @@ const StationaryAssign = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {(rowData, rowIndex) => rowIndex + 1}
+                {(rowData, rowIndex: number) => rowIndex + 1}
               </Cell>
             </Column>
 

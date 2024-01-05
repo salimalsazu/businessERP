@@ -30,6 +30,8 @@ export type IStationaryAssignListFilterRequest = {
   jobId?: string | undefined;
   firstName?: string | undefined;
   assignItemStatus?: assignStatus | undefined;
+  startDate?: string | null; // Date range start
+  endDate?: string | null; // Date range end
 };
 
 export type IStyleWiseCourier = {

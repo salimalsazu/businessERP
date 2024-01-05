@@ -229,7 +229,7 @@ const getAllStationaryAssignList = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, firstName, itemName, assignItemStatus, ...filterData } = filters;
+  const { searchTerm, firstName, itemName, assignItemStatus, startDate, endDate, ...filterData } = filters;
 
   // Define an array to hold filter conditions
   const andConditions: Prisma.StationaryItemAssignWhereInput[] = [];
@@ -298,7 +298,7 @@ const getAllStationaryAssignList = async (
     } as Prisma.StationaryItemAssignWhereInput);
   }
 
-  // Filter.....
+  // Filter by Item Name.....
   if (itemName) {
     andConditions.push({
       stationaryItem: {
@@ -309,23 +309,18 @@ const getAllStationaryAssignList = async (
     });
   }
 
-  if (firstName) {
+  //Filter By Date
+
+  if (startDate && endDate) {
     andConditions.push({
-      OR: [
-        {
-          user: {
-            profile: {
-              firstName: {
-                contains: firstName,
-                mode: 'insensitive',
-              },
-            },
-          },
-        },
-      ],
+      lastAssignedDate: {
+        gte: startDate, // Greater than or equal to startDate
+        lte: endDate, // Less than or equal to endDate
+      },
     });
   }
 
+  //filter by Status
   if (assignItemStatus) {
     andConditions.push({
       assignItemStatus: {
