@@ -44,7 +44,7 @@ const getAllStationaryItem = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, stockItemStatus, itemName, ...filterData } = filters;
 
   // Define an array to hold filter conditions
   const andConditions: Prisma.StationaryItemWhereInput[] = [];
@@ -82,6 +82,24 @@ const getAllStationaryItem = async (
     });
   }
 
+  //filter by Status
+  if (stockItemStatus) {
+    andConditions.push({
+      stockItemStatus: {
+        equals: filters.stockItemStatus,
+      },
+    });
+  }
+
+  // Filter by Item Name.....
+  if (itemName) {
+    andConditions.push({
+      itemName: {
+        equals: filters.itemName,
+      },
+    });
+  }
+
   // Create a whereConditions object with AND conditions
   const whereConditions: Prisma.StationaryItemWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
@@ -89,10 +107,10 @@ const getAllStationaryItem = async (
   const result = await prisma.stationaryItem.findMany({
     include: {
       stationaryItemList: {
-        orderBy: { updatedAt: 'desc' }, 
+        orderBy: { updatedAt: 'desc' },
       },
       stationaryItemAssign: {
-        orderBy: { updatedAt: 'desc' }, 
+        orderBy: { updatedAt: 'desc' },
       },
     },
     where: whereConditions,

@@ -32,7 +32,35 @@ const StationaryStockListTable = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  const { data: stationaryItem } = useGetStationaryItemQuery({ ...query });
+  //fitlet by item
+
+  const [itemName, setItemName] = useState<string | null>(null);
+  query["itemName"] = itemName;
+
+  //filter by Status
+
+  const [stockItemStatus, setStockItemStatus] = useState<string | null>(null);
+  query["stockItemStatus"] = stockItemStatus;
+
+  const stockItemStatusFeature = ["Excellent", "Good", "Poor"].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
+  //Data Fetching for Item List
+
+  const { data: stationaryItem, isLoading } = useGetStationaryItemQuery({
+    ...query,
+  });
+
+  //data Fetching for Item
+
+  const { data: stationaryItemData } = useGetStationaryItemQuery(null);
+
+  const mappedData = stationaryItemData?.data.map((item: any) => ({
+    label: item.itemName,
+    value: item.itemName,
+  }));
 
   // Modal
   const [open, setOpen] = useState(false);
@@ -98,61 +126,18 @@ const StationaryStockListTable = () => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: "",
-    endDate: "",
-  });
-
-  query["startDate"] = selectedDate.startDate;
-  query["endDate"] = selectedDate.endDate;
-
-  const handleFilterDate = (date: Date[] | null) => {
-    if (!date?.length) {
-      setSelectedDate({
-        startDate: "",
-        endDate: "",
-      });
-    }
-
-    if (date) {
-      const startDate = new Date(date[0]);
-      const endDate = new Date(date[1]);
-
-      // Set the start time to 00:00:00 (12:00 AM)
-      startDate.setHours(0, 0, 0, 0);
-
-      // Set the end time to 23:59:59 (11:59 PM)
-      endDate.setHours(23, 59, 59, 999);
-
-      const formattedStartDate = startDate?.toISOString();
-      const formattedEndDate = endDate?.toISOString();
-
-      if (startDate !== null && endDate !== null) {
-        setSelectedDate({
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
-        });
-      }
-    }
-  };
-
-  const VehicleNo = ["Excellent", "Good", "Low"].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between ">
         <div className="flex justify-center gap-5">
           <div>
             <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
+              onChange={(value: string | null): void =>
+                setStockItemStatus(value as string)
+              }
               // onClean={() => setSelectedStyleNo(null)}
               size="lg"
-              data={VehicleNo}
+              data={stockItemStatusFeature}
               style={{ width: 300 }}
               // searchable={false}
               placeholder="Filter By Status"
@@ -163,12 +148,12 @@ const StationaryStockListTable = () => {
 
           <div>
             <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
+              onChange={(value: string | null): void =>
+                setItemName(value as string)
+              }
               // onClean={() => setSelectedStyleNo(null)}
               size="lg"
-              data={VehicleNo}
+              data={mappedData}
               style={{ width: 300 }}
               // searchable={false}
               placeholder="Filter By Item"
@@ -234,7 +219,7 @@ const StationaryStockListTable = () => {
             headerHeight={48}
             autoHeight={true}
             data={stationaryItem?.data}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
+            loading={isLoading}
             // bordered={true}
             cellBordered={true}
             onSortColumn={handleSortColumn}
@@ -270,28 +255,23 @@ const StationaryStockListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Last Purchased Date</HeaderCell>
               <Cell
-                dataKey="StationaryItemList[0].purchaseDate"
+                dataKey="stationaryItemList[0].purchaseDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
                 {(rowData) =>
-                {
-                  console.log(rowData.StationaryItemList, "rowData")
-                }
-                  // rowData.StationaryItemList.length > 0
-                  //   ? moment(rowData.StationaryItemList[0].purchaseDate).format(
-                  //       "ll"
-                  //     )
-                  //   : " "
+                  `${moment(rowData?.stationaryItemList[0].purchaseDate).format(
+                    "ll"
+                  )}`
                 }
               </Cell>
             </Column>
 
-            {/* Details*/}
+            {/* Purchase Quantity*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Purchase (Qty)</HeaderCell>
               <Cell
-                dataKey="StationaryItemList[0].purchaseQuantity"
+                dataKey="stationaryItemList[0].purchaseQuantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -301,17 +281,23 @@ const StationaryStockListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Last Assign Date </HeaderCell>
               <Cell
-                dataKey="last_assign_date"
+                dataKey="stationaryItemAssign[0].lastAssignedDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) =>
+                  `${moment(
+                    rowData?.stationaryItemAssign[0].lastAssignedDate
+                  ).format("ll")}`
+                }
+              </Cell>
             </Column>
 
             {/* Details*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Assign (Qty) </HeaderCell>
               <Cell
-                dataKey="last_assign_qty"
+                dataKey="stationaryItemAssign[0].assignQuantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>

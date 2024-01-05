@@ -1,4 +1,4 @@
-export const StationaryItemFilterableFields: string[] = ['searchTerm', 'itemName', 'createdAt', 'startDate', 'endDate'];
+export const StationaryItemFilterableFields: string[] = ['searchTerm', 'itemName', 'createdAt', 'startDate', 'endDate', 'stockItemStatus'];
 export const StationaryItemSearchableFields: string[] = ['itemName'];
 
 export const StyleWiseCourierFilterableFields: string[] = ['searchTerm', 'styleNo'];

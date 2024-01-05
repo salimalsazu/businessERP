@@ -334,7 +334,7 @@ const StationaryAssign = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {(rowData, rowIndex: number) => rowIndex + 1}
+                {(rowData, rowIndex: any) => rowIndex + 1}
               </Cell>
             </Column>
 
