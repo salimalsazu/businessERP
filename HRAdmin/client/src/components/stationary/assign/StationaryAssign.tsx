@@ -22,17 +22,19 @@ import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddStationaryModal from "../stock/AddStationaryModal";
 import { useGetStationaryItemAssignQuery } from "@/redux/api/features/stationaryItemListApi";
 import moment from "moment";
+import { useGetStationaryItemQuery } from "@/redux/api/features/stationaryItemApi";
 
 const { Column, HeaderCell, Cell } = Table;
 
 const StationaryAssign = () => {
+  //Query Defined
   const query: Record<string, any> = {};
 
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  //filter
+  //filter by Status
 
   const [assignItemStatus, setAssignItemStatus] = useState<string | undefined>(
     undefined
@@ -43,6 +45,10 @@ const StationaryAssign = () => {
     label: status,
     value: status,
   }));
+
+  //Filter by Item
+  const [itemName, setItemName] = useState<string | undefined>(undefined);
+  query["itemName"] = itemName;
 
   // Search by stationaryName and User Name
 
@@ -57,7 +63,18 @@ const StationaryAssign = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  //table Data
   const { data, isLoading } = useGetStationaryItemAssignQuery({ ...query });
+
+  //Stationary Item Data
+  const { data: stationaryItemData, isLoading: isLoadingStationaryItem } =
+    useGetStationaryItemQuery(null);
+
+  // Map data for the SelectPicker
+  const mappedData = stationaryItemData?.data.map((item: any) => ({
+    label: item.itemName,
+    value: item.itemName,
+  }));
 
   const getData = () => {
     if (sortColumn && sortType) {
@@ -155,21 +172,6 @@ const StationaryAssign = () => {
     }
   };
 
-  const inventory = [
-    {
-      sl: 1,
-      item_name: "Box - Tissue",
-      stock_quantity: 100,
-      expire_date: "2023-12-31",
-      last_purchased_date: "2023-12-28",
-      purchase_quantity: 500,
-      last_assign_date: "2023-12-28",
-      last_assign_qty: 1,
-      status: "Excellent",
-    },
-    // Add more items as needed
-  ];
-
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between  ">
@@ -227,16 +229,13 @@ const StationaryAssign = () => {
 
           <div>
             <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
               // onClean={() => setSelectedStyleNo(null)}
               size="lg"
               data={assignStatus}
               onChange={(value: string | null): void =>
                 setAssignItemStatus(value as string)
               }
-              style={{ width: 150 }}
+              style={{ width: 170 }}
               // searchable={false}
               placeholder="Filter By Status"
               searchable={false}
@@ -246,13 +245,13 @@ const StationaryAssign = () => {
 
           <div>
             <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
+              onChange={(value: string | null): void =>
+                setItemName(value as string)
+              }
               // onClean={() => setSelectedStyleNo(null)}
               size="lg"
-              // data={VehicleNo}
-              style={{ width: 150 }}
+              data={mappedData}
+              style={{ width: 160 }}
               // searchable={false}
               placeholder="Filter By Item"
               searchable={false}
@@ -333,7 +332,7 @@ const StationaryAssign = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData, rowIndex) => rowIndex + 1}
               </Cell>
             </Column>
 
@@ -422,7 +421,7 @@ const StationaryAssign = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={data?.meta?.total}
             prev
             next
             first
