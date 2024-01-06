@@ -23,33 +23,48 @@ import {
   useGetStationaryItemQuery,
 } from "@/redux/api/features/stationaryItemApi";
 import { useCreateStationaryItemListMutation } from "@/redux/api/features/stationaryItemListApi";
+import AssetFileUploader from "./AssetFileUploader";
+import { FileType } from "rsuite/esm/Uploader";
 
 const AddAssetModalSection = ({ handleClose, open }: any) => {
-  interface IStationaryList {
+  interface IAssetList {
     purchaseDate: Date;
-    purchaseQuantity: number;
-    stationaryItemId: string;
+    assetImage?: FileType | undefined;
+    assetName: string;
+    assetModel: string;
+    assetQuantity: number;
+    assetLocation: string;
+    assetCategory: string;
   }
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<IStationaryList>();
+  } = useForm<IAssetList>();
 
-  const [stationaryItemList] = useCreateStationaryItemListMutation();
-
-  const handleCreateItemList: SubmitHandler<IStationaryList> = async (
-    data: IStationaryList
+  const handleCreateStationaryList: SubmitHandler<IAssetList> = async (
+    data: IAssetList
   ) => {
-    const stationaryList = {
+    const assetList = {
       purchaseDate: data.purchaseDate,
-      purchaseQuantity: Number(data.purchaseQuantity),
-      stationaryItemId: data.stationaryItemId,
+      assetName: data.assetName,
+      assetModel: data.assetModel,
+      assetQuantity: data.assetQuantity,
+      assetLocation: data.assetLocation,
+      assetCategory: data.assetCategory,
     };
 
-    // console.log(stationaryList)
-    await stationaryItemList(stationaryList);
+    // console.log(assetList);
+
+    const orderData = JSON.stringify(assetList);
+    const formData = new FormData();
+    formData.append("file", data.assetImage?.blobFile as Blob);
+    formData.append("data", orderData);
+
+    console.log("formData", formData);
+
+    // await stationaryItemList(stationaryList);
   };
 
   // useEffect(() => {
@@ -81,17 +96,6 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
   //   value: item,
   // }));
 
-  // Stationary Item Data Fetching
-
-  const { data } = useGetStationaryItemQuery(null);
-
-  // Sttaionary Item Data Posting
-  const [createItem] = useCreateStationaryItemMutation();
-
-  const handleCreateItem = async (name: string) => {
-    await createItem({ itemName: name });
-  };
-
   const assetCategory = [
     "Eugenia",
     "Bryan",
@@ -115,14 +119,14 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
       onClose={handleClose}
     >
       <Modal.Header>
-        <Modal.Title>Add Asset</Modal.Title>
+        <Modal.Title className="!font-bold">Add Asset</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        <form onSubmit={handleSubmit(handleCreateItemList)}>
+        <form onSubmit={handleSubmit(handleCreateStationaryList)}>
           {/* 1st section */}
           <div className="flex justify-between  gap-[24px] mb-5">
-            {/* Date */}{" "}
+            {/* Pucrchase Date */}{" "}
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Purchase Date</Tooltip>}>
@@ -195,7 +199,7 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                       inputMode="text"
                       size="lg"
                       id="assetName"
-                      placeholder="Model Name"
+                      placeholder="Asset Name"
                       style={{ width: "100%" }}
                     />
                     {/* <Form.ErrorMessage
@@ -223,14 +227,14 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                     </Tooltip>
                   }
                 >
-                  <label htmlFor="assetName" className="text-sm font-medium">
+                  <label htmlFor="assetModel" className="text-sm font-medium">
                     Model Name <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
 
               <Controller
-                name="modelName"
+                name="assetModel"
                 control={control}
                 rules={{
                   required: "Model Name is required",
@@ -241,7 +245,7 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                       {...field}
                       inputMode="text"
                       size="lg"
-                      id="assetName"
+                      id="assetModel"
                       placeholder="Model Name"
                       style={{ width: "100%" }}
                     />
@@ -261,21 +265,18 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
 
             <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper speaker={<Tooltip>Item Name</Tooltip>}>
-                  <label
-                    htmlFor="stationaryItemId"
-                    className="text-sm font-medium"
-                  >
-                    Item Name
+                <Whisper speaker={<Tooltip>Asset Category</Tooltip>}>
+                  <label htmlFor="assetName" className="text-sm font-medium">
+                    Asset Category
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="stationaryItemId"
+                name="assetCategory"
                 control={control}
                 defaultValue={""}
-                rules={{ required: "Item Name required" }}
+                rules={{ required: "Asset Category required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <InputPicker
@@ -285,6 +286,7 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                       onCreate={(value, item) => {
                         console.log(value, item);
                       }}
+                      onChange={(value: string | null) => field.onChange(value)}
                       style={{ width: "100%" }}
                     />
                     {/* <Form.ErrorMessage
@@ -305,21 +307,21 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
           <div className="flex justify-between gap-[24px] mb-5">
             <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper speaker={<Tooltip>Item Name</Tooltip>}>
+                <Whisper speaker={<Tooltip>Asset Location</Tooltip>}>
                   <label
                     htmlFor="stationaryItemId"
                     className="text-sm font-medium"
                   >
-                    Item Name
+                    Asset Location
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="stationaryItemId"
+                name="assetLocation"
                 control={control}
                 defaultValue={""}
-                rules={{ required: "Item Name required" }}
+                rules={{ required: "Asset Location required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <InputPicker
@@ -329,7 +331,9 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                       onCreate={(value, item) => {
                         console.log(value, item);
                       }}
+                      onChange={(value: string | null) => field.onChange(value)}
                       style={{ width: "100%" }}
+                      placeholder="Asset Location"
                     />
                     {/* <Form.ErrorMessage
                           show={
@@ -351,22 +355,22 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                   speaker={
                     <Tooltip>
                       <span className="text-[11px]">
-                        Expenses greater than 0
+                        Quantity greater than 0
                       </span>
                     </Tooltip>
                   }
                 >
                   <label
-                    htmlFor="purchaseQuantity"
+                    htmlFor="assetQuantity"
                     className="text-sm font-medium"
                   >
-                    Quantity <InfoOutlineIcon />
+                    Asset Quantity <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
 
               <Controller
-                name="purchaseQuantity"
+                name="assetQuantity"
                 control={control}
                 rules={{
                   required: "Quantity is required",
@@ -382,9 +386,9 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                       inputMode="numeric"
                       min={1}
                       size="lg"
-                      id="purchaseQuantity"
+                      id="assetQuantity"
                       type="number"
-                      placeholder="Purchase Item Quantity"
+                      placeholder="Asset Quantity"
                       style={{ width: "100%" }}
                     />
                     {/* <Form.ErrorMessage
@@ -396,6 +400,38 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                      >
                        {errors?.totalPack?.message}
                      </Form.ErrorMessage> */}
+                  </div>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 w-full ">
+            <div className="w-full ">
+              <div className="my-3">
+                <Whisper
+                  speaker={<Tooltip>Image must be less than 5 MB</Tooltip>}
+                >
+                  <label htmlFor="assetImage" className="text-sm font-medium">
+                    Asset Image <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="assetImage"
+                control={control}
+                render={({ field }: any) => (
+                  <div className="rs-form-control-wrapper ">
+                    <AssetFileUploader field={field} />
+                    {/* <Form.ErrorMessage
+                      show={
+                        (!!errors?.orderFile && !!errors?.orderFile?.message) ||
+                        false
+                      }
+                      placement="topEnd"
+                    >
+                      {errors?.orderFile?.message}
+                    </Form.ErrorMessage> */}
                   </div>
                 )}
               />
