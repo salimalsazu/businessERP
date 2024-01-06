@@ -19,6 +19,7 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
+import AddAssetModalSection from "./AddAssetModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -389,6 +390,11 @@ const ListOfAssetsTable = () => {
             // onChangePage={setPage}
           />
         </div>
+      </div>
+
+      {/* Modal */}
+      <div>
+        <AddAssetModalSection open={open} handleClose={handleClose} />
       </div>
     </div>
   );
