@@ -3,7 +3,9 @@
 import {
   Button,
   DatePicker,
+  Input,
   InputNumber,
+  InputPicker,
   Modal,
   Placeholder,
   SelectPicker,
@@ -90,6 +92,20 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
     await createItem({ itemName: name });
   };
 
+  const assetCategory = [
+    "Eugenia",
+    "Bryan",
+    "Linda",
+    "Nancy",
+    "Lloyd",
+    "Alice",
+    "Julia",
+    "Albert",
+  ].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
   return (
     <Modal
       overflow={false}
@@ -153,6 +169,98 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
             </div>
             <div className="flex flex-col gap-3 w-full ">
               <div>
+                <Whisper
+                  speaker={
+                    <Tooltip>
+                      <span className="text-[11px]">Asset Name</span>
+                    </Tooltip>
+                  }
+                >
+                  <label htmlFor="assetName" className="text-sm font-medium">
+                    Asset Name <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+
+              <Controller
+                name="assetName"
+                control={control}
+                rules={{
+                  required: "Asset Name is required",
+                }}
+                render={({ field }: any) => (
+                  <div className="rs-form-control-wrapper ">
+                    <Input
+                      {...field}
+                      inputMode="text"
+                      size="lg"
+                      id="assetName"
+                      placeholder="Model Name"
+                      style={{ width: "100%" }}
+                    />
+                    {/* <Form.ErrorMessage
+                       show={
+                         (!!errors?.totalPack && !!errors?.totalPack?.message) ||
+                         false
+                       }
+                       placement="topEnd"
+                     >
+                       {errors?.totalPack?.message}
+                     </Form.ErrorMessage> */}
+                  </div>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-between  gap-[24px] mb-5">
+            <div className="flex flex-col gap-3 w-full ">
+              <div>
+                <Whisper
+                  speaker={
+                    <Tooltip>
+                      <span className="text-[11px]">Model Name</span>
+                    </Tooltip>
+                  }
+                >
+                  <label htmlFor="assetName" className="text-sm font-medium">
+                    Model Name <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+
+              <Controller
+                name="modelName"
+                control={control}
+                rules={{
+                  required: "Model Name is required",
+                }}
+                render={({ field }: any) => (
+                  <div className="rs-form-control-wrapper ">
+                    <Input
+                      {...field}
+                      inputMode="text"
+                      size="lg"
+                      id="assetName"
+                      placeholder="Model Name"
+                      style={{ width: "100%" }}
+                    />
+                    {/* <Form.ErrorMessage
+                       show={
+                         (!!errors?.totalPack && !!errors?.totalPack?.message) ||
+                         false
+                       }
+                       placement="topEnd"
+                     >
+                       {errors?.totalPack?.message}
+                     </Form.ErrorMessage> */}
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col gap-3 w-full ">
+              <div>
                 <Whisper speaker={<Tooltip>Item Name</Tooltip>}>
                   <label
                     htmlFor="stationaryItemId"
@@ -170,18 +278,14 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
                 rules={{ required: "Item Name required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <CreatableSelect
-                      className="z-20"
-                      isClearable
-                      onChange={(selectedOption) => {
-                        field.onChange(selectedOption?.value ?? null);
+                    <InputPicker
+                      creatable
+                      size={"lg"}
+                      data={assetCategory}
+                      onCreate={(value, item) => {
+                        console.log(value, item);
                       }}
-                      onCreateOption={handleCreateItem}
-                      // isSearchable={true}
-                      options={data?.data?.map((item: any) => ({
-                        label: item.itemName,
-                        value: item.stationaryItemId,
-                      }))}
+                      style={{ width: "100%" }}
                     />
                     {/* <Form.ErrorMessage
                           show={
@@ -197,7 +301,50 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
               />{" "}
             </div>
           </div>
-          <div className="flex justify-between  gap-[24px] mb-5">
+
+          <div className="flex justify-between gap-[24px] mb-5">
+            <div className="flex flex-col gap-3 w-full ">
+              <div>
+                <Whisper speaker={<Tooltip>Item Name</Tooltip>}>
+                  <label
+                    htmlFor="stationaryItemId"
+                    className="text-sm font-medium"
+                  >
+                    Item Name
+                    <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="stationaryItemId"
+                control={control}
+                defaultValue={""}
+                rules={{ required: "Item Name required" }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <InputPicker
+                      creatable
+                      size={"lg"}
+                      data={assetCategory}
+                      onCreate={(value, item) => {
+                        console.log(value, item);
+                      }}
+                      style={{ width: "100%" }}
+                    />
+                    {/* <Form.ErrorMessage
+                          show={
+                            (!!errors?.styleNo && !!errors?.styleNo?.message) ||
+                            false
+                          }
+                          placement="topEnd"
+                        >
+                          {errors?.styleNo?.message}
+                        </Form.ErrorMessage> */}
+                  </div>
+                )}
+              />{" "}
+            </div>
+
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper
