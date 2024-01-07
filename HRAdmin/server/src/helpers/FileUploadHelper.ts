@@ -55,6 +55,8 @@ const uploadAssetImage = multer({
     const mimetype = filetypes.test(file.mimetype); // verify file is == filetypes you will accept
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase()); // extract the file extension and convert to lowercase
 
+    console.log('fileeeeeeeeeeeeee', file);
+
     // if mimetype && extname are true, then no error
     if (mimetype && extname) {
       return cb(null, true);
@@ -67,24 +69,24 @@ const uploadAssetImage = multer({
 
 // ! update style image
 
-const updateStylesImage = multer({
-  storage: stylesStorage,
-  limits: { fileSize: 512 * 2 * 1024 }, // 1 MB
+// const updateStylesImage = multer({
+//   storage: stylesStorage,
+//   limits: { fileSize: 512 * 2 * 1024 }, // 1 MB
 
-  fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|/; // filetypes you will accept
-    const mimetype = filetypes.test(file.mimetype); // verify file is == filetypes you will accept
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase()); // extract the file extension and convert to lowercase
+//   fileFilter: (req, file, cb) => {
+//     const filetypes = /jpeg|jpg|png|/; // filetypes you will accept
+//     const mimetype = filetypes.test(file.mimetype); // verify file is == filetypes you will accept
+//     const extname = filetypes.test(path.extname(file.originalname).toLowerCase()); // extract the file extension and convert to lowercase
 
-    // if mimetype && extname are true, then no error
-    if (mimetype && extname) {
-      return cb(null, true);
-    }
+//     // if mimetype && extname are true, then no error
+//     if (mimetype && extname) {
+//       return cb(null, true);
+//     }
 
-    // if mimetype or extname false, give an error of compatibility
-    return cb(new Error('Only jpeg, jpg and png file will be accepted !!'));
-  },
-});
+//     // if mimetype or extname false, give an error of compatibility
+//     return cb(new Error('Only jpeg, jpg and png file will be accepted !!'));
+//   },
+// });
 
 // ! ==============================================  tack pack==============================================
 
@@ -195,7 +197,7 @@ export const FileUploadHelper = {
   uploadProfileImage,
   uploadTackPackPdf,
   uploadAssetImage,
-  updateStylesImage,
+  // updateStylesImage,
   uploadOrderPdf,
   uploadUpdatedOrderPdf,
   updateUploadTackPackPdf,

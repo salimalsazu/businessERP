@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetItemList, Prisma, StationaryItemList } from '@prisma/client';
 import httpStatus from 'http-status';
@@ -15,21 +16,23 @@ import { IUploadFile } from '../../../interfaces/file';
 
 // !----------------------------------Create New Stationary---------------------------------------->>>
 const createAssetItemList = async (req: Request): Promise<AssetItemList> => {
+  //@ts-ignore
   const file = req.file as IUploadFile;
 
   const filePath = file?.path?.substring(8);
 
-  const data = req.body as unknown as IAssetCreateRequest;
+  //@ts-ignore
+  const data = req.body as IAssetCreateRequest;
 
   const result = await prisma.$transaction(async transactionClient => {
-    const isExistAsset = await prisma.assetItemList.findUnique({
-      where: {
-        assetId: data.assetId,
-      },
-    });
-    if (isExistAsset) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Asset is already added');
-    }
+    // const isExistAsset = await prisma.assetItemList.findUnique({
+    //   where: {
+    //     assetId: data.assetId,
+    //   },
+    // });
+    // if (isExistAsset) {
+    //   throw new ApiError(httpStatus.BAD_REQUEST, 'Asset is already added');
+    // }
 
     const newAssetData = {
       purchaseDate: data.purchaseDate,
@@ -41,6 +44,9 @@ const createAssetItemList = async (req: Request): Promise<AssetItemList> => {
       assetModel: data.assetModel,
       assetImage: filePath,
     };
+
+    console.log('newAssetData', newAssetData);
+
     const createdAssetItemList = await transactionClient.assetItemList.create({
       data: newAssetData,
     });

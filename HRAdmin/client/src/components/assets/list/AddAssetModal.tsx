@@ -18,13 +18,9 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import CreatableSelect from "react-select/creatable";
 
-import {
-  useCreateStationaryItemMutation,
-  useGetStationaryItemQuery,
-} from "@/redux/api/features/stationaryItemApi";
-import { useCreateStationaryItemListMutation } from "@/redux/api/features/stationaryItemListApi";
 import AssetFileUploader from "./AssetFileUploader";
 import { FileType } from "rsuite/esm/Uploader";
+import { useCreateAssetItemListMutation } from "@/redux/api/features/assetItemApi";
 
 const AddAssetModalSection = ({ handleClose, open }: any) => {
   interface IAssetList {
@@ -36,6 +32,8 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
     assetLocation: string;
     assetCategory: string;
   }
+
+  const [creatingAsset, { isLoading }] = useCreateAssetItemListMutation();
 
   const {
     handleSubmit,
@@ -64,7 +62,7 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
 
     console.log("formData", data);
 
-    // await stationaryItemList(stationaryList);
+    // await creatingAsset(assetList);
   };
 
   // useEffect(() => {

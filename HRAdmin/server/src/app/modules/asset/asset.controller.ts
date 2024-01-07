@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
@@ -6,9 +7,9 @@ import sendResponse from '../../../shared/sendResponse';
 import { StationaryListFilterableFields } from './asset.constants';
 import { AssetListService } from './asset.service';
 
-
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createAssetItemList = catchAsync(async (req: Request, res: Response) => {
+  //@ts-ignore
   const result = await AssetListService.createAssetItemList(req);
 
   sendResponse(res, {
