@@ -8,8 +8,14 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { StationaryItemListSearchableFields, stationaryItemListRelationalFields, stationaryItemListRelationalFieldsMapper } from './asset.constants';
-import { IAssetCreateRequest, IStationaryItemListFilterRequest } from './asset.interface';
+import {
+  AssetItemListRelationalFields,
+  AssetItemListRelationalFieldsMapper,
+  AssetItemListSearchableFields,
+  stationaryItemListRelationalFields,
+  stationaryItemListRelationalFieldsMapper,
+} from './asset.constants';
+import { IAssetCreateRequest, IAssetItemListFilterRequest } from './asset.interface';
 import { IUploadFile } from '../../../interfaces/file';
 import { generateAssetId } from './asset.utils';
 
@@ -65,10 +71,7 @@ const createAssetItemList = async (req: Request): Promise<AssetItemList> => {
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const GetAssetItemList = async (
-  filters: IStationaryItemListFilterRequest,
-  options: IPaginationOptions
-): Promise<IGenericResponse<StationaryItemList[]>> => {
+const GetAssetItemList = async (filters: IAssetItemListFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<AssetItemList[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -76,12 +79,12 @@ const GetAssetItemList = async (
   const { searchTerm, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.StationaryItemListWhereInput[] = [];
+  const andConditions: Prisma.AssetItemListWhereInput[] = [];
 
   // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: StationaryItemListSearchableFields.map((field: any) => ({
+      OR: AssetItemListSearchableFields.map((field: any) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -94,10 +97,10 @@ const GetAssetItemList = async (
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (stationaryItemListRelationalFields.includes(key)) {
+        if (AssetItemListRelationalFields.includes(key)) {
           return {
-            [stationaryItemListRelationalFieldsMapper[key]]: {
-              itemName: (filterData as any)[key],
+            [AssetItemListRelationalFieldsMapper[key]]: {
+              assetName: (filterData as any)[key],
             },
           };
         } else {
@@ -112,13 +115,10 @@ const GetAssetItemList = async (
   }
 
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.StationaryItemListWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.AssetItemListWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.stationaryItemList.findMany({
-    include: {
-      stationaryItem: true,
-    },
+  const result = await prisma.assetItemList.findMany({
     where: whereConditions,
     skip,
     take: limit,
@@ -126,7 +126,7 @@ const GetAssetItemList = async (
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.stationaryItemList.count({
+  const total = await prisma.assetItemList.count({
     where: whereConditions,
   });
 

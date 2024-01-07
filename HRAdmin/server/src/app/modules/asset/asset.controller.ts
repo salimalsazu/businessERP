@@ -4,8 +4,8 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { StationaryListFilterableFields } from './asset.constants';
 import { AssetListService } from './asset.service';
+import { AssetListFilterableFields } from './asset.constants';
 
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createAssetItemList = catchAsync(async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ const createAssetItemList = catchAsync(async (req: Request, res: Response) => {
 
 // !----------------------------------get all Courier---------------------------------------->>>
 const GetAssetItemList = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, StationaryListFilterableFields);
+  const filters = pick(req.query, AssetListFilterableFields);
 
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
@@ -31,7 +31,7 @@ const GetAssetItemList = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'All Stationary items fetched successfully',
+    message: 'All Assets fetched successfully',
     meta: result.meta,
     data: result.data,
   });

@@ -69,7 +69,6 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
   useEffect(() => {
     if (isSuccess) {
       toast.success("asset created successfully");
-      handleClose();
     }
   }, [isSuccess, handleClose]);
 

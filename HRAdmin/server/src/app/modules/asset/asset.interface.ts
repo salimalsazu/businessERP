@@ -1,9 +1,9 @@
-import { assignStatus, itemStatus } from '@prisma/client';
 
-export type IStationaryItemListFilterRequest = {
+
+export type IAssetItemListFilterRequest = {
   searchTerm?: string | undefined;
-  itemName?: string | undefined;
-  stockItemStatus?: itemStatus | undefined;
+  assetName?: string | undefined;
+  assetLocation?: string | undefined;
 };
 
 export type IAssetCreateRequest = {
@@ -14,12 +14,4 @@ export type IAssetCreateRequest = {
   assetLocation: string;
   assetCategory: string;
   assetId: string;
-};
-
-export type IStationaryListAssignRequest = {
-  lastAssignedDate: Date;
-  assignItemStatus: assignStatus;
-  assignQuantity: number;
-  userId: string;
-  stationaryItemId: string;
 };
