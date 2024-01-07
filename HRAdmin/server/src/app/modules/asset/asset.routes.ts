@@ -1,16 +1,22 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 
-import { AssetListController, StationaryListController } from './asset.controller';
+import { AssetListController } from './asset.controller';
+import { FileUploadHelper } from '../../../helpers/FileUploadHelper';
+import { AssetValidation } from './asset.validations';
 
 const router = express.Router();
 
 // ! Create New  List ------------------------------->>>
 router.post(
   '/',
-  // validateRequest(CourierValidation.createCourier),
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  AssetListController.createAssetItemList
+  FileUploadHelper.uploadAssetImage.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = AssetValidation.createAsset.parse(JSON.parse(req.body.data));
+    return AssetListController.createAssetItemList(req, res, next);
+  }
 );
+
 // ! Get all List----------------------------------->>>
 router.get(
   '/',

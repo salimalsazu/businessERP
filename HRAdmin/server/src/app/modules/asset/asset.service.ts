@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Prisma, StationaryItemAssign, StationaryItemList, assignStatus, itemStatus } from '@prisma/client';
+import { AssetItemList, Prisma, StationaryItemList } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -7,72 +7,48 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import {
-  StationaryItemAssignSearchableFields,
-  StationaryItemListSearchableFields,
-  stationaryItemAssignRelationalFields,
-  stationaryItemAssignRelationalFieldsMapper,
-  stationaryItemListRelationalFields,
-  stationaryItemListRelationalFieldsMapper,
-} from './asset.constants';
-import {
-  IStationaryAssignListFilterRequest,
-  IStationaryItemListFilterRequest,
-  IStationaryListAssignRequest,
-  IStationaryListCreateRequest,
-} from './asset.interface';
+import { StationaryItemListSearchableFields, stationaryItemListRelationalFields, stationaryItemListRelationalFieldsMapper } from './asset.constants';
+import { IAssetCreateRequest, IStationaryItemListFilterRequest } from './asset.interface';
+import { IUploadFile } from '../../../interfaces/file';
 
 // modules
 
 // !----------------------------------Create New Stationary---------------------------------------->>>
-const createAssetItemList = async (data: IStationaryListCreateRequest): Promise<StationaryItemList> => {
-  const findStationaryItem = await prisma.stationaryItem.findUnique({
-    where: {
-      stationaryItemId: data.stationaryItemId,
-    },
+const createAssetItemList = async (req: Request): Promise<AssetItemList> => {
+  const file = req.file as IUploadFile;
+
+  const filePath = file?.path?.substring(8);
+
+  const data = req.body as unknown as IAssetCreateRequest;
+
+  const result = await prisma.$transaction(async transactionClient => {
+    const isExistAsset = await prisma.assetItemList.findUnique({
+      where: {
+        assetId: data.assetId,
+      },
+    });
+    if (isExistAsset) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Asset is already added');
+    }
+
+    const newAssetData = {
+      purchaseDate: data.purchaseDate,
+      assetId: data.assetId,
+      assetName: data.assetName,
+      assetLocation: data.assetLocation,
+      assetCategory: data.assetCategory,
+      assetQuantity: data.assetQuantity,
+      assetModel: data.assetModel,
+      assetImage: filePath,
+    };
+    const createdAssetItemList = await transactionClient.assetItemList.create({
+      data: newAssetData,
+    });
+    return createdAssetItemList;
   });
-
-  if (!findStationaryItem) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Stationary Item Not Found!!');
+  if (!result) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Asset creation failed');
   }
-
-  const newStockQuantity = findStationaryItem?.stockQuantity + data.purchaseQuantity;
-
-  let newStockItemStatus: itemStatus;
-
-  if (newStockQuantity >= 20) {
-    newStockItemStatus = 'Excellent';
-  } else if (newStockQuantity >= 10) {
-    newStockItemStatus = 'Good';
-  } else {
-    newStockItemStatus = 'Poor';
-  }
-
-  // Update stock quantity and stock item status
-  const updatedStationaryItem = await prisma.stationaryItem.update({
-    where: {
-      stationaryItemId: data.stationaryItemId,
-    },
-    data: {
-      stockQuantity: newStockQuantity,
-      stockItemStatus: newStockItemStatus,
-    },
-  });
-
-  if (!updatedStationaryItem) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update stock quantity');
-  }
-
-  const stationaryItemList = {
-    purchaseDate: data.purchaseDate,
-    purchaseQuantity: data.purchaseQuantity,
-    stationaryItemId: findStationaryItem.stationaryItemId,
-  };
-
-  const result = await prisma.stationaryItemList.create({
-    data: stationaryItemList,
-  });
-
   return result;
 };
 

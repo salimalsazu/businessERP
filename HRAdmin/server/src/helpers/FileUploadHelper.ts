@@ -34,10 +34,10 @@ const uploadProfileImage = multer({
 });
 // ! ============================================== Styles ==============================================
 
-// styles photos
-const stylesStorage = multer.diskStorage({
+// assets photos
+const assetStorage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, 'uploads/styles/');
+    callback(null, 'uploads/assets/');
   },
   filename: function (req, file, cb) {
     const uniqueFilename = Date.now() + '-' + file.originalname;
@@ -46,8 +46,8 @@ const stylesStorage = multer.diskStorage({
 });
 
 //
-const uploadStylesImage = multer({
-  storage: stylesStorage,
+const uploadAssetImage = multer({
+  storage: assetStorage,
   limits: { fileSize: 512 * 2 * 1024 }, // 1mb
 
   fileFilter: (req, file, cb) => {
@@ -194,7 +194,7 @@ const uploadUpdatedOrderPdf = multer({
 export const FileUploadHelper = {
   uploadProfileImage,
   uploadTackPackPdf,
-  uploadStylesImage,
+  uploadAssetImage,
   updateStylesImage,
   uploadOrderPdf,
   uploadUpdatedOrderPdf,

@@ -62,7 +62,7 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
     formData.append("file", data.assetImage?.blobFile as Blob);
     formData.append("data", orderData);
 
-    console.log("formData", formData);
+    console.log("formData", data);
 
     // await stationaryItemList(stationaryList);
   };

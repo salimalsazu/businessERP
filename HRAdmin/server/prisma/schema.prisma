@@ -83,21 +83,37 @@ model StationaryItemAssign {
   user             User           @relation(fields: [userId], references: [userId])
   stationaryItemId String
   stationaryItem   StationaryItem @relation(fields: [stationaryItemId], references: [stationaryItemId])
-  createdAt        DateTime        @default(now()) @db.Timestamptz(0)
-  updatedAt        DateTime        @updatedAt @db.Timestamptz(0)
+  createdAt        DateTime       @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime       @updatedAt @db.Timestamptz(0)
 }
 
 model StationaryItem {
   stationaryItemId     String                 @id @default(uuid())
   itemName             String                 @unique
-  stockQuantity    Int
-  stockItemStatus  itemStatus?
+  stockQuantity        Int
+  stockItemStatus      itemStatus?
   createdAt            DateTime               @default(now()) @db.Timestamptz(0)
   updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
   stationaryItemList   StationaryItemList[]
   stationaryItemAssign StationaryItemAssign[]
 
   @@map("stationary_item")
+}
+
+model AssetItemList {
+  assetListId   String   @id @default(uuid())
+  assetName     String
+  assetModel    String
+  assetQuantity Int
+  assetLocation String
+  assetCategory String
+  assetImage    String
+  purchaseDate  DateTime @db.Timestamptz(0)
+  assetId       String  @unique 
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+
+  @@map("asset_list")
 }
 
 enum UserRoles {

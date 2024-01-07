@@ -6,15 +6,15 @@ import sendResponse from '../../../shared/sendResponse';
 import { StationaryListFilterableFields } from './asset.constants';
 import { AssetListService } from './asset.service';
 
+
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createAssetItemList = catchAsync(async (req: Request, res: Response) => {
-  const payload = req.body;
-  const result = await AssetListService.createAssetItemList(payload);
+  const result = await AssetListService.createAssetItemList(req);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Stationary Added successfully',
+    message: 'Asset created Successfully',
     data: result,
   });
 });
