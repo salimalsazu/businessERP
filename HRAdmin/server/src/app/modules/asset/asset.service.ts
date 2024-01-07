@@ -11,6 +11,7 @@ import prisma from '../../../shared/prisma';
 import { StationaryItemListSearchableFields, stationaryItemListRelationalFields, stationaryItemListRelationalFieldsMapper } from './asset.constants';
 import { IAssetCreateRequest, IStationaryItemListFilterRequest } from './asset.interface';
 import { IUploadFile } from '../../../interfaces/file';
+import { generateAssetId } from './asset.utils';
 
 // modules
 
@@ -19,24 +20,31 @@ const createAssetItemList = async (req: Request): Promise<AssetItemList> => {
   //@ts-ignore
   const file = req.file as IUploadFile;
 
+  console.log(file, 'file');
+
   const filePath = file?.path?.substring(8);
+
+  console.log(filePath, 'filePath');
 
   //@ts-ignore
   const data = req.body as IAssetCreateRequest;
 
+  // asset Id auto generated
+  const assetId: string = await generateAssetId();
+
   const result = await prisma.$transaction(async transactionClient => {
-    // const isExistAsset = await prisma.assetItemList.findUnique({
-    //   where: {
-    //     assetId: data.assetId,
-    //   },
-    // });
-    // if (isExistAsset) {
-    //   throw new ApiError(httpStatus.BAD_REQUEST, 'Asset is already added');
-    // }
+    const isExistAsset = await prisma.assetItemList.findUnique({
+      where: {
+        assetId: assetId,
+      },
+    });
+    if (isExistAsset) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Asset is already added');
+    }
 
     const newAssetData = {
       purchaseDate: data.purchaseDate,
-      assetId: data.assetId,
+      assetId: assetId,
       assetName: data.assetName,
       assetLocation: data.assetLocation,
       assetCategory: data.assetCategory,
@@ -44,8 +52,6 @@ const createAssetItemList = async (req: Request): Promise<AssetItemList> => {
       assetModel: data.assetModel,
       assetImage: filePath,
     };
-
-    console.log('newAssetData', newAssetData);
 
     const createdAssetItemList = await transactionClient.assetItemList.create({
       data: newAssetData,

@@ -10,6 +10,7 @@ const assetItemApi = baseApi.injectEndpoints({
         url: `${ASSET_ITEM_LIST_API}`,
         method: "POST",
         data: data,
+        contentType: "multipart/form-data", /// For Image and Data must be use this
       }),
       invalidatesTags: [tagTypes.asset],
     }),

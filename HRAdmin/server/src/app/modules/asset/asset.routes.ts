@@ -13,6 +13,8 @@ router.post(
   FileUploadHelper.uploadAssetImage.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = AssetValidation.createAsset.parse(JSON.parse(req.body.data));
+
+    console.log(req.body.data, 'req.body');
     return AssetListController.createAssetItemList(req, res, next);
   }
 );

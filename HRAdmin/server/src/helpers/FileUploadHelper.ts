@@ -55,8 +55,6 @@ const uploadAssetImage = multer({
     const mimetype = filetypes.test(file.mimetype); // verify file is == filetypes you will accept
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase()); // extract the file extension and convert to lowercase
 
-    console.log('fileeeeeeeeeeeeee', file);
-
     // if mimetype && extname are true, then no error
     if (mimetype && extname) {
       return cb(null, true);

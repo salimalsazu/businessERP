@@ -30,11 +30,7 @@ const createAsset = z.object({
   }),
   assetQuantity: z.number({
     required_error: 'assetQuantity is Required',
-    invalid_type_error: 'assetQuantity must be in String',
-  }),
-  assetId: z.string({
-    required_error: 'assetId is Required',
-    invalid_type_error: 'assetId must be in String',
+    invalid_type_error: 'assetQuantity must be in number',
   }),
   purchaseDate: z.string({
     required_error: 'purchaseDate is Required',

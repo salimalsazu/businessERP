@@ -16,11 +16,11 @@ import {
 } from "rsuite";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
-import CreatableSelect from "react-select/creatable";
-
 import AssetFileUploader from "./AssetFileUploader";
 import { FileType } from "rsuite/esm/Uploader";
 import { useCreateAssetItemListMutation } from "@/redux/api/features/assetItemApi";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const AddAssetModalSection = ({ handleClose, open }: any) => {
   interface IAssetList {
@@ -33,7 +33,8 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
     assetCategory: string;
   }
 
-  const [creatingAsset, { isLoading }] = useCreateAssetItemListMutation();
+  const [creatingAsset, { isLoading, isSuccess }] =
+    useCreateAssetItemListMutation();
 
   const {
     handleSubmit,
@@ -48,7 +49,7 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
       purchaseDate: data.purchaseDate,
       assetName: data.assetName,
       assetModel: data.assetModel,
-      assetQuantity: data.assetQuantity,
+      assetQuantity: Number(data.assetQuantity),
       assetLocation: data.assetLocation,
       assetCategory: data.assetCategory,
     };
@@ -57,13 +58,20 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
 
     const orderData = JSON.stringify(assetList);
     const formData = new FormData();
+
+    // console.log(data.assetImage?.blobFile, "imageeee");
     formData.append("file", data.assetImage?.blobFile as Blob);
     formData.append("data", orderData);
 
-    console.log("formData", data);
-
-    // await creatingAsset(assetList);
+    await creatingAsset(formData);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("asset created successfully");
+      handleClose();
+    }
+  }, [isSuccess, handleClose]);
 
   // useEffect(() => {
   //   if (!isError && !isLoading && isSuccess && !error && data) {
@@ -437,14 +445,14 @@ const AddAssetModalSection = ({ handleClose, open }: any) => {
           </div>
 
           <div className="flex justify-end mt-5">
-            <button
+            <Button
               type="submit"
-              // loading={isLoading}
+              loading={isLoading}
               // size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >
               Save
-            </button>
+            </Button>
           </div>
         </form>
       </Modal.Body>
