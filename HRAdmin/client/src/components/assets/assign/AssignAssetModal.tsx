@@ -34,6 +34,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
 
   //fetching All User
 
+  //@ts-ignore
   const { data: allUser } = useGetAllUsersQuery(null);
 
   const singleUser = allUser?.data?.data?.map((user: any) => ({
@@ -42,7 +43,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
   }));
 
   //Fetching All Asset
-
+  //@ts-ignore
   const { data: allAsset } = useGetAssetItemListQuery(null);
 
   const singleAsset = allAsset?.data?.map((asset: any) => ({

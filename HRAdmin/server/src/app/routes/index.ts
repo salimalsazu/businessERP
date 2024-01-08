@@ -5,6 +5,7 @@ import { FoodRoutes } from '../modules/food/food.routes';
 import { StationaryItemRoutes } from '../modules/stationaryItem/stationaryItem.routes';
 import { StationaryListRoutes } from '../modules/stationarylist/stationarylist.routes';
 import { AssetListRoutes } from '../modules/asset/asset.routes';
+import { AssetAssignRoutes } from '../modules/assetAssign/assetAssign.routes';
 
 const router = express.Router();
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: '/assetList',
     route: AssetListRoutes,
+  },
+  {
+    path: '/assetAssign',
+    route: AssetAssignRoutes,
   },
 ];
 

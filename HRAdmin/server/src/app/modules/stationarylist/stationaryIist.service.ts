@@ -229,7 +229,7 @@ const getAllStationaryAssignList = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, firstName, itemName, assignItemStatus, startDate, endDate, ...filterData } = filters;
+  const { searchTerm, itemName, assignItemStatus, startDate, endDate, ...filterData } = filters;
 
   // Define an array to hold filter conditions
   const andConditions: Prisma.StationaryItemAssignWhereInput[] = [];

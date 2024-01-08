@@ -18,6 +18,7 @@ model User {
   profile              Profile?               @relation(fields: [profileId], references: [profileId])
   userFood             UserFood[]
   stationaryItemAssign StationaryItemAssign[]
+  assetAssign          AssetAssign[]
 
   @@map("users")
 }
@@ -101,19 +102,39 @@ model StationaryItem {
 }
 
 model AssetItemList {
-  assetListId   String   @id @default(uuid())
+  assetListId   String        @id @default(uuid())
   assetName     String
   assetModel    String
   assetQuantity Int
   assetLocation String
   assetCategory String
   assetImage    String
-  purchaseDate  DateTime @db.Timestamptz(0)
-  assetId       String  @unique 
-  createdAt DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  purchaseDate  DateTime      @db.Timestamptz(0)
+  assetId       String        @unique
+  createdAt     DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(0)
+  AssetAssign   AssetAssign[]
 
   @@map("asset_list")
+}
+
+model AssetAssign {
+  assetAssignId String        @id @default(uuid())
+  assetListId   String
+  assetItemList AssetItemList @relation(fields: [assetListId], references: [assetListId])
+  assignDate    DateTime      @db.Timestamptz(0)
+  userId        String
+  user          User          @relation(fields: [userId], references: [userId])
+  assignStatus  assignStatus  @default(Pending)
+  createdAt     DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(0)
+  requestFor    requestFor
+  note          String
+}
+
+enum requestFor {
+  Assign
+  Servicing
 }
 
 enum UserRoles {
