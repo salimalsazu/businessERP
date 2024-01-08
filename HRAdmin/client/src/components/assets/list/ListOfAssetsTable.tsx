@@ -20,6 +20,8 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddAssetModalSection from "./AddAssetModal";
+import { useGetAssetItemListQuery } from "@/redux/api/features/assetItemApi";
+import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -30,8 +32,17 @@ const ListOfAssetsTable = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  // Modal
+  //search By Asset Id and Asset Name
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
+  query["searchTerm"] = searchTerm;
 
+  //Date Fetching for asset Item
+
+  const { data: assetData, isLoading } = useGetAssetItemListQuery({ ...query });
+
+  console.log("asset-data", assetData?.data);
+
+  // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
@@ -95,65 +106,10 @@ const ListOfAssetsTable = () => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: "",
-    endDate: "",
-  });
-
-  query["startDate"] = selectedDate.startDate;
-  query["endDate"] = selectedDate.endDate;
-
-  const handleFilterDate = (date: Date[] | null) => {
-    if (!date?.length) {
-      setSelectedDate({
-        startDate: "",
-        endDate: "",
-      });
-    }
-
-    if (date) {
-      const startDate = new Date(date[0]);
-      const endDate = new Date(date[1]);
-
-      // Set the start time to 00:00:00 (12:00 AM)
-      startDate.setHours(0, 0, 0, 0);
-
-      // Set the end time to 23:59:59 (11:59 PM)
-      endDate.setHours(23, 59, 59, 999);
-
-      const formattedStartDate = startDate?.toISOString();
-      const formattedEndDate = endDate?.toISOString();
-
-      if (startDate !== null && endDate !== null) {
-        setSelectedDate({
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
-        });
-      }
-    }
-  };
-
   const VehicleNo = ["Excellent", "Good", "Low"].map((item) => ({
     label: item,
     value: item,
   }));
-
-  const assetsAssignData = [
-    {
-      sl: 1,
-      jobId: 12,
-      image: "Salim Al Sazu",
-      assetName: "Laptop",
-      assetId: "Laptop-M-103",
-      assetsType: "Laptop",
-      assetModel: "-",
-      quantity: 1,
-      assetLocation: "Office",
-      purchaseDate: "31-12-2023",
-      barcode: "-",
-    },
-    // Add more items as needed
-  ];
 
   return (
     <div>
@@ -181,7 +137,7 @@ const ListOfAssetsTable = () => {
                 </svg>
               </div>
               <input
-                //   onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 id="searchTerm"
                 className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
@@ -248,8 +204,8 @@ const ListOfAssetsTable = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={assetsAssignData}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
+            data={assetData?.data}
+            loading={isLoading}
             // bordered={true}
             cellBordered={true}
             onSortColumn={handleSortColumn}
@@ -265,7 +221,7 @@ const ListOfAssetsTable = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
               </Cell>
             </Column>
 
@@ -315,7 +271,7 @@ const ListOfAssetsTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Quantity</HeaderCell>
               <Cell
-                dataKey="quantity"
+                dataKey="assetQuantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -338,7 +294,9 @@ const ListOfAssetsTable = () => {
                 dataKey="purchaseDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) => `${moment(rowData?.purchaseDate).format("ll")}`}
+              </Cell>
             </Column>
 
             {/* Barcode*/}
@@ -373,7 +331,7 @@ const ListOfAssetsTable = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={assetData?.meta?.total}
             prev
             next
             first
@@ -383,7 +341,7 @@ const ListOfAssetsTable = () => {
             maxButtons={5}
             size="lg"
             layout={["total", "-", "limit", "|", "pager", "skip"]}
-            limitOptions={[10, 20, 30, 50]}
+            limitOptions={[10, 20, 30, 50, 100]}
             // limit={size}
             // onChangeLimit={(limitChange) => setSize(limitChange)}
             // activePage={page}
