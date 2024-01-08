@@ -17,7 +17,7 @@ const getAllUserService = async (options: IPaginationOptions): Promise<IGenericR
     where: {
       profile: {
         role: {
-          in: ['ADMIN', 'USER'],
+          in: ['SUPERADMIN', 'ADMIN', 'USER'],
         },
       },
     },
@@ -32,6 +32,7 @@ const getAllUserService = async (options: IPaginationOptions): Promise<IGenericR
           profileId: true,
           firstName: true,
           lastName: true,
+          jobId: true,
           role: true,
           isMeal: true,
           profileImage: true,

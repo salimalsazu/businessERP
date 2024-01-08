@@ -18,65 +18,84 @@ import {
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { FileType } from "rsuite/esm/Uploader";
-import { useCreateAssetItemListMutation } from "@/redux/api/features/assetItemApi";
+import { useGetAssetItemListQuery } from "@/redux/api/features/assetItemApi";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
 
 const AssignAssetModal = ({ handleClose, open }: any) => {
+  //toggle for servicing and assign
+
   const [assign, setAssign] = useState(true);
 
   const assignToggle = () => {
     setAssign(!assign);
   };
 
-  interface IAssetList {
-    purchaseDate: Date;
-    assetImage?: FileType | undefined;
-    assetName: string;
-    assetModel: string;
-    assetQuantity: number;
-    assetLocation: string;
-    assetCategory: string;
-  }
+  //fetching All User
 
-  const [creatingAsset, { isLoading, isSuccess }] =
-    useCreateAssetItemListMutation();
+  const { data: allUser } = useGetAllUsersQuery(null);
+
+  const singleUser = allUser?.data?.data?.map((user: any) => ({
+    label: `${user?.profile.firstName} ${user?.profile.lastName}`,
+    value: user?.userId,
+  }));
+
+  //Fetching All Asset
+
+  const { data: allAsset } = useGetAssetItemListQuery(null);
+
+  const singleAsset = allAsset?.data?.map((asset: any) => ({
+    label: `${asset?.assetName} ${asset?.assetId} (Id)`,
+    value: asset?.assetListId,
+  }));
+
+  //Request For
+
+  const requestForAsset = ["Assign", "Servicing"].map((requestF) => ({
+    label: requestF,
+    value: requestF,
+  }));
+
+  interface IAssetAssign {
+    assignDate: Date;
+    assetListId: string;
+    userId: string;
+    requestFor: requestFor;
+    note: string;
+  }
+  enum requestFor {
+    Assign = "Assign",
+    Servicing = "Servicing",
+  }
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<IAssetList>();
+  } = useForm<IAssetAssign>();
 
-  const handleCreateStationaryList: SubmitHandler<IAssetList> = async (
-    data: IAssetList
+  const handleCreateAssetAssign: SubmitHandler<IAssetAssign> = async (
+    data: IAssetAssign
   ) => {
-    const assetList = {
-      purchaseDate: data.purchaseDate,
-      assetName: data.assetName,
-      assetModel: data.assetModel,
-      assetQuantity: Number(data.assetQuantity),
-      assetLocation: data.assetLocation,
-      assetCategory: data.assetCategory,
+    const assetAssign = {
+      assignDate: data.assignDate,
+      assetListId: data.assetListId,
+      userId: data.userId,
+      requestFor: data.requestFor,
+      note: data.note,
     };
 
-    // console.log(assetList);
+    console.log(assetAssign);
 
-    const orderData = JSON.stringify(assetList);
-    const formData = new FormData();
-
-    // console.log(data.assetImage?.blobFile, "imageeee");
-    formData.append("file", data.assetImage?.blobFile as Blob);
-    formData.append("data", orderData);
-
-    await creatingAsset(formData);
+    // await creatingAsset(assetAssign);
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("asset created successfully");
-    }
-  }, [isSuccess, handleClose]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     toast.success("asset created successfully");
+  //   }
+  // }, [isSuccess, handleClose]);
 
   // useEffect(() => {
   //   if (!isError && !isLoading && isSuccess && !error && data) {
@@ -125,7 +144,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
         <div className="my-4">
           if Servicing <Toggle onChange={assignToggle} size="sm" />
         </div>
-        <form onSubmit={handleSubmit(handleCreateStationaryList)}>
+        <form onSubmit={handleSubmit(handleCreateAssetAssign)}>
           {/* 1st section */}
           <div className="flex justify-between  gap-[24px] mb-5">
             {/* assign Date */}{" "}
@@ -185,30 +204,30 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
           <div className="flex justify-between  gap-[24px] mb-5">
             <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper speaker={<Tooltip>Asset Id</Tooltip>}>
-                  <label htmlFor="assetName" className="text-sm font-medium">
-                    Asset Id
+                <Whisper speaker={<Tooltip>Asset Name</Tooltip>}>
+                  <label htmlFor="assetListId" className="text-sm font-medium">
+                    Asset Name
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="assetId"
+                name="assetListId"
                 control={control}
                 defaultValue={""}
                 rules={{ required: "Asset Id is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <InputPicker
-                      creatable
+                      creatable={false}
                       size={"lg"}
-                      //   data={assetId}
-                      onCreate={(value, item) => {
-                        console.log(value, item);
-                      }}
+                      data={singleAsset}
+                      // onCreate={(value, item) => {
+                      //   console.log(value, item);
+                      // }}
                       onChange={(value: string | null) => field.onChange(value)}
                       style={{ width: "100%" }}
-                      placeholder="Asset Id"
+                      placeholder="Asset Name"
                     />
                     {/* <Form.ErrorMessage
                           show={
@@ -229,14 +248,14 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Employee Name</Tooltip>}>
-                  <label htmlFor="assetName" className="text-sm font-medium">
+                  <label htmlFor="userId" className="text-sm font-medium">
                     Employee Name
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="employeeName"
+                name="userId"
                 control={control}
                 defaultValue={""}
                 rules={{ required: "Employee Name required" }}
@@ -245,7 +264,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
                     <InputPicker
                       creatable
                       size={"lg"}
-                      //   data={assetCategory}
+                      data={singleUser}
                       onCreate={(value, item) => {
                         console.log(value, item);
                       }}
@@ -269,7 +288,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Request For</Tooltip>}>
-                  <label htmlFor="assetName" className="text-sm font-medium">
+                  <label htmlFor="requestFor" className="text-sm font-medium">
                     Request For
                     <InfoOutlineIcon />
                   </label>
@@ -278,14 +297,13 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
               <Controller
                 name="requestFor"
                 control={control}
-                defaultValue={""}
                 rules={{ required: "Request For required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <InputPicker
                       creatable
                       size={"lg"}
-                      //   data={assetCategory}
+                      data={requestForAsset}
                       onCreate={(value, item) => {
                         console.log(value, item);
                       }}
@@ -336,17 +354,8 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
                       rows={3}
                       placeholder="Write your Query in Here..."
                       style={{ width: "100%" }}
+                      onChange={(value: string | null) => field.onChange(value)}
                     />
-                    {/* <Input
-                      {...field}
-                      inputMode="numeric"
-                      min={1}
-                      size="lg"
-                      id="assetQuantity"
-                      type="number"
-                      placeholder="Asset Quantity"
-                      style={{ width: "100%" }}
-                    /> */}
                     {/* <Form.ErrorMessage
                        show={
                          (!!errors?.totalPack && !!errors?.totalPack?.message) ||
@@ -365,7 +374,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
           <div className="flex justify-end mt-5">
             <Button
               type="submit"
-              loading={isLoading}
+              // loading={isLoading}
               // size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >

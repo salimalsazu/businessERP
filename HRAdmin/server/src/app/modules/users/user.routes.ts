@@ -30,4 +30,3 @@ router.patch(
 router.get('/:userId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), UserController.getSingleUser);
 
 export const UserRoutes = router;
-
