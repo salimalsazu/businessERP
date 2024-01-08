@@ -17,11 +17,14 @@ import {
 import { useState } from "react";
 import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
-import { headerCss } from "@/utils/TableCSS";
+import { cellCss, headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddAssetModalSection from "./AddAssetModal";
 import { useGetAssetItemListQuery } from "@/redux/api/features/assetItemApi";
 import moment from "moment";
+import Barcode from "react-barcode";
+import Image from "next/image";
+import { fileUrlKey } from "@/helpers/config/envConfig";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -235,17 +238,41 @@ const ListOfAssetsTable = () => {
               ></Cell>
             </Column>
 
-            {/* Details*/}
-            <Column flexGrow={1}>
+            {/*img*/}
+            <Column width={60}>
               <HeaderCell style={headerCss}>Image</HeaderCell>
-              <Cell
-                dataKey="image"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              <Cell style={cellCss} verticalAlign="middle">
+                {(rowData) => (
+                  <Whisper
+                    placement="top"
+                    speaker={
+                      <Popover>
+                        <div>
+                          <Image
+                            src={`${fileUrlKey()}/${rowData.assetImage}`}
+                            alt={rowData.image}
+                            className="h-52 w-52  object-cover"
+                            width={100}
+                            height={100}
+                          />
+                        </div>
+                      </Popover>
+                    }
+                  >
+                    <div>
+                      <Image
+                        src={`${fileUrlKey()}/${rowData.assetImage}`}
+                        className="h-10 w-10 object-cover rounded-full"
+                        width={100}
+                        height={100}
+                        alt={rowData.image}
+                      />
+                    </div>
+                  </Whisper>
+                )}
+              </Cell>
             </Column>
-
-            {/* Style No*/}
+            {/* Asset Name*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Asset Name</HeaderCell>
               <Cell
@@ -272,6 +299,16 @@ const ListOfAssetsTable = () => {
               <HeaderCell style={headerCss}>Quantity</HeaderCell>
               <Cell
                 dataKey="assetQuantity"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
+
+            {/* Category*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Asset Category</HeaderCell>
+              <Cell
+                dataKey="assetCategory"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -305,8 +342,22 @@ const ListOfAssetsTable = () => {
               <Cell
                 dataKey="barcode"
                 verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+                style={{
+                  padding: 10,
+                  fontSize: 30,
+                  fontWeight: 500,
+                }}
+              >
+                {(rowData) => (
+                  <Barcode
+                    width={1}
+                    height={25}
+                    displayValue={true}
+                    margin={0}
+                    value={rowData.assetId}
+                  />
+                )}
+              </Cell>
             </Column>
 
             {/* {role !== "USER" && (
