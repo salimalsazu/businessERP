@@ -19,6 +19,7 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
+import AssignAssetModal from "./AssignAssetModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -209,6 +210,32 @@ const AssetsAssignAndRepairListTable = () => {
               </Whisper>
             </ButtonToolbar>
           </div>
+
+          <div>
+            <Button
+              className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
+              type="button"
+              onClick={handleOpen}
+            >
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                  stroke="#fff"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
+                </svg>
+              </span>
+              <span className="text-sm font-semibold">Asset Assign</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -240,7 +267,6 @@ const AssetsAssignAndRepairListTable = () => {
               </Cell>
             </Column>
 
-
             {/* Details*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Job Id</HeaderCell>
@@ -261,7 +287,6 @@ const AssetsAssignAndRepairListTable = () => {
               ></Cell>
             </Column>
 
-            
             {/* Style No*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>HandOver Date</HeaderCell>
@@ -363,6 +388,10 @@ const AssetsAssignAndRepairListTable = () => {
             // onChangePage={setPage}
           />
         </div>
+      </div>
+      {/* Modal */}
+      <div>
+        <AssignAssetModal open={open} handleClose={handleClose} />
       </div>
     </div>
   );
