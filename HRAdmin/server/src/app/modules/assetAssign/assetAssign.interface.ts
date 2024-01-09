@@ -1,9 +1,9 @@
 import { assignStatus, requestFor } from '@prisma/client';
 
-export type IAssetItemListFilterRequest = {
+export type IAssetAssignFilterRequest = {
   searchTerm?: string | undefined;
-  assetName?: string | undefined;
-  assetLocation?: string | undefined;
+  // assetName?: string | undefined;
+  // assetLocation?: string | undefined;
 };
 
 export type IAssetAssignRequest = {

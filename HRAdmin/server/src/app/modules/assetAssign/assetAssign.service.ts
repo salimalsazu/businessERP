@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AssetAssign, AssetItemList, Prisma, assignStatus } from '@prisma/client';
+import { AssetAssign, Prisma, assignStatus } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -8,8 +8,8 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { AssetItemListRelationalFields, AssetItemListRelationalFieldsMapper, AssetItemListSearchableFields } from './assetAssign.constants';
-import { IAssetAssignRequest, IAssetItemListFilterRequest } from './assetAssign.interface';
+import { AssetAssignRelationalFields, AssetAssignRelationalFieldsMapper, AssetAssignSearchableFields } from './assetAssign.constants';
+import { IAssetAssignFilterRequest, IAssetAssignRequest } from './assetAssign.interface';
 
 // modules
 
@@ -66,7 +66,7 @@ const createAssetAssign = async (data: IAssetAssignRequest): Promise<AssetAssign
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const GetAssetAssign = async (filters: IAssetItemListFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<AssetItemList[]>> => {
+const GetAssetAssign = async (filters: IAssetAssignFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<AssetAssign[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -74,12 +74,12 @@ const GetAssetAssign = async (filters: IAssetItemListFilterRequest, options: IPa
   const { searchTerm, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.AssetItemListWhereInput[] = [];
+  const andConditions: Prisma.AssetAssignWhereInput[] = [];
 
   // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: AssetItemListSearchableFields.map((field: any) => ({
+      OR: AssetAssignSearchableFields.map((field: any) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -92,9 +92,9 @@ const GetAssetAssign = async (filters: IAssetItemListFilterRequest, options: IPa
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (AssetItemListRelationalFields.includes(key)) {
+        if (AssetAssignRelationalFields.includes(key)) {
           return {
-            [AssetItemListRelationalFieldsMapper[key]]: {
+            [AssetAssignRelationalFieldsMapper[key]]: {
               assetName: (filterData as any)[key],
             },
           };
@@ -110,10 +110,28 @@ const GetAssetAssign = async (filters: IAssetItemListFilterRequest, options: IPa
   }
 
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.AssetItemListWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.AssetAssignWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.assetItemList.findMany({
+  const result = await prisma.assetAssign.findMany({
+    include: {
+      assetItemList: {
+        select: {
+          assetName: true,
+          assetId: true,
+        },
+      },
+      user: {
+        select: {
+          profile: {
+            select: {
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      },
+    },
     where: whereConditions,
     skip,
     take: limit,
@@ -121,7 +139,7 @@ const GetAssetAssign = async (filters: IAssetItemListFilterRequest, options: IPa
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.assetItemList.count({
+  const total = await prisma.assetAssign.count({
     where: whereConditions,
   });
 
