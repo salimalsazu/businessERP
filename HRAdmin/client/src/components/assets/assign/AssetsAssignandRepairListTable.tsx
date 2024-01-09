@@ -20,6 +20,8 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AssignAssetModal from "./AssignAssetModal";
+import { useGetAssetAssignQuery } from "@/redux/api/features/assetAssignApi";
+import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -30,8 +32,18 @@ const AssetsAssignAndRepairListTable = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  // Modal
+  //search with Asset id and Name
 
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
+
+  query["searchTerm"] = searchTerm;
+  //Data Fetching For Asset Assign
+
+  const { data: assetAssign, isLoading } = useGetAssetAssignQuery({ ...query });
+
+  console.log(assetAssign?.data, "assetAssign");
+
+  // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
@@ -95,64 +107,6 @@ const AssetsAssignAndRepairListTable = () => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: "",
-    endDate: "",
-  });
-
-  query["startDate"] = selectedDate.startDate;
-  query["endDate"] = selectedDate.endDate;
-
-  const handleFilterDate = (date: Date[] | null) => {
-    if (!date?.length) {
-      setSelectedDate({
-        startDate: "",
-        endDate: "",
-      });
-    }
-
-    if (date) {
-      const startDate = new Date(date[0]);
-      const endDate = new Date(date[1]);
-
-      // Set the start time to 00:00:00 (12:00 AM)
-      startDate.setHours(0, 0, 0, 0);
-
-      // Set the end time to 23:59:59 (11:59 PM)
-      endDate.setHours(23, 59, 59, 999);
-
-      const formattedStartDate = startDate?.toISOString();
-      const formattedEndDate = endDate?.toISOString();
-
-      if (startDate !== null && endDate !== null) {
-        setSelectedDate({
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
-        });
-      }
-    }
-  };
-
-  const VehicleNo = ["Excellent", "Good", "Low"].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
-  const assetsAssignData = [
-    {
-      sl: 1,
-      jobId: 12,
-      name: "Salim Al Sazu",
-      handOverDate: "2023-12-31",
-      assetId: "Laptop-M-103",
-      assetsType: "Laptop",
-      requestFor: "-",
-      status: "Pending",
-      note: "not working",
-    },
-    // Add more items as needed
-  ];
-
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between  ">
@@ -179,7 +133,7 @@ const AssetsAssignAndRepairListTable = () => {
                 </svg>
               </div>
               <input
-                //   onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 id="searchTerm"
                 className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
@@ -246,8 +200,8 @@ const AssetsAssignAndRepairListTable = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={assetsAssignData}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
+            data={assetAssign?.data}
+            loading={isLoading}
             // bordered={true}
             cellBordered={true}
             onSortColumn={handleSortColumn}
@@ -263,7 +217,7 @@ const AssetsAssignAndRepairListTable = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
               </Cell>
             </Column>
 
@@ -271,7 +225,7 @@ const AssetsAssignAndRepairListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Job Id</HeaderCell>
               <Cell
-                dataKey="jobId"
+                dataKey="user.profile.jobId"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -281,21 +235,21 @@ const AssetsAssignAndRepairListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Employee Name</HeaderCell>
               <Cell
-                dataKey="name"
+                dataKey="user.profile.firstName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              />
             </Column>
 
             {/* Style No*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>HandOver Date</HeaderCell>
               <Cell
-                dataKey="handOverDate"
+                dataKey="assignDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData) => `${moment(rowData?.purchaseDate).format("ll")}`}
               </Cell>
             </Column>
 
@@ -303,7 +257,7 @@ const AssetsAssignAndRepairListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Asst id</HeaderCell>
               <Cell
-                dataKey="assetId"
+                dataKey="assetItemList.assetId"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -311,9 +265,9 @@ const AssetsAssignAndRepairListTable = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Asst Type </HeaderCell>
+              <HeaderCell style={headerCss}>Asst Name </HeaderCell>
               <Cell
-                dataKey="assetsType"
+                dataKey="assetItemList.assetName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -333,7 +287,7 @@ const AssetsAssignAndRepairListTable = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Status</HeaderCell>
               <Cell
-                dataKey="status"
+                dataKey="assignStatus"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>

@@ -22,6 +22,7 @@ import { useGetAssetItemListQuery } from "@/redux/api/features/assetItemApi";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
+import { useCreateAssetAssignMutation } from "@/redux/api/features/assetAssignApi";
 
 const AssignAssetModal = ({ handleClose, open }: any) => {
   //toggle for servicing and assign
@@ -58,6 +59,8 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
     value: requestF,
   }));
 
+  const [creatingAsset, { isLoading }] = useCreateAssetAssignMutation();
+
   interface IAssetAssign {
     assignDate: Date;
     assetListId: string;
@@ -89,7 +92,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
 
     console.log(assetAssign);
 
-    // await creatingAsset(assetAssign);
+    await creatingAsset(assetAssign);
   };
 
   // useEffect(() => {
@@ -375,7 +378,7 @@ const AssignAssetModal = ({ handleClose, open }: any) => {
           <div className="flex justify-end mt-5">
             <Button
               type="submit"
-              // loading={isLoading}
+              loading={isLoading}
               // size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >

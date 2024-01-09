@@ -3,6 +3,7 @@ export enum tagTypes {
   item = "item",
   stationaryList = "stationaryList",
   asset = "asset",
+  assign = "assign",
 }
 
 export const tagTypesList = [
@@ -10,4 +11,5 @@ export const tagTypesList = [
   tagTypes.item,
   tagTypes.stationaryList,
   tagTypes.asset,
+  tagTypes.assign,
 ];

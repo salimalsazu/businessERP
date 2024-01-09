@@ -77,15 +77,60 @@ const GetAssetAssign = async (filters: IAssetAssignFilterRequest, options: IPagi
   const andConditions: Prisma.AssetAssignWhereInput[] = [];
 
   // Add search term condition if provided
+
   if (searchTerm) {
     andConditions.push({
-      OR: AssetAssignSearchableFields.map((field: any) => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
-        },
-      })),
-    });
+      OR: AssetAssignSearchableFields.map((field: any) => {
+        if (field === 'assetName') {
+          return {
+            assetItemList: {
+              assetName: {
+                contains: searchTerm,
+                mode: 'insensitive',
+              },
+            },
+          } as Prisma.AssetAssignWhereInput;
+        } else if (field === 'assetId') {
+          return {
+            assetItemList: {
+              assetId: {
+                contains: searchTerm,
+                mode: 'insensitive',
+              },
+            },
+          } as Prisma.AssetAssignWhereInput;
+        } else if (field === 'firstName') {
+          return {
+            user: {
+              profile: {
+                firstName: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          } as Prisma.AssetAssignWhereInput;
+        } else if (field === 'lastName') {
+          return {
+            user: {
+              profile: {
+                lastName: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          } as Prisma.AssetAssignWhereInput;
+        } else {
+          return {
+            [field]: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          } as Prisma.AssetAssignWhereInput;
+        }
+      }),
+    } as Prisma.AssetAssignWhereInput);
   }
 
   // Add filterData conditions if filterData is provided

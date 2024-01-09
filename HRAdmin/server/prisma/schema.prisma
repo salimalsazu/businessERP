@@ -122,7 +122,7 @@ model AssetAssign {
   assetAssignId String        @id @default(uuid())
   assetListId   String
   assetItemList AssetItemList @relation(fields: [assetListId], references: [assetListId])
-  assignDate    DateTime      @db.Timestamptz(0)
+  assignDate    DateTime?      @db.Timestamptz(0)
   userId        String
   user          User          @relation(fields: [userId], references: [userId])
   assignStatus  assignStatus  @default(Pending)
