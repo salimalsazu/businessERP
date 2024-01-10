@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AssetAssign, Prisma, assignStatus } from '@prisma/client';
+import { AssetAssign, FuelList, Prisma, assignStatus } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -9,64 +9,80 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
 import { AssetAssignRelationalFields, AssetAssignRelationalFieldsMapper, AssetAssignSearchableFields } from './fuelList.constants';
-import { IAssetAssignFilterRequest, IAssetAssignRequest } from './fuelList.interface';
+import { IAssetAssignFilterRequest, IFuelListRequest } from './fuelList.interface';
 
 // modules
 
 // !----------------------------------Create New Asset Assign---------------------------------------->>>
-const createAssetAssign = async (data: IAssetAssignRequest): Promise<AssetAssign> => {
-  if (!data.userId) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User ID is required');
-  }
+const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
+  console.log(data, 'data');
 
-  const isUserExist = await prisma.user.findUnique({
+  const perLitreCost = data.fuelCost / data.fuelQuantity;
+
+  const kmConsumed = data.kmCurrent - data.kmPrevious;
+
+  const lastFuelEntry = await prisma.fuelList.findFirst({
     where: {
-      userId: data.userId,
+      vehicleNo: data.vehicleNo,
+    },
+    orderBy: {
+      purchaseDate: 'desc',
     },
   });
 
-  console.log(isUserExist?.userId);
+  let kmPrevious = 0;
 
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User Not Found!!');
+  if (lastFuelEntry) {
+    kmPrevious = lastFuelEntry.kmCurrent || 0; // If it's not present in the data model, use 0 as default
   }
 
-  if (!data.assetListId) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Asset ID is required');
+  let kmThisMonth = 0;
+  let kmLastMonth = 0;
+
+  if (lastFuelEntry) {
+    kmPrevious = lastFuelEntry.kmCurrent || 0; // If it's not present in the data model, use 0 as default
+
+    const lastFuelMonth = lastFuelEntry.purchaseDate.getMonth();
+    const currentMonth = data.purchaseDate.getMonth();
+
+    if (lastFuelMonth === currentMonth) {
+      // Fuel entry in the same month
+      kmThisMonth = data.kmCurrent - lastFuelEntry.kmCurrent;
+    } else if (lastFuelMonth === (currentMonth - 1 + 12) % 12) {
+      // Fuel entry in the previous month
+      kmLastMonth = Number(lastFuelEntry.kmCurrent - kmPrevious);
+    }
   }
 
-  const isAssetExist = await prisma.assetItemList.findUnique({
-    where: {
-      assetListId: data.assetListId,
-    },
-  });
+  const usage = Number(kmLastMonth) / Number(kmThisMonth);
 
-  if (!isAssetExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Asset Not Found!!');
-  }
-
-  const assetAssign = {
-    assignDate: data.assignDate,
-    assetListId: isAssetExist.assetListId,
-    userId: isUserExist.userId,
-    requestFor: data.requestFor,
-    note: data.note,
-    assignStatus: assignStatus.Pending,
+  const fuelListData: any = {
+    purchaseDate: data.purchaseDate,
+    vehicleNo: data.vehicleNo,
+    kmCurrent: data.kmCurrent,
+    fuelQuantity: data.fuelQuantity,
+    fuelCost: data.fuelCost,
+    perLitreCost: perLitreCost,
+    kmConsumed: 0,
+    kmPrevious: kmPrevious,
+    kmThisMonth: kmThisMonth,
+    kmLastMonth: kmLastMonth,
+    usage: 0,
   };
 
-  const result = await prisma.assetAssign.create({
-    data: assetAssign,
+  const result = await prisma.fuelList.create({
+    data: fuelListData,
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Asset Assign');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Fuel List');
   }
 
   return result;
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const GetAssetAssign = async (filters: IAssetAssignFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<AssetAssign[]>> => {
+const GetFuelList = async (filters: IAssetAssignFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<AssetAssign[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -332,7 +348,7 @@ const GetAssetAssign = async (filters: IAssetAssignFilterRequest, options: IPagi
 //   };
 // };
 
-export const AssetAssignService = {
-  createAssetAssign,
-  GetAssetAssign,
+export const FuelListService = {
+  createFuelList,
+  GetFuelList,
 };

@@ -4,31 +4,28 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { AssetAssignService } from './fuelList.service';
-import { AssetAssignFilterableFields } from './fuelList.constants';
+import { FuelListService } from './fuelList.service';
+import { FuelListFilterableFields } from './fuelList.constants';
 
 // !----------------------------------Create New Courier---------------------------------------->>>
-const createAssetAssign = catchAsync(async (req: Request, res: Response) => {
-  //@ts-ignore
-  const result = await AssetAssignService.createAssetAssign(req.body);
-
-  console.log('result', result);
+const createFuelList = catchAsync(async (req: Request, res: Response) => {
+  const result = await FuelListService.createFuelList(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Asset Assign Successfully',
+    message: 'Fuel Cost Added Successfully',
     data: result,
   });
 });
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const GetAssetAssign = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, AssetAssignFilterableFields);
+const GetFuelList = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, FuelListFilterableFields);
 
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
-  const result = await AssetAssignService.GetAssetAssign(filters, options);
+  const result = await FuelListService.GetFuelList(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -80,7 +77,7 @@ const GetAssetAssign = catchAsync(async (req: Request, res: Response) => {
 //   });
 // });
 
-export const AssetAssignController = {
-  createAssetAssign,
-  GetAssetAssign,
+export const FuelListController = {
+  createFuelList,
+  GetFuelList,
 };

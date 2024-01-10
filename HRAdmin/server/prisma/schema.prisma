@@ -146,7 +146,6 @@ model FuelList {
   kmLastMonth  Int
   kmThisMonth  Int
   usage        Int
-  fuelDate     DateTime @db.Timestamptz(0)
   createdAt    DateTime @default(now()) @db.Timestamptz(0)
   updatedAt    DateTime @updatedAt @db.Timestamptz(0)
 }

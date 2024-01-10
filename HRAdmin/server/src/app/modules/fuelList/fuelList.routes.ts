@@ -1,21 +1,21 @@
 import express from 'express';
 
-import { AssetAssignController } from './fuelList.controller';
+import { FuelListController } from './fuelList.controller';
 
 const router = express.Router();
 
-// ! Create New  List ------------------------------->>>
+// ! Create New List ------------------------------->>>
 router.post(
   '/',
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  AssetAssignController.createAssetAssign
+  FuelListController.createFuelList
 );
 
 // ! Get all List----------------------------------->>>
 router.get(
   '/',
   // auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  AssetAssignController.GetAssetAssign
+  FuelListController.GetFuelList
 );
 
-export const AssetAssignRoutes = router;
+export const FuelListRoutes = router;

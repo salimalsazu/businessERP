@@ -6,6 +6,7 @@ import { StationaryItemRoutes } from '../modules/stationaryItem/stationaryItem.r
 import { StationaryListRoutes } from '../modules/stationarylist/stationarylist.routes';
 import { AssetListRoutes } from '../modules/asset/asset.routes';
 import { AssetAssignRoutes } from '../modules/assetAssign/assetAssign.routes';
+import { FuelListRoutes } from '../modules/fuelList/fuelList.routes';
 
 const router = express.Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/assetAssign',
     route: AssetAssignRoutes,
+  },
+  {
+    path: '/fuelList',
+    route: FuelListRoutes,
   },
 ];
 
