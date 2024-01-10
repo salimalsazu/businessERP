@@ -132,6 +132,27 @@ model AssetAssign {
   note          String
 }
 
+
+model FuelList {
+  fuelListId   String   @id @default(uuid())
+  purchaseDate DateTime @db.Timestamptz(0)
+  vehicleNo    String
+  kmPrevious  Int
+  kmCurrent   Int
+  fuelQuantity Int
+  fuelCost     Int
+  perLitreCost Int
+  kmConsumed   Int
+  kmLastMonth  Int
+  kmThisMonth  Int
+  usage        Int
+  fuelDate     DateTime @db.Timestamptz(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(0)
+}
+
+
+
 enum requestFor {
   Assign
   Servicing

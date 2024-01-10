@@ -325,7 +325,7 @@ const AssetsAssignAndRepairListTable = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={assetAssign?.meta?.total}
             prev
             next
             first
