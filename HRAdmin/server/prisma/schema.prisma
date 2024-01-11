@@ -143,8 +143,6 @@ model FuelList {
   fuelCost     Int
   perLitreCost Int
   kmConsumed   Int
-  kmLastMonth  Int
-  kmThisMonth  Int
   usage        Int
   createdAt    DateTime @default(now()) @db.Timestamptz(0)
   updatedAt    DateTime @updatedAt @db.Timestamptz(0)

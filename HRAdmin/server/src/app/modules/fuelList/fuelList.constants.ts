@@ -1,8 +1,8 @@
-export const FuelListFilterableFields: string[] = ['searchTerm', 'assetName', 'assetCategory', 'assetLocation'];
-export const AssetAssignSearchableFields: string[] = ['assetName', 'assetId', 'firstName', 'lastName'];
+export const FuelListFilterableFields: string[] = ['searchTerm', 'purchaseDate', 'vehicleNo'];
+export const FuelListSearchableFields: string[] = ['assetName'];
 
-export const AssetAssignRelationalFields: string[] = ['assetName'];
+export const FuelListRelationalFields: string[] = ['assetName'];
 
-export const AssetAssignRelationalFieldsMapper: { [key: string]: string } = {
+export const FuelListRelationalFieldsMapper: { [key: string]: string } = {
   assetName: 'assetName',
 };
