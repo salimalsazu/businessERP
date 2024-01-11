@@ -17,10 +17,6 @@ import { IAssetAssignFilterRequest, IFuelListRequest } from './fuelList.interfac
 const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
   console.log(data, 'data');
 
-  const perLitreCost = data.fuelCost / data.fuelQuantity;
-
-  const kmConsumed = data.kmCurrent - data.kmPrevious;
-
   const lastFuelEntry = await prisma.fuelList.findFirst({
     where: {
       vehicleNo: data.vehicleNo,
@@ -36,25 +32,34 @@ const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
     kmPrevious = lastFuelEntry.kmCurrent || 0; // If it's not present in the data model, use 0 as default
   }
 
-  let kmThisMonth = 0;
-  let kmLastMonth = 0;
+  console.log(kmPrevious, 'lastFuelEntry');
 
-  if (lastFuelEntry) {
-    kmPrevious = lastFuelEntry.kmCurrent || 0; // If it's not present in the data model, use 0 as default
+  // let kmThisMonth = 0;
+  // let kmLastMonth = 0;
 
-    const lastFuelMonth = lastFuelEntry.purchaseDate.getMonth();
-    const currentMonth = data.purchaseDate.getMonth();
+  // if (lastFuelEntry) {
+  //   kmPrevious = lastFuelEntry.kmCurrent || 0; // If it's not present in the data model, use 0 as default
 
-    if (lastFuelMonth === currentMonth) {
-      // Fuel entry in the same month
-      kmThisMonth = data.kmCurrent - lastFuelEntry.kmCurrent;
-    } else if (lastFuelMonth === (currentMonth - 1 + 12) % 12) {
-      // Fuel entry in the previous month
-      kmLastMonth = Number(lastFuelEntry.kmCurrent - kmPrevious);
-    }
-  }
+  //   const lastFuelMonth = lastFuelEntry.purchaseDate.getMonth();
+  //   const currentMonth = data.purchaseDate.getMonth();
 
-  const usage = Number(kmLastMonth) / Number(kmThisMonth);
+  //   if (lastFuelMonth === currentMonth) {
+  //     // Fuel entry in the same month
+  //     kmThisMonth = data.kmCurrent - lastFuelEntry.kmCurrent;
+  //   } else if (lastFuelMonth === (currentMonth - 1 + 12) % 12) {
+  //     // Fuel entry in the previous month
+  //     kmLastMonth = Number(lastFuelEntry.kmCurrent - kmPrevious);
+  //   }
+  // }
+
+  const perLitreCost = data.fuelCost / data.fuelQuantity;
+
+  const kmConsumed = data.kmCurrent - kmPrevious;
+
+  // const usage = Number(kmLastMonth) / Number(kmThisMonth);
+  console.log(kmConsumed, 'kmConsumed');
+  console.log(data.kmCurrent, 'data.kmCurrent');
+
 
   const fuelListData: any = {
     purchaseDate: data.purchaseDate,
@@ -63,22 +68,24 @@ const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
     fuelQuantity: data.fuelQuantity,
     fuelCost: data.fuelCost,
     perLitreCost: perLitreCost,
-    kmConsumed: 0,
+    kmConsumed: kmConsumed,
     kmPrevious: kmPrevious,
     kmThisMonth: kmThisMonth,
     kmLastMonth: kmLastMonth,
-    usage: 0,
+    usage: usage,
   };
 
-  const result = await prisma.fuelList.create({
-    data: fuelListData,
-  });
+  console.log(fuelListData, 'fuelListData');
 
-  if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Fuel List');
-  }
+  // const result = await prisma.fuelList.create({
+  //   data: fuelListData,
+  // });
 
-  return result;
+  // if (!result) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Fuel List');
+  // }
+
+  return fuelListData;
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
