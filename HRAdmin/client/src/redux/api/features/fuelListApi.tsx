@@ -1,0 +1,28 @@
+import { baseApi } from "@/redux/api/baseApi";
+import { tagTypes } from "@/redux/tag-types";
+const FUEL_LIST_API = "/fuelList";
+
+const fuelList = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    // create Item
+    createFuelList: builder.mutation({
+      query: (data) => ({
+        url: `${FUEL_LIST_API}`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.fuel],
+    }),
+
+    getFuelList: builder.query({
+      query: (arg: Record<string, any>) => ({
+        url: `${FUEL_LIST_API}`,
+        method: "GET",
+        params: arg,
+      }),
+      providesTags: [tagTypes.fuel],
+    }),
+  }),
+});
+
+export const { useCreateFuelListMutation, useGetFuelListQuery } = fuelList;
