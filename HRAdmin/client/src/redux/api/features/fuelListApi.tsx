@@ -4,7 +4,7 @@ const FUEL_LIST_API = "/fuelList";
 
 const fuelList = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // create Item
+    // create Fuel
     createFuelList: builder.mutation({
       query: (data) => ({
         url: `${FUEL_LIST_API}`,
@@ -14,6 +14,7 @@ const fuelList = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.fuel],
     }),
 
+    //Get Fuel List
     getFuelList: builder.query({
       query: (arg: Record<string, any>) => ({
         url: `${FUEL_LIST_API}`,

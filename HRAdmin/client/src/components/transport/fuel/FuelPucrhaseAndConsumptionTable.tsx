@@ -20,27 +20,10 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddFuelExpModal from "./AddFuelExpModal";
+import { useGetFuelListQuery } from "@/redux/api/features/fuelListApi";
+import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
-
-const data = [
-  {
-    sl: 1,
-    date: "22/12/2023",
-    totalCost: 500,
-    totalMeal: 7,
-    employeeCost: 250,
-    mealRate: 18.5,
-  },
-  {
-    sl: 2,
-    date: "21/12/2023",
-    totalCost: 600,
-    totalMeal: 7,
-    employeeCost: 150,
-    mealRate: 15.5,
-  },
-];
 
 const FuelPurchaseAndConsumptionSection = () => {
   const query: Record<string, any> = {};
@@ -49,8 +32,17 @@ const FuelPurchaseAndConsumptionSection = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  // Modal
+  //filter by Vehicle No
+  const [vehicleNo, setVehicleNo] = useState<string | null>(null);
+  query["vehicleNo"] = vehicleNo;
 
+  //Date Fetching For Fuel List
+
+  const { data: fuelList, isLoading } = useGetFuelListQuery(query);
+
+  console.log("fuelList", fuelList?.data);
+
+  // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
@@ -152,7 +144,7 @@ const FuelPurchaseAndConsumptionSection = () => {
     }
   };
 
-  const VehicleNo = ["AB-102", "CD-200"].map((item) => ({
+  const VehicleNo = ["AB102", "AB103"].map((item) => ({
     label: item,
     value: item,
   }));
@@ -182,10 +174,10 @@ const FuelPurchaseAndConsumptionSection = () => {
           </div>
           <div>
             <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
-              // onClean={() => setSelectedStyleNo(null)}
+              onChange={(value: string | null): void =>
+                setVehicleNo(value as string)
+              }
+              onClean={() => setVehicleNo(null)}
               size="lg"
               data={VehicleNo}
               style={{ width: 300 }}
@@ -277,8 +269,8 @@ const FuelPurchaseAndConsumptionSection = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={data}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
+            data={fuelList?.data}
+            loading={isLoading}
             // bordered={true}
             cellBordered={true}
             onSortColumn={handleSortColumn}
@@ -294,7 +286,7 @@ const FuelPurchaseAndConsumptionSection = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
               </Cell>
             </Column>
 
@@ -302,11 +294,11 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1} sortable>
               <HeaderCell style={headerCss}> Date</HeaderCell>
               <Cell
-                dataKey="jobId"
+                dataKey="purchaseDate"
                 verticalAlign="middle"
                 style={{ fontSize: 14, fontWeight: 500, padding: 10 }}
               >
-                {/* {(rowData) => `${moment(rowData?.courierDate).format("ll")}`} */}
+                {(rowData) => `${moment(rowData?.purchaseDate).format("ll")}`}
               </Cell>
             </Column>
 
@@ -314,7 +306,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Vehicle No</HeaderCell>
               <Cell
-                dataKey="employeeName"
+                dataKey="vehicleNo"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
@@ -326,7 +318,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>KM (Previous)</HeaderCell>
               <Cell
-                dataKey="month"
+                dataKey="kmPrevious"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -335,7 +327,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>KM (Current)</HeaderCell>
               <Cell
-                dataKey="mobileNumber"
+                dataKey="kmCurrent"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -345,7 +337,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Fuel (Ltr)</HeaderCell>
               <Cell
-                dataKey="limit"
+                dataKey="fuelQuantity"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -355,7 +347,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Cost (Tk)</HeaderCell>
               <Cell
-                dataKey="mobileBill"
+                dataKey="fuelCost"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -365,7 +357,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Per Ltr (Tk)</HeaderCell>
               <Cell
-                dataKey="usage"
+                dataKey="perLitreCost"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -375,27 +367,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>KM (Consumption)</HeaderCell>
               <Cell
-                dataKey="deduction"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Deduction*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>KM (Last Month Used)</HeaderCell>
-              <Cell
-                dataKey="deduction"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Deduction*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>KM (This Month)</HeaderCell>
-              <Cell
-                dataKey="deduction"
+                dataKey="kmConsumed"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -405,7 +377,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Usage</HeaderCell>
               <Cell
-                dataKey="deduction"
+                dataKey="usage"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -432,7 +404,7 @@ const FuelPurchaseAndConsumptionSection = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={fuelList?.meta?.total}
             prev
             next
             first
@@ -442,7 +414,7 @@ const FuelPurchaseAndConsumptionSection = () => {
             maxButtons={5}
             size="lg"
             layout={["total", "-", "limit", "|", "pager", "skip"]}
-            limitOptions={[10, 20, 30, 50]}
+            limitOptions={[5, 10, 20, 30, 50]}
             // limit={size}
             // onChangeLimit={(limitChange) => setSize(limitChange)}
             // activePage={page}
