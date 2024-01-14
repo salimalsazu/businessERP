@@ -1,7 +1,5 @@
 export type IFuelListFilterRequest = {
   searchTerm?: string | undefined;
-  // assetName?: string | undefined;
-  // assetLocation?: string | undefined;
   startDate?: string | null; // Date range start
   endDate?: string | null; // Date range end
   vehicleNo?: string | undefined;

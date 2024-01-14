@@ -1,76 +1,52 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FuelList, Prisma } from '@prisma/client';
+import { FuelList, Prisma, VehicleAdd } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { FuelListRelationalFields, FuelListRelationalFieldsMapper, FuelListSearchableFields } from './fuelList.constants';
-import { IFuelListFilterRequest, IFuelListRequest } from './fuelList.interface';
+import {
+  FuelListRelationalFields,
+  FuelListRelationalFieldsMapper,
+  FuelListSearchableFields,
+  VehicleRelationalFields,
+  VehicleRelationalFieldsMapper,
+  VehicleSearchableFields,
+} from './vehicle.constants';
+import { IVehicleFilterRequest, IVehicleRequest } from './vehicle.interface';
 
 // modules
 
 // !----------------------------------Create New Asset Assign---------------------------------------->>>
-const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
-  const lastFuelEntry = await prisma.fuelList.findFirst({
-    where: {
-      vehicleNo: data.vehicleNo,
-    },
-    orderBy: [
-      { createdAt: 'desc' }, // Add createdAt as a secondary sorting condition
-    ],
+const createVehicle = async (data: IVehicleRequest): Promise<VehicleAdd> => {
+  const result = await prisma.vehicleAdd.create({
+    data,
   });
 
-  console.log('lastFuelEntry', lastFuelEntry);
-
-  let kmPrevious = 0;
-  let usage = 0;
-
-  if (lastFuelEntry) {
-    kmPrevious = lastFuelEntry.kmCurrent || 0;
-    const kmConsumed = data.kmCurrent - kmPrevious;
-    usage = lastFuelEntry.kmConsumed ? Number(((kmConsumed / lastFuelEntry.kmConsumed) * 100).toFixed(2)) : 0;
+  if (!result) {
+    throw new Error('Failed to add Vehicle');
   }
-
-  const perLitreCost = data.fuelCost / data.fuelQuantity;
-  const kmConsumed = data.kmCurrent - kmPrevious;
-
-  const fuelListData: any = {
-    purchaseDate: data.purchaseDate,
-    vehicleNo: data.vehicleNo,
-    kmCurrent: data.kmCurrent,
-    fuelQuantity: data.fuelQuantity,
-    fuelCost: data.fuelCost,
-    perLitreCost: perLitreCost,
-    kmConsumed: kmConsumed,
-    kmPrevious: kmPrevious,
-    usage: usage,
-  };
-
-  const result = await prisma.fuelList.create({
-    data: fuelListData,
-  });
 
   return result;
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const GetFuelList = async (filters: IFuelListFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<FuelList[]>> => {
+const getVehicle = async (filters: IVehicleFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<VehicleAdd[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, startDate, endDate, vehicleNo, ...filterData } = filters;
+  const { searchTerm, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.FuelListWhereInput[] = [];
+  const andConditions: Prisma.VehicleAddWhereInput[] = [];
 
   // Add search term condition if provided
 
   if (searchTerm) {
     andConditions.push({
-      OR: FuelListSearchableFields.map((field: any) => ({
+      OR: VehicleSearchableFields.map((field: any) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -83,9 +59,9 @@ const GetFuelList = async (filters: IFuelListFilterRequest, options: IPagination
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (FuelListRelationalFields.includes(key)) {
+        if (VehicleRelationalFields.includes(key)) {
           return {
-            [FuelListRelationalFieldsMapper[key]]: {
+            [VehicleRelationalFieldsMapper[key]]: {
               assetName: (filterData as any)[key],
             },
           };
@@ -100,31 +76,11 @@ const GetFuelList = async (filters: IFuelListFilterRequest, options: IPagination
     });
   }
 
-  //Filter By Date
-
-  if (startDate && endDate) {
-    andConditions.push({
-      purchaseDate: {
-        gte: startDate, // Greater than or equal to startDate
-        lte: endDate, // Less than or equal to endDate
-      },
-    });
-  }
-
-  //filter by Status
-  if (vehicleNo) {
-    andConditions.push({
-      vehicleNo: {
-        equals: filters.vehicleNo,
-      },
-    });
-  }
-
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.FuelListWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.VehicleAddWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.fuelList.findMany({
+  const result = await prisma.vehicleAdd.findMany({
     where: whereConditions,
     skip,
     take: limit,
@@ -132,7 +88,7 @@ const GetFuelList = async (filters: IFuelListFilterRequest, options: IPagination
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.fuelList.count({
+  const total = await prisma.vehicleAdd.count({
     where: whereConditions,
   });
 
@@ -280,7 +236,7 @@ const GetFuelList = async (filters: IFuelListFilterRequest, options: IPagination
 //   };
 // };
 
-export const FuelListService = {
-  createFuelList,
-  GetFuelList,
+export const VehicleService = {
+  createVehicle,
+  getVehicle,
 };

@@ -149,12 +149,18 @@ model FuelList {
 }
 
 
+model VehicleAdd {
+  vehicleId     String   @id @default(uuid())
+  vehicleName     String   @unique
+  createdAt     DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(0)
+}
 
 enum requestFor {
   Assign
   Servicing
 }
-
+ 
 enum UserRoles {
   SUPERADMIN
   ADMIN

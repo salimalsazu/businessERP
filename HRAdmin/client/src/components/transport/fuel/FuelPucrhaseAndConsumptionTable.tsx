@@ -36,12 +36,6 @@ const FuelPurchaseAndConsumptionSection = () => {
   const [vehicleNo, setVehicleNo] = useState<string | null>(null);
   query["vehicleNo"] = vehicleNo;
 
-  //Date Fetching For Fuel List
-
-  const { data: fuelList, isLoading } = useGetFuelListQuery(query);
-
-  console.log("fuelList", fuelList?.data);
-
   // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
@@ -149,6 +143,10 @@ const FuelPurchaseAndConsumptionSection = () => {
     value: item,
   }));
 
+  //Date Fetching For Fuel List
+
+  const { data: fuelList, isLoading } = useGetFuelListQuery(query);
+
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between ">
@@ -161,12 +159,7 @@ const FuelPurchaseAndConsumptionSection = () => {
               onChange={(value: Date[] | null): void => {
                 handleFilterDate(value);
               }}
-              onClean={() =>
-                handleFilterDate({
-                  startDate: "",
-                  endDate: "",
-                })
-              }
+              onClean={() => handleFilterDate(null)}
               size="lg"
               style={{ width: 400 }}
               placeholder="Filter By Date"
@@ -232,31 +225,6 @@ const FuelPurchaseAndConsumptionSection = () => {
                 </svg>
               </span>
               <span className="text-sm font-semibold">Add Fuel Exp</span>
-            </Button>
-          </div>
-          <div>
-            <Button
-              className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
-              type="button"
-              onClick={handleOpen}
-            >
-              <span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="#fff"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              </span>
-              <span className="text-sm font-semibold">Add Vehicle</span>
             </Button>
           </div>
         </div>
@@ -380,7 +348,13 @@ const FuelPurchaseAndConsumptionSection = () => {
                 dataKey="usage"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) => (
+                  <div>
+                    {rowData.usage}% {/* Add the percentage sign here */}
+                  </div>
+                )}
+              </Cell>
             </Column>
             {/* {role !== "USER" && (
                   <Column width={70}>
