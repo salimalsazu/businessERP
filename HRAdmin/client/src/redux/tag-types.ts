@@ -5,6 +5,7 @@ export enum tagTypes {
   asset = "asset",
   assign = "assign",
   fuel = "fuel",
+  vehicle = "vehicle",
 }
 
 export const tagTypesList = [
@@ -14,4 +15,5 @@ export const tagTypesList = [
   tagTypes.asset,
   tagTypes.assign,
   tagTypes.fuel,
+  tagTypes.vehicle,
 ];

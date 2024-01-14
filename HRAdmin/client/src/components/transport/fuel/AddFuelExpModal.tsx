@@ -2,6 +2,7 @@ import {
   Button,
   DatePicker,
   InputNumber,
+  InputPicker,
   Modal,
   Placeholder,
   SelectPicker,
@@ -11,8 +12,12 @@ import {
 } from "rsuite";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
+import {
+  useAddVehicleMutation,
+  useGetVehicleQuery,
+} from "@/redux/api/features/vehicleApi";
 
-const AddFuelExpModal = ({ handleClose, open }: any) => {
+const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
   interface IAddExp {
     date: Date;
     totalCost: number;
@@ -59,10 +64,16 @@ const AddFuelExpModal = ({ handleClose, open }: any) => {
   //   }
   // }, []);
 
-  const VehicleNo = ["AB-102", "CD-200"].map((item) => ({
-    label: item,
-    value: item,
-  }));
+  const [addVehicle] = useAddVehicleMutation();
+
+  const handleAddVehicle = async (data: any) => {
+    const vehicleData = {
+      vehicleName: data,
+    };
+
+    console.log(vehicleData, "add vehicle");
+    await addVehicle(vehicleData);
+  };
 
   return (
     <Modal backdrop="static" keyboard={false} open={open} onClose={handleClose}>
@@ -135,7 +146,12 @@ const AddFuelExpModal = ({ handleClose, open }: any) => {
                 rules={{ required: "Vehicle No is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <SelectPicker
+                    <InputPicker
+                      creatable={true}
+                      onCreate={(value) => {
+                        handleAddVehicle(value);
+                        console.log(value);
+                      }}
                       size="lg"
                       data={VehicleNo}
                       value={field.value}

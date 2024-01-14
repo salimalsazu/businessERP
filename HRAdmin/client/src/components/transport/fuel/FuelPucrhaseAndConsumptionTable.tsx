@@ -22,6 +22,7 @@ import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddFuelExpModal from "./AddFuelExpModal";
 import { useGetFuelListQuery } from "@/redux/api/features/fuelListApi";
 import moment from "moment";
+import { useGetVehicleQuery } from "@/redux/api/features/vehicleApi";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -138,14 +139,19 @@ const FuelPurchaseAndConsumptionSection = () => {
     }
   };
 
-  const VehicleNo = ["AB102", "AB103"].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
   //Date Fetching For Fuel List
 
   const { data: fuelList, isLoading } = useGetFuelListQuery(query);
+
+  //Fetching Vehicle No
+  const { data: vehicle, isLoading: vehicleLoading } = useGetVehicleQuery(null);
+
+  console.log("vehicle", vehicle?.data);
+
+  const VehicleNo = vehicle?.data.map((item: any) => ({
+    label: item?.vehicleName,
+    value: item?.vehicleId,
+  }));
 
   return (
     <div>
@@ -177,7 +183,7 @@ const FuelPurchaseAndConsumptionSection = () => {
               // searchable={false}
               placeholder="Filter By Vehicle No"
               searchable={false}
-              // renderMenu={(menu) => renderLoading(menu, isLoadingAllStyleNames)}
+              // renderMenu={(menu) => renderLoading(menu, vehicleLoading)}
             />
           </div>
         </div>
@@ -399,7 +405,11 @@ const FuelPurchaseAndConsumptionSection = () => {
 
       {/* Modal */}
       <div>
-        <AddFuelExpModal open={open} handleClose={handleClose} />
+        <AddFuelExpModal
+          open={open}
+          handleClose={handleClose}
+          VehicleNo={VehicleNo}
+        />
       </div>
     </div>
   );
