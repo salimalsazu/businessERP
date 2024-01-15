@@ -1,5 +1,5 @@
-export const FuelListFilterableFields: string[] = ['searchTerm', 'purchaseDate', 'vehicleNo', 'startDate', 'endDate'];
-export const FuelListSearchableFields: string[] = ['vehicleNo'];
+export const FuelListFilterableFields: string[] = ['searchTerm', 'purchaseDate', 'vehicleName', 'startDate', 'endDate'];
+export const FuelListSearchableFields: string[] = ['vehicleName'];
 
 export const FuelListRelationalFields: string[] = ['assetName'];
 

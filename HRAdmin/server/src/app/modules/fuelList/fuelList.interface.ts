@@ -2,12 +2,12 @@ export type IFuelListFilterRequest = {
   searchTerm?: string | undefined;
   startDate?: string | null; // Date range start
   endDate?: string | null; // Date range end
-  vehicleNo?: string | undefined;
+  vehicleName?: string | undefined;
 };
 
 export type IFuelListRequest = {
   purchaseDate: Date;
-  vehicleNo: string;
+  vehicleId: string;
   kmPrevious: number;
   kmCurrent: number;
   fuelQuantity: number;

@@ -122,7 +122,7 @@ model AssetAssign {
   assetAssignId String        @id @default(uuid())
   assetListId   String
   assetItemList AssetItemList @relation(fields: [assetListId], references: [assetListId])
-  assignDate    DateTime?      @db.Timestamptz(0)
+  assignDate    DateTime?     @db.Timestamptz(0)
   userId        String
   user          User          @relation(fields: [userId], references: [userId])
   assignStatus  assignStatus  @default(Pending)
@@ -132,35 +132,35 @@ model AssetAssign {
   note          String
 }
 
-
 model FuelList {
-  fuelListId   String   @id @default(uuid())
-  purchaseDate DateTime @db.Timestamptz(0)
-  vehicleNo    String
-  kmPrevious  Int
-  kmCurrent   Int
+  fuelListId   String      @id @default(uuid())
+  purchaseDate DateTime    @db.Timestamptz(0)
+  kmPrevious   Int
+  kmCurrent    Int
   fuelQuantity Int
   fuelCost     Int
   perLitreCost Int
   kmConsumed   Int
   usage        Int
-  createdAt    DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(0)
+  vehicleId    String    
+  vehicleAdd   VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
+  createdAt    DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime    @updatedAt @db.Timestamptz(0)
 }
 
-
 model VehicleAdd {
-  vehicleId     String   @id @default(uuid())
-  vehicleName     String   @unique
-  createdAt     DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt     DateTime @updatedAt @db.Timestamptz(0)
+  vehicleId   String     @id @default(uuid())
+  vehicleName String     @unique
+  createdAt   DateTime   @default(now()) @db.Timestamptz(0)
+  updatedAt   DateTime   @updatedAt @db.Timestamptz(0)
+  fuelList    FuelList[]
 }
 
 enum requestFor {
   Assign
   Servicing
 }
- 
+
 enum UserRoles {
   SUPERADMIN
   ADMIN
