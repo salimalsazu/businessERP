@@ -34,8 +34,8 @@ const FuelPurchaseAndConsumptionSection = () => {
   const [loading, setLoading] = useState(false);
 
   //filter by Vehicle No
-  const [vehicleNo, setVehicleNo] = useState<string | null>(null);
-  query["vehicleNo"] = vehicleNo;
+  const [vehicleName, setVehicleName] = useState<string | null>(null);
+  query["vehicleName"] = vehicleName;
 
   // Modal
   const [open, setOpen] = useState(false);
@@ -150,7 +150,7 @@ const FuelPurchaseAndConsumptionSection = () => {
 
   const VehicleNo = vehicle?.data.map((item: any) => ({
     label: item?.vehicleName,
-    value: item?.vehicleId,
+    value: item?.vehicleName,
   }));
 
   return (
@@ -174,9 +174,9 @@ const FuelPurchaseAndConsumptionSection = () => {
           <div>
             <SelectPicker
               onChange={(value: string | null): void =>
-                setVehicleNo(value as string)
+                setVehicleName(value as string)
               }
-              onClean={() => setVehicleNo(null)}
+              onClean={() => setVehicleName(null)}
               size="lg"
               data={VehicleNo}
               style={{ width: 300 }}
@@ -280,12 +280,10 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Vehicle No</HeaderCell>
               <Cell
-                dataKey="vehicleNo"
+                dataKey="vehicleAdd.vehicleName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {/* {(rowData) => `${rowData.variants}`} */}
-              </Cell>
+              ></Cell>
             </Column>
 
             {/* Courier Name*/}

@@ -16,28 +16,39 @@ import {
   useAddVehicleMutation,
   useGetVehicleQuery,
 } from "@/redux/api/features/vehicleApi";
+import { useCreateFuelListMutation } from "@/redux/api/features/fuelListApi";
 
 const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
-  interface IAddExp {
-    date: Date;
-    totalCost: number;
-    employee: string[] | null;
+  const [createFuelList, { isLoading }] = useCreateFuelListMutation();
+
+  interface IFuelExp {
+    purchaseDate: string;
+    vehicleId: string;
+    kmCurrent: number;
+    fuelCost: number;
+    fuelQuantity: number;
   }
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<IAddExp>();
+  } = useForm<IFuelExp>();
 
-  const handleCreateNewOrder: SubmitHandler<IAddExp> = async (
-    data: IAddExp
+  const handleCreateFuelList: SubmitHandler<IFuelExp> = async (
+    data: IFuelExp
   ) => {
-    const orderDataObj = {
-      date: data.date,
-      totalCost: data.totalCost,
-      employee: data.employee,
+    const fuelData = {
+      purchaseDate: data.purchaseDate,
+      vehicleId: data.vehicleId,
+      kmCurrent: Number(data.kmCurrent),
+      fuelCost: Number(data.fuelCost),
+      fuelQuantity: Number(data.fuelQuantity),
     };
+
+    console.log("fuelData", fuelData);
+
+    await createFuelList(fuelData);
   };
 
   // useEffect(() => {
@@ -67,13 +78,11 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
   const [addVehicle] = useAddVehicleMutation();
 
   const handleAddVehicle = async (data: any) => {
-    const vehicleData = {
-      vehicleName: data,
-    };
-
-    console.log(vehicleData, "add vehicle");
-    await addVehicle(vehicleData);
+    await addVehicle({ vehicleName: data });
   };
+
+  ///Vehicle No Fetching for Form
+  const { data: vehicle } = useGetVehicleQuery(null);
 
   return (
     <Modal backdrop="static" keyboard={false} open={open} onClose={handleClose}>
@@ -82,21 +91,21 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
       </Modal.Header>
 
       <Modal.Body>
-        <form onSubmit={handleSubmit(handleCreateNewOrder)}>
+        <form onSubmit={handleSubmit(handleCreateFuelList)}>
           {/* 1st section */}
           <div className="flex justify-between  gap-[24px] mb-5">
             {/* Date */}{" "}
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Date</Tooltip>}>
-                  <label htmlFor="buyerEtd" className="text-sm font-medium">
+                  <label htmlFor="purchaseDate" className="text-sm font-medium">
                     Date <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
 
               <Controller
-                name="date"
+                name="purchaseDate"
                 control={control}
                 rules={{ required: "Date is required" }}
                 render={({ field }) => (
@@ -116,7 +125,7 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
                         width: "100%",
                       }}
                       size="lg"
-                      placeholder="Expense Date"
+                      placeholder="Purchase Date"
                       editable={false}
                       placement="auto"
                     />
@@ -140,20 +149,23 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
                 </Whisper>
               </div>
               <Controller
-                name="styleNo"
+                name="vehicleId"
                 control={control}
                 defaultValue={""}
                 rules={{ required: "Vehicle No is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <InputPicker
+                      name="vehicleId"
                       creatable={true}
                       onCreate={(value) => {
                         handleAddVehicle(value);
-                        console.log(value);
                       }}
                       size="lg"
-                      data={VehicleNo}
+                      data={vehicle?.data.map((item: any) => ({
+                        label: item?.vehicleName,
+                        value: item?.vehicleId,
+                      }))}
                       value={field.value}
                       onChange={(value: string | null) => field.onChange(value)}
                       style={{
@@ -198,7 +210,7 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
               </div>
 
               <Controller
-                name="currentKM"
+                name="kmCurrent"
                 control={control}
                 rules={{
                   required: " Current KM is required",
@@ -306,7 +318,7 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
               </div>
 
               <Controller
-                name="ltr"
+                name="fuelQuantity"
                 control={control}
                 rules={{
                   required: "Ltr is required",
@@ -345,7 +357,7 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
           <div className="flex justify-end mt-5">
             <Button
               type="submit"
-              // loading={isLoading}
+              loading={isLoading}
               size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >
