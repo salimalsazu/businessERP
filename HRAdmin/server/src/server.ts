@@ -1,7 +1,7 @@
 import { Server } from 'http';
 import app from './app';
 import config from './config';
-import { errorlogger, logger } from './shared/logger';
+import { errorLogger, logger } from './shared/logger';
 
 async function bootstrap() {
   const server: Server = app.listen(config.port, () => {
@@ -18,7 +18,7 @@ async function bootstrap() {
   };
 
   const unexpectedErrorHandler = (error: unknown) => {
-    errorlogger.error(error);
+    errorLogger.error(error);
     exitHandler();
   };
 

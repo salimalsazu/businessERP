@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\.7081b3947309d848e9729cc25c40b86f8c1b8e51-audit.json",
+    "files": [
+        {
+            "date": 1705420059828,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\portal_247-2024-16-01-21-success.log",
+            "hash": "3e2389c5dcb3e83d763d42e8e2c5abcc47b3b778fec1a70126252c9b8a7466a3"
+        }
+    ],
+    "hashType": "sha256"
+}

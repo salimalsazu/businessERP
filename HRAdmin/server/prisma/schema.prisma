@@ -142,18 +142,32 @@ model FuelList {
   perLitreCost Int
   kmConsumed   Int
   usage        Int
-  vehicleId    String    
+  vehicleId    String
   vehicleAdd   VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
   createdAt    DateTime    @default(now()) @db.Timestamptz(0)
   updatedAt    DateTime    @updatedAt @db.Timestamptz(0)
 }
 
 model VehicleAdd {
-  vehicleId   String     @id @default(uuid())
-  vehicleName String     @unique
-  createdAt   DateTime   @default(now()) @db.Timestamptz(0)
-  updatedAt   DateTime   @updatedAt @db.Timestamptz(0)
-  fuelList    FuelList[]
+  vehicleId    String         @id @default(uuid())
+  vehicleName  String         @unique
+  createdAt    DateTime       @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime       @updatedAt @db.Timestamptz(0)
+  fuelList     FuelList[]
+  transportDoc TransportDoc[]
+}
+
+model TransportDoc {
+  transportDocId String      @id @default(uuid())
+  docName        String
+  docNumber      String
+  docStatus      docStatus   @default(Valid)
+  docExpiryDate  DateTime    @db.Timestamptz(0)
+  vehicleId      String
+  docFile       String
+  vehicleAdd     VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
+  createdAt      DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime    @updatedAt @db.Timestamptz(0)
 }
 
 enum requestFor {
@@ -189,4 +203,9 @@ enum assignStatus {
   Pending
   Approval
   Rejected
+}
+
+enum docStatus {
+  Expired
+  Valid
 }

@@ -13,18 +13,15 @@ const app: Application = express();
 if (!fs.existsSync('./uploads')) {
   fs.mkdirSync('./uploads');
 }
-
-// // Create user directory in the /uploads path while starting the application
-// if (!fs.existsSync('./uploads/users')) {
-//   fs.mkdirSync('./uploads/users');
-// }
-// // Create tack pack directory in the /uploads path while starting the application
-// if (!fs.existsSync('./uploads/tackpack')) {
-//   fs.mkdirSync('./uploads/tackpack');
-// }
 // Create styles directory in the /uploads path while starting the application
 if (!fs.existsSync('./uploads/assets')) {
   fs.mkdirSync('./uploads/assets');
+}
+
+//Upload File
+
+if (!fs.existsSync('./uploads/file')) {
+  fs.mkdirSync('./uploads/file');
 }
 
 app.use(

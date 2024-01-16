@@ -1,84 +1,88 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AssetItemList, Prisma, StationaryItemList } from '@prisma/client';
-import httpStatus from 'http-status';
-import ApiError from '../../../errors/ApiError';
+import { FuelList, Prisma, TransportDoc, docStatus } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { AssetItemListRelationalFields, AssetItemListRelationalFieldsMapper, AssetItemListSearchableFields } from './asset.constants';
-import { IAssetCreateRequest, IAssetItemListFilterRequest } from './asset.interface';
+import {
+  FuelListRelationalFields,
+  FuelListRelationalFieldsMapper,
+  TransportDocRelationalFields,
+  TransportDocRelationalFieldsMapper,
+  transportSearchableFields,
+} from './transport.constants';
+import { IFuelListFilterRequest, ITransportDocCreateRequest, ITransportDocFilterRequest } from './transport.interface';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { IUploadFile } from '../../../interfaces/file';
-import { generateAssetId } from './asset.utils';
 
 // modules
 
-// !----------------------------------Create New Stationary---------------------------------------->>>
-const createAssetItemList = async (req: Request): Promise<AssetItemList> => {
+const addTransportDoc = async (req: Request): Promise<TransportDoc> => {
   //@ts-ignore
   const file = req.file as IUploadFile;
 
-  console.log(file, 'file');
-
   const filePath = file?.path?.substring(8);
 
-  console.log(filePath, 'filePath');
-
   //@ts-ignore
-  const data = req.body as IAssetCreateRequest;
-
-  // asset Id auto generated
-  const assetId: string = await generateAssetId();
+  const data = req.body as ITransportDocCreateRequest;
 
   const result = await prisma.$transaction(async transactionClient => {
-    const isExistAsset = await prisma.assetItemList.findUnique({
+    const isVehicleExist = await prisma.vehicleAdd.findUnique({
       where: {
-        assetId: assetId,
+        vehicleId: data.vehicleId,
       },
     });
-    if (isExistAsset) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Asset is already added');
+
+    if (!isVehicleExist) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Vehicle Not Found');
     }
 
-    const newAssetData = {
-      purchaseDate: data.purchaseDate,
-      assetId: assetId,
-      assetName: data.assetName,
-      assetLocation: data.assetLocation,
-      assetCategory: data.assetCategory,
-      assetQuantity: data.assetQuantity,
-      assetModel: data.assetModel,
-      assetImage: filePath,
+    // order data
+    const newData: any = {
+      docExpiryDate: data.docExpiryDate,
+      docName: data.docName,
+      docNumber: data.docNumber,
+      docStatus: docStatus.Valid,
+      vehicleId: isVehicleExist.vehicleId,
+      docFile: filePath,
     };
 
-    const createdAssetItemList = await transactionClient.assetItemList.create({
-      data: newAssetData,
+    // if (filePath !== undefined) newData['orderFile'] = filePath;
+
+    // Create the new order
+    const transportDoc = await transactionClient.transportDoc.create({
+      data: newData,
     });
-    return createdAssetItemList;
+
+    if (!transportDoc) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Order creation failed');
+    }
+
+    return transportDoc;
   });
-  if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Asset creation failed');
-  }
+
   return result;
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const GetAssetItemList = async (filters: IAssetItemListFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<AssetItemList[]>> => {
+const getTransportDoc = async (filters: ITransportDocFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<TransportDoc[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, startDate, endDate, vehicleName, docExpiryDate, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.AssetItemListWhereInput[] = [];
+  const andConditions: Prisma.TransportDocWhereInput[] = [];
 
   // Add search term condition if provided
+
   if (searchTerm) {
     andConditions.push({
-      OR: AssetItemListSearchableFields.map((field: any) => ({
+      OR: transportSearchableFields.map((field: any) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -91,9 +95,9 @@ const GetAssetItemList = async (filters: IAssetItemListFilterRequest, options: I
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (AssetItemListRelationalFields.includes(key)) {
+        if (TransportDocRelationalFields.includes(key)) {
           return {
-            [AssetItemListRelationalFieldsMapper[key]]: {
+            [TransportDocRelationalFieldsMapper[key]]: {
               assetName: (filterData as any)[key],
             },
           };
@@ -108,11 +112,36 @@ const GetAssetItemList = async (filters: IAssetItemListFilterRequest, options: I
     });
   }
 
+  //Filter By Date
+
+  if (startDate && endDate) {
+    andConditions.push({
+      docExpiryDate: {
+        gte: startDate, // Greater than or equal to startDate
+        lte: endDate, // Less than or equal to endDate
+      },
+    });
+  }
+
+  //filter by Status
+  if (vehicleName) {
+    andConditions.push({
+      vehicleAdd: {
+        vehicleName: {
+          equals: filters.vehicleName,
+        },
+      },
+    });
+  }
+
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.AssetItemListWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.TransportDocWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.assetItemList.findMany({
+  const result = await prisma.transportDoc.findMany({
+    include: {
+      vehicleAdd: true,
+    },
     where: whereConditions,
     skip,
     take: limit,
@@ -120,7 +149,7 @@ const GetAssetItemList = async (filters: IAssetItemListFilterRequest, options: I
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.assetItemList.count({
+  const total = await prisma.transportDoc.count({
     where: whereConditions,
   });
 
@@ -268,7 +297,7 @@ const GetAssetItemList = async (filters: IAssetItemListFilterRequest, options: I
 //   };
 // };
 
-export const AssetListService = {
-  createAssetItemList,
-  GetAssetItemList,
+export const TransportDocService = {
+  addTransportDoc,
+  getTransportDoc,
 };

@@ -4,14 +4,24 @@ import { createLogger, format, transports } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 const { combine, timestamp, label, printf } = format;
 
-//Customm Log Format
+// Custom Log Format
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
+const myFormat = printf(({ level, message, timestamp }) => {
   const date = new Date(timestamp);
-  const hour = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  return `${date.toDateString()} ${hour}:${minutes}:${seconds} } [${label}] ${level}: ${message}`;
+  const formattedTime = new Date(timestamp).toLocaleTimeString('en-US', {
+    hour12: true,
+  });
+
+  return `📅${date.toDateString()}  ⏲${formattedTime} ▶ ${level}: ${message} `;
+});
+
+const errorFormat = printf(({ level, message, timestamp, ...srv }) => {
+  const date = new Date(timestamp);
+  const formattedTime = new Date(timestamp).toLocaleTimeString('en-US', {
+    hour12: true,
+  });
+
+  return `📅${date.toDateString()}  ⏲${formattedTime} ▶ ${level}: ${message} 😟 statusCode: ${srv?.statusCode || '400'}`;
 });
 
 const logger = createLogger({
@@ -20,28 +30,43 @@ const logger = createLogger({
   transports: [
     new transports.Console(),
     new DailyRotateFile({
-      filename: path.join(process.cwd(), 'logs', 'winston', 'successes', 'hr-%DATE%-success.log'),
+      filename: path.join(process.cwd(), 'logs', 'winston', 'successes', 'HR-%DATE%-success.log'),
       datePattern: 'YYYY-DD-MM-HH',
       zippedArchive: true,
       maxSize: '20m',
-      maxFiles: '14d',
+      maxFiles: '30d',
     }),
   ],
 });
 
-const errorlogger = createLogger({
-  level: 'error',
+const infoLogger = createLogger({
+  level: 'info',
   format: combine(label({ label: 'HR' }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
-      filename: path.join(process.cwd(), 'logs', 'winston', 'errors', 'hr-%DATE%-error.log'),
+      filename: path.join(process.cwd(), 'logs', 'winston', 'info', 'HR-%DATE%-info.log'),
       datePattern: 'YYYY-DD-MM-HH',
       zippedArchive: true,
       maxSize: '20m',
-      maxFiles: '14d',
+      maxFiles: '30d',
     }),
   ],
 });
 
-export { logger, errorlogger };
+const errorLogger = createLogger({
+  level: 'error',
+  format: combine(label({ label: 'HR' }), timestamp(), errorFormat),
+  transports: [
+    new transports.Console(),
+    new DailyRotateFile({
+      filename: path.join(process.cwd(), 'logs', 'winston', 'errors', 'HR-%DATE%-error.log'),
+      datePattern: 'YYYY-DD-MM-HH',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '30d',
+    }),
+  ],
+});
+
+export { logger, errorLogger, infoLogger };

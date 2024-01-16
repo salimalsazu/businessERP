@@ -8,6 +8,7 @@ import { AssetListRoutes } from '../modules/asset/asset.routes';
 import { AssetAssignRoutes } from '../modules/assetAssign/assetAssign.routes';
 import { FuelListRoutes } from '../modules/fuelList/fuelList.routes';
 import { VehicleRoutes } from '../modules/vehicle/vehicle.routes';
+import { TransportDocRoutes } from '../modules/transportDoc/transport.routes';
 
 const router = express.Router();
 
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: '/vehicle',
     route: VehicleRoutes,
+  },
+  {
+    path: '/transportDoc',
+    route: TransportDocRoutes,
   },
 ];
 
