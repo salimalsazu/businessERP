@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\.71dc21da4f74cd4240e3b14d4a7e0cb66f0791ca-audit.json",
+    "files": [
+        {
+            "date": 1705404996445,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\hr-2024-16-01-17-error.log",
+            "hash": "815bd5f9346729b501a0ce596e83fb46be9ed800b94f3073500947b0156173ab"
+        }
+    ],
+    "hashType": "sha256"
+}
