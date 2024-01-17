@@ -82,6 +82,7 @@ const AddFuelExpModal = ({ handleClose, open, VehicleNo }: any) => {
   };
 
   ///Vehicle No Fetching for Form
+  //@ts-ignore
   const { data: vehicle } = useGetVehicleQuery(null);
 
   return (

@@ -3,8 +3,6 @@
 import {
   Button,
   ButtonToolbar,
-  DatePicker,
-  DateRangePicker,
   Dropdown,
   Modal,
   Pagination,
@@ -21,27 +19,14 @@ import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddVehicleDocumentsModal from "./AddVehicleDocumentsModal";
 import AddFuelExpModal from "../fuel/AddFuelExpModal";
+import { useGetVehicleQuery } from "@/redux/api/features/vehicleApi";
+import { useGetTransportDocQuery } from "@/redux/api/features/transportDocApi";
+import moment from "moment";
+import pdfIcon from "../../../../public/pdf.svg";
+import Image from "next/image";
+import { fileUrlKey } from "@/helpers/config/envConfig";
 
 const { Column, HeaderCell, Cell } = Table;
-
-const data = [
-  {
-    sl: 1,
-    date: "22/12/2023",
-    totalCost: 500,
-    totalMeal: 7,
-    employeeCost: 250,
-    mealRate: 18.5,
-  },
-  {
-    sl: 2,
-    date: "21/12/2023",
-    totalCost: 600,
-    totalMeal: 7,
-    employeeCost: 150,
-    mealRate: 15.5,
-  },
-];
 
 const VehicleDocumentsTableSection = () => {
   const query: Record<string, any> = {};
@@ -50,42 +35,21 @@ const VehicleDocumentsTableSection = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  // Modal
+  // filter by Vehicle
 
+  const [vehicleName, setVehicleName] = useState<string | null>(null);
+  query["vehicleName"] = vehicleName;
+
+  //Data Fetching for Doc
+  const { data: transportDoc, isLoading } = useGetTransportDocQuery({
+    ...query,
+  });
+
+  // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
-
-  const handleSortColumn = (sortColumn: any, sortType: any) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSortColumn(sortColumn);
-      setSortType(sortType);
-    }, 500);
-  };
 
   //Report Generate
 
@@ -153,9 +117,13 @@ const VehicleDocumentsTableSection = () => {
     }
   };
 
-  const VehicleNo = ["AB-102", "CD-200"].map((item) => ({
-    label: item,
-    value: item,
+  //Fetching Vehicle No
+  //@ts-ignore
+  const { data: vehicle, isLoading: vehicleLoading } = useGetVehicleQuery(null);
+
+  const VehicleNo = vehicle?.data.map((item: any) => ({
+    label: item?.vehicleName,
+    value: item?.vehicleName,
   }));
 
   return (
@@ -164,10 +132,10 @@ const VehicleDocumentsTableSection = () => {
         <div className="flex justify-center gap-5">
           <div>
             <SelectPicker
-              // onChange={(value: string | null): void =>
-              //   setSelectedStyleNo(value as string)
-              // }
-              // onClean={() => setSelectedStyleNo(null)}
+              onChange={(value: string | null): void =>
+                setVehicleName(value as string)
+              }
+              onClean={() => setVehicleName(null)}
               size="lg"
               data={VehicleNo}
               style={{ width: 300 }}
@@ -224,31 +192,6 @@ const VehicleDocumentsTableSection = () => {
               <span className="text-sm font-semibold">Add Fuel Exp</span>
             </Button>
           </div>
-          <div>
-            <Button
-              className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
-              type="button"
-              onClick={handleOpen}
-            >
-              <span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="#fff"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              </span>
-              <span className="text-sm font-semibold">Add Vehicle</span>
-            </Button>
-          </div>
         </div>
       </div>
 
@@ -259,24 +202,24 @@ const VehicleDocumentsTableSection = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={data}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
+            data={transportDoc?.data}
+            loading={isLoading}
             // bordered={true}
             cellBordered={true}
-            onSortColumn={handleSortColumn}
+            // onSortColumn={handleSortColumn}
             // sortType={sortOrder}
             // sortColumn={sortBy}
             id="table"
           >
             {/* SL No*/}
-            <Column flexGrow={1}>
+            <Column flexGrow={0}>
               <HeaderCell style={headerCss}>SL</HeaderCell>
               <Cell
                 dataKey="sl"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
               </Cell>
             </Column>
 
@@ -284,7 +227,7 @@ const VehicleDocumentsTableSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Vehicle No</HeaderCell>
               <Cell
-                dataKey="employeeName"
+                dataKey="vehicleAdd.vehicleName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
@@ -294,9 +237,18 @@ const VehicleDocumentsTableSection = () => {
 
             {/* Document Type*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Document Type</HeaderCell>
+              <HeaderCell style={headerCss}>Document Name</HeaderCell>
               <Cell
-                dataKey="month"
+                dataKey="docName"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              ></Cell>
+            </Column>
+            {/* Document Type*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Document Number</HeaderCell>
+              <Cell
+                dataKey="docNumber"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -306,17 +258,19 @@ const VehicleDocumentsTableSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Expire Date(Current)</HeaderCell>
               <Cell
-                dataKey="mobileNumber"
+                dataKey="docExpiryDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) => `${moment(rowData?.docExpiryDate).format("ll")}`}
+              </Cell>
             </Column>
 
             {/* Details*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Status</HeaderCell>
               <Cell
-                dataKey="limit"
+                dataKey="docStatus"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -326,9 +280,36 @@ const VehicleDocumentsTableSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>PDF</HeaderCell>
               <Cell
-                dataKey="limit"
+                dataKey="docFile"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              >
+                {(rowData) => (
+                  <Image
+                    onClick={() =>
+                      window.open(`${fileUrlKey()}/${rowData?.docFile}`)
+                    }
+                    src={pdfIcon}
+                    alt="Pdf File"
+                    width={30}
+                    height={30}
+                  />
+                )}
+              </Cell>
+            </Column>
+            {/* Details*/}
+            <Column flexGrow={3}>
+              <HeaderCell style={headerCss}>Note</HeaderCell>
+              <Cell
+                dataKey="note"
+                verticalAlign="middle"
+                style={{
+                  padding: 10,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  height: "auto",
+                  width: "auto",
+                }}
               ></Cell>
             </Column>
 
@@ -354,7 +335,7 @@ const VehicleDocumentsTableSection = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={transportDoc?.meta?.total}
             prev
             next
             first
@@ -378,7 +359,11 @@ const VehicleDocumentsTableSection = () => {
         <AddFuelExpModal open={open} handleClose={handleClose} />
       </div>
       <div>
-        <AddVehicleDocumentsModal open={open} handleClose={handleClose} />
+        <AddVehicleDocumentsModal
+          open={open}
+          handleClose={handleClose}
+          vehicle={vehicle}
+        />
       </div>
     </div>
   );

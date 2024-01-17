@@ -1,7 +1,9 @@
 import {
   Button,
   DatePicker,
+  Input,
   InputNumber,
+  InputPicker,
   Modal,
   Placeholder,
   SelectPicker,
@@ -12,28 +14,56 @@ import {
 } from "rsuite";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
+import { FileType } from "rsuite/esm/Uploader";
+import { FileUploader } from "@/helpers/fileUploader/fileUploader";
+import { useAddTransportDocMutation } from "@/redux/api/features/transportDocApi";
 
-const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
-  interface IAddExp {
-    date: Date;
-    totalCost: number;
-    employee: string[] | null;
+const AddVehicleDocumentsModal = ({ handleClose, open, vehicle }: any) => {
+  const [creatingTransportDoc, { isLoading }] = useAddTransportDocMutation();
+
+  interface ITransportDoc {
+    docExpiryDate: Date;
+    docName: string;
+    docNumber: string;
+    documentType: string;
+    docStatus: docStatus;
+    note: string;
+    vehicleId: string;
+    docFile: FileType | undefined;
+  }
+
+  enum docStatus {
+    Valid = "Valid",
+    Expired = "Expired",
   }
 
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
-  } = useForm<IAddExp>();
+  } = useForm<ITransportDoc>();
 
-  const handleCreateNewOrder: SubmitHandler<IAddExp> = async (
-    data: IAddExp
+  const handleCreateNewOrder: SubmitHandler<ITransportDoc> = async (
+    data: ITransportDoc
   ) => {
-    const orderDataObj = {
-      date: data.date,
-      totalCost: data.totalCost,
-      employee: data.employee,
+    const transportData = {
+      docExpiryDate: data.docExpiryDate,
+      docName: data.docName,
+      docNumber: data.docNumber,
+      docStatus: docStatus.Valid,
+      note: data.note,
+      vehicleId: data.vehicleId,
     };
+
+    const transportDocData = JSON.stringify(transportData);
+    const formData = new FormData();
+    formData.append("file", data.docFile?.blobFile as Blob);
+    formData.append("data", transportDocData);
+
+    await creatingTransportDoc(formData);
+
+    await reset();
   };
 
   // useEffect(() => {
@@ -60,16 +90,6 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
   //   }
   // }, []);
 
-  const VehicleNo = ["AB-102", "CD-200"].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
-  const VehicleDoc = ["Tax Token", "Fitness"].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
   return (
     <Modal
       overflow={false}
@@ -90,14 +110,17 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Expire Date</Tooltip>}>
-                  <label htmlFor="buyerEtd" className="text-sm font-medium">
+                  <label
+                    htmlFor="docExpiryDate"
+                    className="text-sm font-medium"
+                  >
                     Expire Date <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
 
               <Controller
-                name="date"
+                name="docExpiryDate"
                 control={control}
                 rules={{ required: "Date is required" }}
                 render={({ field }) => (
@@ -135,21 +158,25 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
             <div className="flex flex-col gap-3 w-full ">
               <div>
                 <Whisper speaker={<Tooltip>Vehicle No</Tooltip>}>
-                  <label htmlFor="styleNo" className="text-sm font-medium">
+                  <label htmlFor="vehicleId" className="text-sm font-medium">
                     Vehicle No <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="styleNo"
+                name="vehicleId"
                 control={control}
                 defaultValue={""}
                 rules={{ required: "Vehicle No is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <SelectPicker
+                    <InputPicker
+                      name="vehicleId"
                       size="lg"
-                      data={VehicleNo}
+                      data={vehicle?.data.map((item: any) => ({
+                        label: item?.vehicleName,
+                        value: item?.vehicleId,
+                      }))}
                       value={field.value}
                       onChange={(value: string | null) => field.onChange(value)}
                       style={{
@@ -178,26 +205,25 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
             {/* Input Field */}
             <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper speaker={<Tooltip>Document Type</Tooltip>}>
-                  <label htmlFor="styleNo" className="text-sm font-medium">
-                    Document Type <InfoOutlineIcon />
+                <Whisper speaker={<Tooltip>Document Name</Tooltip>}>
+                  <label htmlFor="docName" className="text-sm font-medium">
+                    Document Name <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="styleNo"
+                name="docName"
                 control={control}
                 defaultValue={""}
-                rules={{ required: "Document Type is required" }}
+                rules={{ required: "Document Name is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <SelectPicker
+                    <Input
                       size="lg"
-                      data={VehicleDoc}
                       value={field.value}
                       onChange={(value: string | null) => field.onChange(value)}
                       style={{
-                        width: "80%",
+                        width: "100%",
                       }}
                       // renderMenu={(menu) =>
                       //   renderLoading(menu, isLoadingStyleNo)
@@ -216,31 +242,120 @@ const AddVehicleDocumentsModal = ({ handleClose, open }: any) => {
                 )}
               />{" "}
             </div>
-
             {/* Input Field */}
             <div className="flex flex-col gap-3 w-full ">
-              <Uploader
-                action="//jsonplaceholder.typicode.com/posts/"
-                draggable
-              >
-                <div
-                  style={{
-                    height: 200,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <span>Click or Drag files to upload PDF File</span>
-                </div>
-              </Uploader>
+              <div>
+                <Whisper speaker={<Tooltip>Document Number</Tooltip>}>
+                  <label htmlFor="docNumber" className="text-sm font-medium">
+                    Document Number <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="docNumber"
+                control={control}
+                defaultValue={""}
+                rules={{ required: "Document Name is required" }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <Input
+                      size="lg"
+                      value={field.value}
+                      onChange={(value: string | null) => field.onChange(value)}
+                      style={{
+                        width: "100%",
+                      }}
+                      // renderMenu={(menu) =>
+                      //   renderLoading(menu, isLoadingStyleNo)
+                      // }
+                    />
+                    {/* <Form.ErrorMessage
+                        show={
+                          (!!errors?.styleNo && !!errors?.styleNo?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.styleNo?.message}
+                      </Form.ErrorMessage> */}
+                  </div>
+                )}
+              />{" "}
             </div>
           </div>
 
+          <div className="flex justify-between  gap-[24px] mb-5">
+            {/* Input Field */}
+            <div className="flex flex-col gap-3 w-full ">
+              <div>
+                <Whisper speaker={<Tooltip>Note</Tooltip>}>
+                  <label htmlFor="note" className="text-sm font-medium">
+                    Note <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="note"
+                control={control}
+                defaultValue={""}
+                rules={{ required: "Document Type is required" }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <Input
+                      as="textarea"
+                      size="lg"
+                      rows={3}
+                      value={field.value}
+                      onChange={(value: string | null) => field.onChange(value)}
+                      style={{
+                        width: "auto",
+                      }}
+                      // renderMenu={(menu) =>
+                      //   renderLoading(menu, isLoadingStyleNo)
+                      // }
+                    />
+                    {/* <Form.ErrorMessage
+                        show={
+                          (!!errors?.styleNo && !!errors?.styleNo?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.styleNo?.message}
+                      </Form.ErrorMessage> */}
+                  </div>
+                )}
+              />{" "}
+            </div>
+          </div>
+
+          <div className="flex justify-between  gap-[24px] mb-5">
+            {/* Input Field */}
+            <div className=" w-full ">
+              <div className="my-3">
+                <Whisper
+                  speaker={<Tooltip>file must be less than 5 MB</Tooltip>}
+                >
+                  <label htmlFor="docFile" className="text-sm font-medium">
+                    PDF File <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="docFile"
+                control={control}
+                render={({ field }: any) => (
+                  <div className="rs-form-control-wrapper ">
+                    <FileUploader field={field} />
+                  </div>
+                )}
+              />
+            </div>
+          </div>
           <div className="flex justify-end mt-5">
             <Button
               type="submit"
-              // loading={isLoading}
+              loading={isLoading}
               size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >

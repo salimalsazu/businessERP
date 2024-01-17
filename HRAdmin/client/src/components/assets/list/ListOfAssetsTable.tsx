@@ -241,7 +241,7 @@ const ListOfAssetsTable = () => {
               <Cell style={cellCss} verticalAlign="middle">
                 {(rowData) => (
                   <Whisper
-                    placement="top"
+                    placement="auto"
                     speaker={
                       <Popover>
                         <div>
