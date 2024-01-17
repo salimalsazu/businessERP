@@ -12,6 +12,10 @@ const TransportDoc = z.object({
     invalid_type_error: 'docNumber must be a string',
     required_error: 'docNumber is required',
   }),
+  note: z.string({
+    invalid_type_error: 'note must be a string',
+    required_error: 'note is required',
+  }),
   docStatus: docStatusEnum.default('Valid'),
   docExpiryDate: z.string({
     invalid_type_error: 'docExpiryDate must be a string',

@@ -165,6 +165,7 @@ model TransportDoc {
   docExpiryDate  DateTime    @db.Timestamptz(0)
   vehicleId      String
   docFile       String
+  note          String
   vehicleAdd     VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
   createdAt      DateTime    @default(now()) @db.Timestamptz(0)
   updatedAt      DateTime    @updatedAt @db.Timestamptz(0)

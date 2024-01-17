@@ -26,6 +26,7 @@ export type ITransportDocCreateRequest = {
   docStatus: docStatus;
   docExpiryDate: Date;
   docFile: string;
+  note: string;
   createdAt: Date;
   updatedAt: Date;
 };

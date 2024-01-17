@@ -46,6 +46,7 @@ const addTransportDoc = async (req: Request): Promise<TransportDoc> => {
       docName: data.docName,
       docNumber: data.docNumber,
       docStatus: docStatus.Valid,
+      note : data.note,
       vehicleId: isVehicleExist.vehicleId,
       docFile: filePath,
     };
