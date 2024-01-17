@@ -7,13 +7,11 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
 import {
-  FuelListRelationalFields,
-  FuelListRelationalFieldsMapper,
   TransportDocRelationalFields,
   TransportDocRelationalFieldsMapper,
   transportSearchableFields,
 } from './transport.constants';
-import { IFuelListFilterRequest, ITransportDocCreateRequest, ITransportDocFilterRequest } from './transport.interface';
+import {  ITransportDocCreateRequest, ITransportDocFilterRequest } from './transport.interface';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { IUploadFile } from '../../../interfaces/file';
