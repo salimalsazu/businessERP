@@ -59,6 +59,21 @@
             "date": 1705509444136,
             "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-17-01-22-info.log",
             "hash": "71d8a07549a5ddfa2fb2864649517a234fbfabeec001cef4c008b0cd2e63ea0b"
+        },
+        {
+            "date": 1705518946570,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-18-01-01-info.log",
+            "hash": "a014e2eaf49b306a4fbf1309873ecb2b73e51ed3465666837d00eadb81331324"
+        },
+        {
+            "date": 1705561944253,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-18-01-13-info.log",
+            "hash": "f4297700a51243b1bb97ada3cc82d5cdfefffc8a832a0663024553d8ce44bd30"
+        },
+        {
+            "date": 1705564977658,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-18-01-14-info.log",
+            "hash": "06e395f4a06ab964aaf13f8810a70c0e66ef67cb9252e2d280153ad49bdb03c8"
         }
     ],
     "hashType": "sha256"

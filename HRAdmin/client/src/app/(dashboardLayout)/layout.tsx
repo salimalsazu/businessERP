@@ -1,4 +1,5 @@
 "use client";
+import AddRequest from "@/components/addRequest/addRequest";
 import SideBar from "@/components/sidebar/SideBar";
 import { isLoggedIn } from "@/hooks/services/auth.service";
 import { useRouter } from "next/navigation";
@@ -20,7 +21,11 @@ const DashboardLayout = ({ children }: any) => {
       <div>
         <SideBar />
       </div>
-      <Container className="!bg-secondary">
+
+      <Container className="!bg-secondary  ">
+        <div className="top-[650px] flex justify-end items-end sticky w-[1300px] animate-pulse  z-50">
+          <AddRequest />
+        </div>
         <Content>{children}</Content>
       </Container>
     </div>
