@@ -23,7 +23,7 @@ const DashboardLayout = ({ children }: any) => {
       </div>
 
       <Container className="!bg-secondary  ">
-        <div className="top-[650px] flex justify-end items-end sticky w-[1300px] animate-pulse  z-50">
+        <div className="bg-sidebar h-14 flex justify-end items-center pr-5">
           <AddRequest />
         </div>
         <Content>{children}</Content>
