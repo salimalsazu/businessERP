@@ -17,7 +17,7 @@ const addMobileBill = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Asset Assign Successfully',
+    message: 'Mobile Bill Created Successfully',
     data: result,
   });
 });
@@ -33,7 +33,7 @@ const getMobileBill = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'All Assets fetched successfully',
+    message: 'Mobile bill fetched successfully',
     meta: result.meta,
     data: result.data,
   });

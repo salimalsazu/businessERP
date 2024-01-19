@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AssetAssign, Prisma, assignStatus } from '@prisma/client';
+import { AssetAssign, MobileBill, Prisma } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -8,58 +8,82 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { AssetAssignRelationalFields, AssetAssignRelationalFieldsMapper, AssetAssignSearchableFields } from './mobileBill.constants';
-import { IAssetAssignFilterRequest, IAssetAssignRequest, IMobileBillRequest } from './mobileBill.interface';
+import { IAssetAssignFilterRequest, IMobileBillFilterRequest, IMobileBillRequest } from './mobileBill.interface';
+import { MobileBillRelationalFields, MobileBillRelationalFieldsMapper, MobileBillSearchableFields } from './mobileBill.constants';
 
 // modules
 
 // !----------------------------------Create New Asset Assign---------------------------------------->>>
-const addMobileBill = async (data: IMobileBillRequest): Promise<AssetAssign> => {
+const addMobileBill = async (data: IMobileBillRequest): Promise<MobileBill> => {
+  if (!data.userId) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User Id is required');
+  }
 
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      userId: data.userId,
+    },
+    include: {
+      profile: {
+        select: {
+          mobileNo: true,
+          mobileBillingLimit: true,
+        },
+      },
+    },
+  });
 
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User Not Found');
+  }
 
-  
+  const isMobileNoExist: any = isUserExist.profile?.mobileNo;
 
+  const isMobileLimitExist: any = isUserExist?.profile?.mobileBillingLimit;
 
+  const billingMonth = new Date(data.billDate).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  const userDeduction = isMobileLimitExist - data.billAmount;
+
+  const userUsage = (data.billAmount / isMobileLimitExist) * 100;
+
+  const dataObj = {
+    billDate: data.billDate,
+    billingMonth: billingMonth.toString(),
+    mobileNo: isMobileNoExist,
+    billAmount: data.billAmount,
+    billLimit: isMobileLimitExist,
+    deduction: userDeduction,
+    usage: userUsage,
+    userId: isUserExist.userId,
+  };
+
+  console.log('dataObj', dataObj);
+
+  const result = await prisma.mobileBill.create({
+    data: dataObj,
+  });
 
   return result;
 };
 
 // !----------------------------------get all Courier---------------------------------------->>>
-const getMobileBill = async (filters: IAssetAssignFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<AssetAssign[]>> => {
+const getMobileBill = async (filters: IMobileBillFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<MobileBill[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, billingMonth, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.AssetAssignWhereInput[] = [];
+  const andConditions: Prisma.MobileBillWhereInput[] = [];
 
   // Add search term condition if provided
 
   if (searchTerm) {
     andConditions.push({
-      OR: AssetAssignSearchableFields.map((field: any) => {
-        if (field === 'assetName') {
-          return {
-            assetItemList: {
-              assetName: {
-                contains: searchTerm,
-                mode: 'insensitive',
-              },
-            },
-          } as Prisma.AssetAssignWhereInput;
-        } else if (field === 'assetId') {
-          return {
-            assetItemList: {
-              assetId: {
-                contains: searchTerm,
-                mode: 'insensitive',
-              },
-            },
-          } as Prisma.AssetAssignWhereInput;
-        } else if (field === 'firstName') {
+      OR: MobileBillSearchableFields.map((field: any) => {
+        if (field === 'firstName') {
           return {
             user: {
               profile: {
@@ -69,7 +93,7 @@ const getMobileBill = async (filters: IAssetAssignFilterRequest, options: IPagin
                 },
               },
             },
-          } as Prisma.AssetAssignWhereInput;
+          } as Prisma.MobileBillWhereInput;
         } else if (field === 'lastName') {
           return {
             user: {
@@ -80,26 +104,37 @@ const getMobileBill = async (filters: IAssetAssignFilterRequest, options: IPagin
                 },
               },
             },
-          } as Prisma.AssetAssignWhereInput;
+          } as Prisma.MobileBillWhereInput;
+        } else if (field === 'mobileNo') {
+          return {
+            user: {
+              profile: {
+                mobileNo: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          } as Prisma.MobileBillWhereInput;
         } else {
           return {
             [field]: {
               contains: searchTerm,
               mode: 'insensitive',
             },
-          } as Prisma.AssetAssignWhereInput;
+          } as Prisma.MobileBillWhereInput;
         }
       }),
-    } as Prisma.AssetAssignWhereInput);
+    } as Prisma.MobileBillWhereInput);
   }
 
   // Add filterData conditions if filterData is provided
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (AssetAssignRelationalFields.includes(key)) {
+        if (MobileBillRelationalFields.includes(key)) {
           return {
-            [AssetAssignRelationalFieldsMapper[key]]: {
+            [MobileBillRelationalFieldsMapper[key]]: {
               assetName: (filterData as any)[key],
             },
           };
@@ -115,23 +150,19 @@ const getMobileBill = async (filters: IAssetAssignFilterRequest, options: IPagin
   }
 
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.AssetAssignWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.MobileBillWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.assetAssign.findMany({
+  const result = await prisma.mobileBill.findMany({
     include: {
-      assetItemList: {
-        select: {
-          assetName: true,
-          assetId: true,
-        },
-      },
       user: {
         select: {
           profile: {
             select: {
               firstName: true,
               lastName: true,
+              mobileNo: true,
+              mobileBillingLimit: true,
             },
           },
         },
@@ -144,7 +175,7 @@ const getMobileBill = async (filters: IAssetAssignFilterRequest, options: IPagin
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.assetAssign.count({
+  const total = await prisma.mobileBill.count({
     where: whereConditions,
   });
 

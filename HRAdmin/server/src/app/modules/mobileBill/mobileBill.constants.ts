@@ -1,5 +1,5 @@
-export const MobileBillFilterableFields: string[] = ['searchTerm', 'assetName', 'assetCategory', 'assetLocation'];
-export const MobileBillSearchableFields: string[] = ['assetName', 'assetId', 'firstName', 'lastName'];
+export const MobileBillFilterableFields: string[] = ['searchTerm', 'billingMonth'];
+export const MobileBillSearchableFields: string[] = ['mobileNo', 'firstName', 'lastName'];
 
 export const MobileBillRelationalFields: string[] = ['assetName'];
 

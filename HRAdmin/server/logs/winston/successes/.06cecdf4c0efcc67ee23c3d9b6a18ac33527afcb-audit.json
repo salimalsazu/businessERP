@@ -84,6 +84,26 @@
             "date": 1705672301278,
             "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-19-01-19-success.log",
             "hash": "43d7058ad08224e83e3a7ea3d669536cb9b642ede332fb839d67fec9f030362b"
+        },
+        {
+            "date": 1705674694695,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-19-01-20-success.log",
+            "hash": "6730740c7d25bd4d6613ef9c1c43e9dbf8f338b67dfac6c1bfe1ea84fce8f07c"
+        },
+        {
+            "date": 1705678595985,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-19-01-21-success.log",
+            "hash": "d4728a639865422fd5cf42fb38d4bd5e38aabed362a1521c4676095426c37976"
+        },
+        {
+            "date": 1705689698280,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-20-01-00-success.log",
+            "hash": "71f2045530d2ac0666291e518076b4ae11a18d5b69c496fa48d791e9a0a9ee9a"
+        },
+        {
+            "date": 1705690803665,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-20-01-01-success.log",
+            "hash": "310df9ca73e1a51330d399dc5119faa782e319b9049a5209198a9981dbc66da4"
         }
     ],
     "hashType": "sha256"

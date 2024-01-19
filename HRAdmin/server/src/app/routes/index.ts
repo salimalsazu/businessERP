@@ -9,6 +9,7 @@ import { AssetAssignRoutes } from '../modules/assetAssign/assetAssign.routes';
 import { FuelListRoutes } from '../modules/fuelList/fuelList.routes';
 import { VehicleRoutes } from '../modules/vehicle/vehicle.routes';
 import { TransportDocRoutes } from '../modules/transportDoc/transport.routes';
+import { MobileBillRoutes } from '../modules/mobileBill/mobileBill.routes';
 
 const router = express.Router();
 
@@ -52,6 +53,10 @@ const moduleRoutes = [
   {
     path: '/transportDoc',
     route: TransportDocRoutes,
+  },
+  {
+    path: '/mobileBill',
+    route: MobileBillRoutes,
   },
 ];
 

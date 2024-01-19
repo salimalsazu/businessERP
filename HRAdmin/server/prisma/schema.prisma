@@ -19,6 +19,7 @@ model User {
   userFood             UserFood[]
   stationaryItemAssign StationaryItemAssign[]
   assetAssign          AssetAssign[]
+  mobileBill           MobileBill[]
 
   @@map("users")
 }
@@ -29,6 +30,8 @@ model Profile {
   lastName     String
   jobId        String?
   profileImage String?
+  mobileNo     String?
+  mobileBillingLimit       Int?
   role         UserRoles @default(USER)
   isMeal       isMeal    @default(Yes)
   createdAt    DateTime  @default(now()) @db.Timestamptz(0)
@@ -164,18 +167,27 @@ model TransportDoc {
   docStatus      docStatus   @default(Valid)
   docExpiryDate  DateTime    @db.Timestamptz(0)
   vehicleId      String
-  docFile       String
-  note          String
+  docFile        String
+  note           String
   vehicleAdd     VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
   createdAt      DateTime    @default(now()) @db.Timestamptz(0)
   updatedAt      DateTime    @updatedAt @db.Timestamptz(0)
 }
 
-
-
-
-
-
+model MobileBill {
+  mobileBillId String   @id @default(uuid())
+  billDate     DateTime @db.Timestamptz(0)
+  billingMonth String
+  mobileNo     String
+  billAmount   Int
+  billLimit    Int
+  usage        Int
+  deduction    Int
+  userId       String
+  user         User     @relation(fields: [userId], references: [userId])
+  createdAt    DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(0)
+}
 
 enum requestFor {
   Assign

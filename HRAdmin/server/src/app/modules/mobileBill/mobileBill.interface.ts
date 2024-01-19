@@ -1,16 +1,16 @@
-import { assignStatus, requestFor } from '@prisma/client';
-
-export type IAssetAssignFilterRequest = {
+export type IMobileBillFilterRequest = {
   searchTerm?: string | undefined;
-  // assetName?: string | undefined;
+  billingMonth?: string | undefined;
   // assetLocation?: string | undefined;
 };
 
 export type IMobileBillRequest = {
-  assignDate: Date;
-  assetListId: string;
+  billDate: Date;
+  billingMonth: string;
+  mobileNo: string;
+  billAmount: number;
+  billLimit: number;
+  deduction: number;
+  usage: number;
   userId: string;
-  assignStatus: assignStatus;
-  note: string;
-  requestFor: requestFor;
 };
