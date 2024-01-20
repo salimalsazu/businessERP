@@ -163,6 +163,7 @@ const getMobileBill = async (filters: IMobileBillFilterRequest, options: IPagina
               lastName: true,
               mobileNo: true,
               mobileBillingLimit: true,
+              jobId: true,
             },
           },
         },
