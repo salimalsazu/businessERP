@@ -19,27 +19,9 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import NewMobileBillModal from "./NewMobileBillModal";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
+import { useGetMobileBillQuery } from "@/redux/api/features/mobileBillApi";
 
 const { Column, HeaderCell, Cell } = Table;
-
-const data = [
-  {
-    sl: 1,
-    date: "22/12/2023",
-    totalCost: 500,
-    totalMeal: 7,
-    employeeCost: 250,
-    mealRate: 18.5,
-  },
-  {
-    sl: 2,
-    date: "21/12/2023",
-    totalCost: 600,
-    totalMeal: 7,
-    employeeCost: 150,
-    mealRate: 15.5,
-  },
-];
 
 const MobileBillList = () => {
   const query: Record<string, any> = {};
@@ -48,8 +30,44 @@ const MobileBillList = () => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
 
-  // Modal
+  //search by Name and mobile No
 
+  const [searchTerm, setSearchTerm] = useState("");
+  query["searchTerm"] = searchTerm;
+
+  //filter by Billing Month
+
+  const [billingMonth, setBillingMonth] = useState("");
+  query["billingMonth"] = billingMonth;
+
+  const handleDateChange = (date: any) => {
+    // Assuming date is in the format "yyyy-MM"
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const formattedMonth = date
+      ? `${months[date.getMonth()]} ${date.getFullYear()}`
+      : "";
+    setBillingMonth(formattedMonth);
+  };
+
+  //data fetching for mobile Bill
+  const { data: mobileBill, isLoading } = useGetMobileBillQuery({ ...query });
+
+
+  // Modal
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
@@ -113,44 +131,6 @@ const MobileBillList = () => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: "",
-    endDate: "",
-  });
-
-  query["startDate"] = selectedDate.startDate;
-  query["endDate"] = selectedDate.endDate;
-
-  const handleFilterDate = (date: Date[] | null) => {
-    if (!date?.length) {
-      setSelectedDate({
-        startDate: "",
-        endDate: "",
-      });
-    }
-
-    if (date) {
-      const startDate = new Date(date[0]);
-      const endDate = new Date(date[1]);
-
-      // Set the start time to 00:00:00 (12:00 AM)
-      startDate.setHours(0, 0, 0, 0);
-
-      // Set the end time to 23:59:59 (11:59 PM)
-      endDate.setHours(23, 59, 59, 999);
-
-      const formattedStartDate = startDate?.toISOString();
-      const formattedEndDate = endDate?.toISOString();
-
-      if (startDate !== null && endDate !== null) {
-        setSelectedDate({
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
-        });
-      }
-    }
-  };
-
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between ">
@@ -177,7 +157,7 @@ const MobileBillList = () => {
                 </svg>
               </div>
               <input
-                //   onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 id="searchTerm"
                 className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
@@ -193,6 +173,7 @@ const MobileBillList = () => {
               ranges={[]}
               style={{ width: 250 }}
               placeholder="Filter By Month"
+              onChange={handleDateChange}
             />
           </div>
         </div>
@@ -252,8 +233,8 @@ const MobileBillList = () => {
             rowHeight={60}
             headerHeight={48}
             autoHeight={true}
-            data={data}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
+            data={mobileBill?.data}
+            loading={isLoading}
             // bordered={true}
             cellBordered={true}
             onSortColumn={handleSortColumn}
@@ -269,7 +250,7 @@ const MobileBillList = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {/* {(rowData) => `${rowData.variants}`} */}
+                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
               </Cell>
             </Column>
 
@@ -277,7 +258,7 @@ const MobileBillList = () => {
             <Column flexGrow={1} sortable>
               <HeaderCell style={headerCss}> JobId</HeaderCell>
               <Cell
-                dataKey="jobId"
+                dataKey="user.profile.jobId"
                 verticalAlign="middle"
                 style={{ fontSize: 14, fontWeight: 500, padding: 10 }}
               >
@@ -289,7 +270,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Name</HeaderCell>
               <Cell
-                dataKey="employeeName"
+                dataKey="user.profile.firstName"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
@@ -301,7 +282,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Month</HeaderCell>
               <Cell
-                dataKey="month"
+                dataKey="billingMonth"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -310,7 +291,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Mobile No</HeaderCell>
               <Cell
-                dataKey="mobileNumber"
+                dataKey="mobileNo"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -320,7 +301,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Limit</HeaderCell>
               <Cell
-                dataKey="limit"
+                dataKey="billLimit"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -330,7 +311,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Mobile Bill</HeaderCell>
               <Cell
-                dataKey="mobileBill"
+                dataKey="billAmount"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -343,7 +324,9 @@ const MobileBillList = () => {
                 dataKey="usage"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) => `${rowData.usage}%`}
+              </Cell>
             </Column>
 
             {/* Deduction*/}
@@ -377,7 +360,7 @@ const MobileBillList = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={mobileBill?.meta?.total}
             prev
             next
             first
