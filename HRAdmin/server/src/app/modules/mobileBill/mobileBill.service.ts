@@ -43,7 +43,7 @@ const addMobileBill = async (data: IMobileBillRequest): Promise<MobileBill> => {
 
   const billingMonth = new Date(data.billDate).toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
-  const userDeduction = isMobileLimitExist - data.billAmount;
+  const userDeduction = Math.min(0, isMobileLimitExist - data.billAmount);
 
   const userUsage = (data.billAmount / isMobileLimitExist) * 100;
 
@@ -126,6 +126,15 @@ const getMobileBill = async (filters: IMobileBillFilterRequest, options: IPagina
         }
       }),
     } as Prisma.MobileBillWhereInput);
+  }
+
+  //filter by Month
+  if (billingMonth) {
+    andConditions.push({
+      billingMonth: {
+        equals: filters.billingMonth,
+      },
+    });
   }
 
   // Add filterData conditions if filterData is provided

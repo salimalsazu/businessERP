@@ -119,6 +119,11 @@
             "date": 1705753422663,
             "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-20-01-18-success.log",
             "hash": "ff5a6cc7979fedf7a46aacd64059931a82371aba2a2746de497acb7a5e15f8c3"
+        },
+        {
+            "date": 1705762984342,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-20-01-21-success.log",
+            "hash": "669d3cc92801ed692c08b3ac6e07283e4c55f1ff949cb09b61d583fa1b7fb146"
         }
     ],
     "hashType": "sha256"
