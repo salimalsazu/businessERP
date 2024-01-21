@@ -8,60 +8,125 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { IAssetAssignFilterRequest, IMobileBillFilterRequest, IMobileBillRequest } from './mobileBill.interface';
+import { IMobileBillFilterRequest, IMobileBillRequest } from './mobileBill.interface';
 import { MobileBillRelationalFields, MobileBillRelationalFieldsMapper, MobileBillSearchableFields } from './mobileBill.constants';
 
 // modules
 
 // !----------------------------------Create New Asset Assign---------------------------------------->>>
-const addMobileBill = async (data: IMobileBillRequest): Promise<MobileBill> => {
-  if (!data.userId) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User Id is required');
-  }
+// const addMobileBill = async (data: IMobileBillRequest): Promise<MobileBill> => {
+//   console.log('data', data);
 
-  const isUserExist = await prisma.user.findUnique({
+//   if (!data.userId) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'User Id is required');
+//   }
+
+//   const isUserExist = await prisma.user.findUnique({
+//     where: {
+//       userId: data.userId,
+//     },
+//     include: {
+//       profile: {
+//         select: {
+//           mobileNo: true,
+//           mobileBillingLimit: true,
+//         },
+//       },
+//     },
+//   });
+
+//   if (!isUserExist) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'User Not Found');
+//   }
+
+//   const isMobileNoExist: any = isUserExist.profile?.mobileNo;
+
+//   const isMobileLimitExist: any = isUserExist?.profile?.mobileBillingLimit;
+
+//   const billingMonth = new Date(data.billDate).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+//   const userDeduction = Math.min(0, isMobileLimitExist - data.billAmount);
+
+//   const userUsage = (data.billAmount / isMobileLimitExist) * 100;
+
+//   const dataObj = {
+//     billDate: data.billDate,
+//     billingMonth: billingMonth.toString(),
+//     mobileNo: isMobileNoExist,
+//     billAmount: data.billAmount,
+//     billLimit: isMobileLimitExist,
+//     deduction: userDeduction,
+//     usage: userUsage,
+//     userId: isUserExist.userId,
+//   };
+
+//   console.log('dataObj', dataObj);
+
+//   const result = await prisma.mobileBill.create({
+//     data: dataObj,
+//   });
+
+//   return result;
+// };
+
+const addMobileBill = async (data: IMobileBillRequest[]): Promise<Prisma.BatchPayload> => {
+  console.log('data', data);
+
+  data.map(item => {
+    if (!item.userId) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User Id is required');
+    }
+  });
+
+  const userIds = data.map(item => item.userId);
+
+  const isUserExist = await prisma.user.findMany({
     where: {
-      userId: data.userId,
+      userId: { in: userIds },
     },
     include: {
       profile: {
         select: {
           mobileNo: true,
           mobileBillingLimit: true,
+          jobId: true,
         },
       },
     },
   });
 
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User Not Found');
+  // Check if all users have a corresponding profile
+  if (isUserExist.length !== userIds.length) {
+    throw new Error('User Not Found');
   }
 
-  const isMobileNoExist: any = isUserExist.profile?.mobileNo;
+  const mobileBillData: Prisma.MobileBillCreateManyInput[] = data.map(item => {
+    const user = isUserExist.find(u => u.userId === item.userId);
 
-  const isMobileLimitExist: any = isUserExist?.profile?.mobileBillingLimit;
+    if (!user) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User Not Found');
+    }
 
-  const billingMonth = new Date(data.billDate).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    const billingMonth = new Date(item.billDate).toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
-  const userDeduction = Math.min(0, isMobileLimitExist - data.billAmount);
+    const billingLimit = user.profile?.mobileBillingLimit ?? 0;
 
-  const userUsage = (data.billAmount / isMobileLimitExist) * 100;
+    return {
+      billDate: item.billDate,
+      billingMonth: billingMonth.toString(),
+      mobileNo: user.profile?.mobileNo || '',
+      billAmount: item.billAmount,
+      billLimit: user.profile?.mobileBillingLimit ?? 0,
+      deduction: Math.min(0, billingLimit - item.billAmount),
+      usage: (item.billAmount / (user.profile?.mobileBillingLimit || 1)) * 100, // Avoid division by zero
+      userId: user.userId,
+    };
+  });
 
-  const dataObj = {
-    billDate: data.billDate,
-    billingMonth: billingMonth.toString(),
-    mobileNo: isMobileNoExist,
-    billAmount: data.billAmount,
-    billLimit: isMobileLimitExist,
-    deduction: userDeduction,
-    usage: userUsage,
-    userId: isUserExist.userId,
-  };
+  console.log('mobileBillData', mobileBillData);
 
-  console.log('dataObj', dataObj);
-
-  const result = await prisma.mobileBill.create({
-    data: dataObj,
+  const result = await prisma.mobileBill.createMany({
+    data: mobileBillData,
   });
 
   return result;
