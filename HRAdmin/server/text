@@ -1,0 +1,22 @@
+# DATABASE_URL="postgresql://postgres:TcjNreBHymwkUSO8vlp9@containers-us-west-110.railway.app:6458/railway"
+# DATABASE_URL="postgresql://postgres:postgres@postgres:5432/hrAdmin?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/HR_ADMIN?schema=public"
+
+
+# DATABASE_URL="postgresql://postgres:qVFbhBbvbsTRlnIk@db.ogjfhxizccgtzocbqlwu.supabase.co:5432/hradminmodule"
+
+NODE_ENV=development
+PORT=7000
+
+JWT_SECRET= 'very-secret'
+
+
+BCRYPT_SALT_ROUNDS=12
+JWT_EXPIRES_IN=10d
+JWT_REFRESH_SECRET = 'very-refresh-secret'
+JWT_REFRESH_EXPIRES_IN = 365d
+
+
+# CLOUD_NAME='dfvsjdxtb'
+# CLOUD_API_KEY='823578578935797'
+# CLOUD_API_SECRET='Pu7IlcZ9bh61eRrqFQINDMzPAlE'
