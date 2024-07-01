@@ -109,6 +109,18 @@ const SideBar = () => {
                 placement="rightStart"
               >
                 <Nav.Item eventKey="3-2" as={Link} href="/leave/history">
+                  Requisition
+                </Nav.Item>
+              </Nav.Menu>
+
+              <Nav.Menu
+                eventKey="3"
+                trigger="hover"
+                title="Attendance"
+                icon={<Icon as={IoMan} />}
+                placement="rightStart"
+              >
+                <Nav.Item eventKey="3-2" as={Link} href="/leave/history">
                   Leave History
                 </Nav.Item>
               </Nav.Menu>
