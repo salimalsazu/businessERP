@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\.53ca01959e169974f5fcbe387ccea1af4df2307f-audit.json",
+    "files": [
+        {
+            "date": 1719855926311,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-01-07-23-success.log",
+            "hash": "b309de0373d43ebcbb198cc24d9a4548fa64f89e4b8e788da610cd1820af46b0"
+        },
+        {
+            "date": 1719857725121,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-02-07-00-success.log",
+            "hash": "8d5ae35201545d8c80780e82f61b2c0406f871a33108a4e09b6602ebdad49132"
+        },
+        {
+            "date": 1719860402403,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\successes\\HR-2024-02-07-01-success.log",
+            "hash": "858ae507b03a3679598152f3254dbdcf1090801dae54b3a60cb5af45936b7d97"
+        }
+    ],
+    "hashType": "sha256"
+}

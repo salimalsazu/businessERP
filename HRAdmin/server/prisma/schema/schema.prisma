@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId               String                 @id @default(uuid())
+  email                String                 @unique
+  password             String
+  userStatus           UserStatus             @default(Pending)
+  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
+  profileId            String?                @unique
+  profile              Profile?               @relation(fields: [profileId], references: [profileId])
+  userFood             UserFood[]
+  stationaryItemAssign StationaryItemAssign[]
+  assetAssign          AssetAssign[]
+  mobileBill           MobileBill[]
+  mobileBalanceLimit   MobileBalanceLimit[]
+
+  @@map("users")
+}
+
+model Profile {
+  profileId          String    @id @default(uuid())
+  firstName          String
+  lastName           String
+  jobId              String?
+  profileImage       String?
+  mobileNo           String?
+  mobileBillingLimit Int?
+  role               UserRoles @default(USER)
+  isMeal             isMeal    @default(Yes)
+  createdAt          DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt          DateTime  @updatedAt @db.Timestamptz(0)
+  user               User?
+
+  @@map("profiles")
+}
+
+model Foods {
+  foodExpId    String     @id @default(uuid())
+  totalCost    Int
+  foodExpDate  DateTime   @db.Timestamptz(0)
+  totalMeal    Int
+  employeeCost Int
+  mealRate     Int
+  createdAt    DateTime   @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime   @updatedAt @db.Timestamptz(0)
+  userFood     UserFood[]
+
+  @@map("foods")
+}
+
+model UserFood {
+  userFoodId String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [userId])
+  food       Foods    @relation(fields: [foodExpId], references: [foodExpId])
+  userId     String
+  foodExpId  String
+  createdAt  DateTime @default(now()) @db.Timestamptz(0)
+
+  @@map("user_foods")
+}
+
+model StationaryItemList {
+  stationaryListId String          @id @default(uuid())
+  purchaseDate     DateTime        @db.Timestamptz(0)
+  purchaseQuantity Int
+  stationaryItemId String
+  stationaryItem   StationaryItem? @relation(fields: [stationaryItemId], references: [stationaryItemId])
+  createdAt        DateTime        @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime        @updatedAt @db.Timestamptz(0)
+
+  @@map("stationary_list")
+}
+
+model StationaryItemAssign {
+  assignId         String         @id @default(uuid())
+  lastAssignedDate DateTime       @db.Timestamptz(0)
+  assignItemStatus assignStatus   @default(Pending)
+  assignQuantity   Int
+  userId           String
+  user             User           @relation(fields: [userId], references: [userId])
+  stationaryItemId String
+  stationaryItem   StationaryItem @relation(fields: [stationaryItemId], references: [stationaryItemId])
+  createdAt        DateTime       @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime       @updatedAt @db.Timestamptz(0)
+}
+
+model StationaryItem {
+  stationaryItemId     String                 @id @default(uuid())
+  itemName             String                 @unique
+  stockQuantity        Int
+  stockItemStatus      itemStatus?
+  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
+  stationaryItemList   StationaryItemList[]
+  stationaryItemAssign StationaryItemAssign[]
+
+  @@map("stationary_item")
+}
+
+model AssetItemList {
+  assetListId   String        @id @default(uuid())
+  assetName     String
+  assetModel    String
+  assetQuantity Int
+  assetLocation String
+  assetCategory String
+  assetImage    String
+  purchaseDate  DateTime      @db.Timestamptz(0)
+  assetId       String        @unique
+  createdAt     DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(0)
+  AssetAssign   AssetAssign[]
+
+  @@map("asset_list")
+}
+
+model AssetAssign {
+  assetAssignId String        @id @default(uuid())
+  assetListId   String
+  assetItemList AssetItemList @relation(fields: [assetListId], references: [assetListId])
+  assignDate    DateTime?     @db.Timestamptz(0)
+  userId        String
+  user          User          @relation(fields: [userId], references: [userId])
+  assignStatus  assignStatus  @default(Pending)
+  createdAt     DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(0)
+  requestFor    requestFor
+  note          String
+}
+
+model FuelList {
+  fuelListId   String      @id @default(uuid())
+  purchaseDate DateTime    @db.Timestamptz(0)
+  kmPrevious   Int
+  kmCurrent    Int
+  fuelQuantity Int
+  fuelCost     Int
+  perLitreCost Int
+  kmConsumed   Int
+  usage        Int
+  vehicleId    String
+  vehicleAdd   VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
+  createdAt    DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime    @updatedAt @db.Timestamptz(0)
+}
+
+model VehicleAdd {
+  vehicleId    String         @id @default(uuid())
+  vehicleName  String         @unique
+  createdAt    DateTime       @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime       @updatedAt @db.Timestamptz(0)
+  fuelList     FuelList[]
+  transportDoc TransportDoc[]
+}
+
+model TransportDoc {
+  transportDocId String      @id @default(uuid())
+  docName        String
+  docNumber      String
+  docStatus      docStatus   @default(Valid)
+  docExpiryDate  DateTime    @db.Timestamptz(0)
+  vehicleId      String
+  docFile        String
+  note           String
+  vehicleAdd     VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
+  createdAt      DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime    @updatedAt @db.Timestamptz(0)
+}
+
+model MobileBill {
+  mobileBillId String   @id @default(uuid())
+  billDate     DateTime @db.Timestamptz(0)
+  billingMonth String
+  mobileNo     String
+  billAmount   Int
+  billLimit    Int
+  usage        Int
+  deduction    Int
+  userId       String
+  user         User     @relation(fields: [userId], references: [userId])
+  createdAt    DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(0)
+}
+
+model MobileBalanceLimit {
+  mobileLimitId String   @id @default(uuid())
+  billLimit     Int
+  limitStatus assignStatus @default(Pending)
+  userId        String
+  user          User     @relation(fields: [userId], references: [userId])
+  createdAt     DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(0)
+}
+
+enum requestFor {
+  Assign
+  Servicing
+}
+
+enum UserRoles {
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  Active
+  Paused
+  Suspended
+  Pending
+}
+
+enum isMeal {
+  Yes
+  No
+}
+
+enum itemStatus {
+  Excellent
+  Good
+  Poor
+}
+
+enum assignStatus {
+  Pending
+  Approval
+  Rejected
+}
+
+enum docStatus {
+  Expired
+  Valid
+}

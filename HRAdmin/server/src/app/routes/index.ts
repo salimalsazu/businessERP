@@ -11,6 +11,7 @@ import { VehicleRoutes } from '../modules/vehicle/vehicle.routes';
 import { TransportDocRoutes } from '../modules/transportDoc/transport.routes';
 import { MobileBillRoutes } from '../modules/mobileBill/mobileBill.routes';
 import { MobileBalanceRoutes } from '../modules/mobileBalanceRequest/mobileBalance.routes';
+import { RequisitionRoutes } from '../modules/requisition/requisition.routes';
 
 const router = express.Router();
 
@@ -62,6 +63,10 @@ const moduleRoutes = [
   {
     path: '/mobileBalanceLimit',
     route: MobileBalanceRoutes,
+  },
+  {
+    path: '/requisition',
+    route: RequisitionRoutes,
   },
 ];
 
