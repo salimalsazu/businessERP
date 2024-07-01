@@ -118,7 +118,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect !!');
   }
 
-  if (isUserExist.userStatus === UserStatus.Pending) {
+  if (isUserExist.userStatus === UserStatus.Pending && isUserExist.profile?.role !== 'SUPERADMIN') {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Pending ! Account is not verified Yet');
   }
   if (isUserExist.userStatus === UserStatus.Suspended) {

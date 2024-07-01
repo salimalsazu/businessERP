@@ -20,9 +20,16 @@ import TrashIcon from "@rsuite/icons/Trash";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 
 import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
+import { useAddMobileBillMutation } from "@/redux/api/features/mobileBillApi";
 
 const NewMobileBillModal = ({ handleClose, open }: any) => {
-  const { control, handleSubmit } = useForm();
+  //Data send to server
+
+  const [addMobileBill, { isLoading: isMobileBillLoading }] =
+    useAddMobileBillMutation();
+
+  //Form handling
+  const { control, handleSubmit, reset } = useForm();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "employees",
@@ -39,8 +46,9 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
   const handleCreateNewMobileBill: SubmitHandler<any> = async (data) => {
     const { billDate, userId, billAmount } = data;
 
-    data.employees = data.employees.map((employee:any) => ({
+    data.employees = data.employees.map((employee: any) => ({
       ...employee,
+      billAmount: Number(employee.billAmount),
       billDate: employee.billDate || billDate,
     }));
 
@@ -49,11 +57,15 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
     const newMobileBill = {
       billDate,
       userId,
-      billAmount,
+      billAmount: Number(billAmount),
     };
     currentEmployees.push(newMobileBill);
+    // console.log("data", currentEmployees);
 
-    console.log("data", currentEmployees);
+    //data send to server throw redux
+    await addMobileBill(currentEmployees);
+
+    reset();
   };
 
   //@ts-ignore
@@ -344,6 +356,7 @@ const NewMobileBillModal = ({ handleClose, open }: any) => {
           <div className="flex justify-end mt-5">
             <Button
               type="submit"
+              loading={isMobileBillLoading}
               size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >

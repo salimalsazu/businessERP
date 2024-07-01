@@ -92,6 +92,15 @@ const SideBar = () => {
                 My Details
               </Nav.Item>
 
+              <Nav.Item
+                eventKey="2"
+                icon={<Icon as={CgDetailsMore} />}
+                as={Link}
+                href="/requisition"
+              >
+                Requisition
+              </Nav.Item>
+
               <Nav.Menu
                 eventKey="3"
                 trigger="hover"
