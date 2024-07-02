@@ -56,7 +56,6 @@ const AddRequisitionForm = () => {
   useEffect(() => {
     if (isSuccess && !isError) {
       toast.success("Requisition added successfully");
-      reset();
     }
     if (isError && !isSuccess) {
       toast.error("Failed to add requisition");

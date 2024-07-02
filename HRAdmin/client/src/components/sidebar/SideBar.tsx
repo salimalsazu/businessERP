@@ -93,25 +93,13 @@ const SideBar = () => {
               </Nav.Item>
 
               <Nav.Item
-                eventKey="2"
+                eventKey="3"
                 icon={<Icon as={CgDetailsMore} />}
                 as={Link}
                 href="/requisition"
               >
                 Requisition
               </Nav.Item>
-
-              <Nav.Menu
-                eventKey="3"
-                trigger="hover"
-                title="Attendance"
-                icon={<Icon as={IoMan} />}
-                placement="rightStart"
-              >
-                <Nav.Item eventKey="3-2" as={Link} href="/leave/history">
-                  Requisition
-                </Nav.Item>
-              </Nav.Menu>
 
               <Nav.Menu
                 eventKey="3"
@@ -198,7 +186,7 @@ const SideBar = () => {
               </Nav.Menu>
 
               <Nav.Menu
-                eventKey="8"
+                eventKey="9"
                 trigger="hover"
                 title="Assets"
                 icon={<Icon as={FaComputer} />}

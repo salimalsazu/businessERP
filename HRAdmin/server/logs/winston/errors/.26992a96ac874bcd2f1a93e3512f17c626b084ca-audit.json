@@ -19,6 +19,16 @@
             "date": 1719860402406,
             "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-02-07-01-error.log",
             "hash": "63b24e4394cd74e73d6997b799f35b40e0073060545cea8c5567d3025a36a851"
+        },
+        {
+            "date": 1719942312026,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-02-07-23-error.log",
+            "hash": "a976c67d48306af6c673f08ae289c06ee67decc1e1dedde88939ad9d7a30a0b7"
+        },
+        {
+            "date": 1719946734782,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-03-07-00-error.log",
+            "hash": "2651b27d2024985b445b190e832202552c6462c33015155d27ee6f55e8ec5c88"
         }
     ],
     "hashType": "sha256"

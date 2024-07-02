@@ -48,21 +48,16 @@ const LoginSection = () => {
       }
     } catch (error) {
       router.push("/");
-      //@ts-ignore
-      // if (error && isError) {
-      //   //@ts-ignore
-      //   toast.error(error?.errorMessages[0]?.message);
-      // }
     }
   }, [userLoggedIn, router, isError]);
 
   return (
-    <div className="border m-3 w-[100%] sm:w-[70%] md:w-[50%] lg:w-[30%] p-5 rounded  shadow-sm bg-sidebar ">
+    <div className="border m-3 p-5 rounded  shadow-sm bg-sidebar ">
       <form onSubmit={handleSubmit(handleLogin)}>
         {/* 1st section */}
-        <div className="flex flex-col gap-[24px] mb-5">
+        <div className="flex flex-col gap-[24px] mb-5 w-[100%]">
           {/* email */}
-          <div className="flex flex-col gap-3 w-full ">
+          <div className="flex flex-col gap-3 w-full">
             <div>
               <Whisper
                 speaker={
@@ -84,12 +79,11 @@ const LoginSection = () => {
                 required: "Email is required",
               }}
               render={({ field }: any) => (
-                <div className="rs-form-control-wrapper ">
+                <div className="rs-form-control-wrapper w-full">
                   <Input
                     {...field}
                     min={1}
                     size="lg"
-                    id="totalPack"
                     type="email"
                     placeholder="Email"
                     style={{ width: "100%" }}

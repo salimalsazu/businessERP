@@ -23,6 +23,8 @@ import { requisitionColumns } from "@/constant/exportCoumn.const";
 import { saveExcel } from "@/utils/ExportToExcel";
 import moment from "moment";
 import { useDebounced } from "@/redux/hooks";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -96,6 +98,84 @@ const RequisitionListTable = () => {
     }
   };
 
+  //Export to PDF
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const centerX = (text: any) => (pageWidth - doc.getTextWidth(text)) / 2;
+
+    // Custom header
+    const header = () => {
+      doc.setFontSize(18);
+      doc.text(
+        "24/7 Sourcing Private Ltd",
+        centerX("24/7 Sourcing Private Ltd"),
+        22
+      );
+      doc.setFontSize(12);
+      doc.setTextColor(40);
+      doc.text("Payment Requisition", centerX("Payment Requisition"), 30);
+      doc.setFontSize(8);
+      doc.setTextColor(35);
+      doc.text(
+        "House 60, Lake Drive Road, Sector:07, Uttara, Dhaka-1230",
+        centerX("House 60, Lake Drive Road, Sector:07, Uttara, Dhaka-1230"),
+        35
+      );
+    };
+
+    const tableColumn = [
+      "Requisition Date",
+      "Title",
+      "Details",
+      "Bank Name",
+      "Cheque No",
+      "Cheque Date",
+      "Amount",
+      "Amount Type",
+    ];
+    const tableRows = checkedBoxData.map((item: any) => [
+      moment(item.requisitionDate).format("ll"),
+      item.title,
+      item.details,
+      item.bankName,
+      item.chequeNo,
+      moment(item.chequeDate).format("ll"),
+      item.amount,
+      item.amountType,
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      didDrawPage: (data) => {
+        // Header and Footer on each page
+        header();
+      },
+      margin: { top: 40 },
+
+      didDrawCell: (data) => {
+        // Check if it's the last row of the table on the last page
+        if (
+          data.row.index === tableRows.length - 1 &&
+          data.cell.section === "body"
+        ) {
+          // Calculate the y position for the "Approved by" text
+          const yPosition = data.cell.y + data.cell.height + 30;
+          const xPosition = pageWidth - 60; // Adjust this value to position the text on the right side
+          doc.setFontSize(10);
+          // Add line for signature
+          doc.line(xPosition - 10, yPosition, xPosition + 30, yPosition);
+          doc.text("Approved by", xPosition, yPosition + 5);
+        }
+      },
+    });
+
+    doc.save("Requisition.pdf");
+  };
+
   // export render menu
   const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
     const handleSelect = () => {
@@ -119,13 +199,7 @@ const RequisitionListTable = () => {
           </Dropdown.Item>
           <Dropdown.Item
             disabled={!isLoading && !allRequisitionList?.data?.length}
-            onClick={() =>
-              saveExcel({
-                allRequisitionList,
-                checkedBoxData,
-                columns: requisitionColumns,
-              })
-            }
+            onClick={generatePDF}
             eventKey={1}
           >
             Export to PDF
