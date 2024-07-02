@@ -3,3 +3,4 @@ node_modules
 .vercel
 uploads
 dist
+prisma/migrations
