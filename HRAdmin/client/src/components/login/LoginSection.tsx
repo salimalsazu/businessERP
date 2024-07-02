@@ -57,7 +57,7 @@ const LoginSection = () => {
   }, [userLoggedIn, router, isError]);
 
   return (
-    <div className="border p-5 rounded  shadow-sm bg-sidebar">
+    <div className="border m-3 w-[100%] sm:w-[70%] md:w-[50%] lg:w-[30%] p-5 rounded  shadow-sm bg-sidebar ">
       <form onSubmit={handleSubmit(handleLogin)}>
         {/* 1st section */}
         <div className="flex flex-col gap-[24px] mb-5">

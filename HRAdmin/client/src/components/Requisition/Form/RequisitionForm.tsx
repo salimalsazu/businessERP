@@ -1,7 +1,17 @@
 "use client";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { DatePicker, Input, SelectPicker, Tooltip, Whisper } from "rsuite";
+import {
+  Button,
+  DatePicker,
+  Input,
+  SelectPicker,
+  Tooltip,
+  Whisper,
+} from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
+import { useAddRequisitionMutation } from "@/redux/api/features/requisitionApi";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const AddRequisitionForm = () => {
   interface IRequisitionList {
@@ -19,26 +29,39 @@ const AddRequisitionForm = () => {
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm<IRequisitionList>();
 
-  //   const [stationaryItemList] = useCreateStationaryItemListMutation();
+  const [addRequisition, { isLoading, isSuccess, isError }] =
+    useAddRequisitionMutation();
 
   const handleCreateItemList: SubmitHandler<IRequisitionList> = async (
     data: IRequisitionList
   ) => {
-    // const addRequisition = {
-    //     requisitionDate: Date.;
-    //     title:
-    //     bankName:
-    //     chequeNo:
-    //     chequeDate:
-    //     details:
-    //     amount:
-    //     amountType:
-    // };
-    // console.log(stationaryList)
-    // await stationaryItemList(stationaryList);
+    const objRequisition = {
+      requisitionDate: data.requisitionDate,
+      title: data.title,
+      bankName: data.bankName,
+      chequeNo: data.chequeNo,
+      chequeDate: data.chequeDate,
+      details: data.details,
+      amount: Number(data.amount),
+      amountType: data.amountType,
+    };
+    console.log("addRequisition", objRequisition);
+
+    await addRequisition(objRequisition);
   };
+
+  useEffect(() => {
+    if (isSuccess && !isError) {
+      toast.success("Requisition added successfully");
+      reset();
+    }
+    if (isError && !isSuccess) {
+      toast.error("Failed to add requisition");
+    }
+  });
 
   return (
     <div className="m-5">
@@ -395,14 +418,14 @@ const AddRequisitionForm = () => {
             </div>
           </div>
           <div className="flex justify-end mt-5">
-            <button
+            <Button
               type="submit"
-              // loading={isLoading}
-              // size="lg"
+              loading={isLoading}
+              size="lg"
               className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
             >
               Create
-            </button>
+            </Button>
           </div>
         </form>
       </div>

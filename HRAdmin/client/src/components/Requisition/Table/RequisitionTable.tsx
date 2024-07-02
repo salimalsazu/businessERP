@@ -3,6 +3,7 @@
 import {
   Button,
   ButtonToolbar,
+  Checkbox,
   DatePicker,
   DateRangePicker,
   Dropdown,
@@ -15,92 +16,55 @@ import {
   Whisper,
 } from "rsuite";
 import { useState } from "react";
-import DocPassIcon from "@rsuite/icons/DocPass";
-import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
-import { saveExcel } from "@/components/food/monthwise/ExcepReport";
+import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
+import { LiaFileExportSolid } from "react-icons/lia";
+import { requisitionColumns } from "@/constant/exportCoumn.const";
+import { saveExcel } from "@/utils/ExportToExcel";
+import moment from "moment";
+import { useDebounced } from "@/redux/hooks";
 
 const { Column, HeaderCell, Cell } = Table;
 
 const RequisitionListTable = () => {
   const query: Record<string, any> = {};
-
-  const [sortColumn, setSortColumn] = useState();
-  const [sortType, setSortType] = useState();
-  const [loading, setLoading] = useState(false);
-
-  // Modal
-
-  const [open, setOpen] = useState(false);
-  const [backdrop, setBackdrop] = useState("static");
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
-
-  const handleSortColumn = (sortColumn: any, sortType: any) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSortColumn(sortColumn);
-      setSortType(sortType);
-    }, 500);
-  };
-
-  //Report Generate
-
-  const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
-    const handleSelect = () => {
-      onClose();
-    };
-    return (
-      <Popover ref={ref} className={className} style={{ left, top }} full>
-        <Dropdown.Menu onSelect={handleSelect}>
-          <Dropdown.Item
-            // disabled={!isLoading && !allOrders?.data?.length}
-            onClick={saveExcel}
-            eventKey={4}
-          >
-            Export to Excel
-          </Dropdown.Item>
-          <Dropdown.Item
-            // disabled={!isLoading && !allOrders?.data?.length}
-            onClick={saveExcel}
-            eventKey={4}
-          >
-            Save to PDF
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Popover>
-    );
-  };
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [selectedDate, setSelectedDate] = useState({
     startDate: "",
     endDate: "",
   });
+  const [page, setPage] = useState<number>(1);
+  const [size, setSize] = useState<number>(10);
+  // const [sortColumn, setSortColumn] = useState();
+  // const [sortType, setSortType] = useState();
+  // const [loading, setLoading] = useState(false);
+  const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
 
+  // for queries
   query["startDate"] = selectedDate.startDate;
   query["endDate"] = selectedDate.endDate;
+  query["limit"] = size;
+  query["page"] = page;
+  const debouncedTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 300,
+  });
+
+  if (!!debouncedTerm) {
+    query["searchTerm"] = debouncedTerm;
+  }
+
+  // ! fetching data
+  const {
+    data: allRequisitionList,
+    isLoading,
+    isFetching,
+  } = useGetRequisitionQuery({ ...query });
+
+  const checkedBoxData = allRequisitionList?.data?.filter((obj: any) =>
+    checkedKeys.includes(obj.requisitionId)
+  );
 
   const handleFilterDate = (date: Date[] | null) => {
     if (!date?.length) {
@@ -132,29 +96,99 @@ const RequisitionListTable = () => {
     }
   };
 
-  const VehicleNo = ["Excellent", "Good", "Low"].map((item) => ({
-    label: item,
-    value: item,
-  }));
+  // export render menu
+  const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
+    const handleSelect = () => {
+      onClose();
+    };
+    return (
+      <Popover ref={ref} className={className} style={{ left, top }} full>
+        <Dropdown.Menu onSelect={handleSelect}>
+          <Dropdown.Item
+            disabled={!isLoading && !allRequisitionList?.data?.length}
+            onClick={() =>
+              saveExcel({
+                allRequisitionList,
+                checkedBoxData,
+                columns: requisitionColumns,
+              })
+            }
+            eventKey={4}
+          >
+            Export to Excel Sheet
+          </Dropdown.Item>
+          <Dropdown.Item
+            disabled={!isLoading && !allRequisitionList?.data?.length}
+            onClick={() =>
+              saveExcel({
+                allRequisitionList,
+                checkedBoxData,
+                columns: requisitionColumns,
+              })
+            }
+            eventKey={1}
+          >
+            Export to PDF
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Popover>
+    );
+  };
 
-  const conveyanceData = [
-    {
-      sl: 1,
-      requisitionDate: 12,
-      title: "Petty Cash",
-      bankName: "2023-12-31",
-      chequeNo: "Office",
-      chequeDate: "Ajampur",
-      amount: 500,
-      amountType: "Cash",
-      details: "Paid to Cash",
-      status: "Approved",
-    },
-  ];
+  // ! export to excel -------------------------------------------------
+
+  let checked = false;
+  let indeterminate = false;
+
+  if (checkedKeys?.length === allRequisitionList?.data?.length) {
+    checked = true;
+  } else if (checkedKeys?.length === 0) {
+    checked = false;
+  } else if (
+    checkedKeys?.length > 0 &&
+    checkedKeys?.length < allRequisitionList?.data?.length
+  ) {
+    indeterminate = true;
+  }
+
+  //! check box
+
+  const handleCheckAll = (value: any, checked: any) => {
+    const keys = checked
+      ? allRequisitionList?.data?.map((item: any) => item.requisitionId)
+      : [];
+    setCheckedKeys(keys);
+  };
+
+  const handleCheck = (value: any, check: any) => {
+    const keys = check
+      ? [...checkedKeys, value]
+      : checkedKeys.filter((item: any) => item !== value);
+    setCheckedKeys(keys);
+  };
+
+  const CheckCell = ({
+    rowData,
+    onChange,
+    checkedKeys,
+    dataKey,
+    ...props
+  }: any) => {
+    return (
+      <div style={{ lineHeight: "46px" }}>
+        <Checkbox
+          value={rowData[dataKey]}
+          inline
+          onChange={onChange}
+          checked={checkedKeys.some((item: any) => item === rowData[dataKey])}
+        />
+      </div>
+    );
+  };
 
   return (
     <div>
-      <div className="my-5 mx-2 flex justify-between  ">
+      <div className="my-5 mx-2 flex justify-between gap-2 w-full">
         <div className="flex items-center gap-5">
           <div className="w-[300px]">
             <label htmlFor="voice-search" className="sr-only">
@@ -178,7 +212,7 @@ const RequisitionListTable = () => {
                 </svg>
               </div>
               <input
-                //   onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 id="searchTerm"
                 className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB]   w-full pl-10 py-2 rounded-lg focus:outline-none"
@@ -208,26 +242,22 @@ const RequisitionListTable = () => {
           </div>
         </div>
 
-        <div className="flex justify-center gap-5">
-          <div>
-            <ButtonToolbar>
-              <Whisper
-                placement="bottomEnd"
-                speaker={renderMenu}
-                trigger={["click"]}
-              >
-                <Button
-                  appearance="default"
-                  className="!bg-secondary  outline outline-1 font-medium text-gray-700 !rounded "
-                  // color="blue"
-                  startIcon={<DocPassIcon className="text-sm" />}
-                  endIcon={<ArrowDownLineIcon className="text-xl" />}
-                >
-                  Report
-                </Button>
-              </Whisper>
-            </ButtonToolbar>
-          </div>
+        <div>
+          <Whisper
+            placement="bottomEnd"
+            speaker={renderMenu}
+            trigger={["click"]}
+          >
+            <button
+              type="button"
+              className="border px-10 py-2 flex justify-center items-center gap-2  border-primary  rounded-lg   text-primary font-medium hover:bg-primary/10 duration-300"
+            >
+              <span>
+                <LiaFileExportSolid size={25} />
+              </span>
+              <span>Export</span>
+            </button>
+          </Whisper>
         </div>
       </div>
 
@@ -235,27 +265,39 @@ const RequisitionListTable = () => {
       <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full">
         <>
           <Table
-            rowHeight={60}
-            headerHeight={48}
-            autoHeight={true}
-            data={conveyanceData}
-            // loading={isLoadingCouriersData || isFetchingCourierData}
-            // bordered={true}
+            bordered={true}
             cellBordered={true}
-            onSortColumn={handleSortColumn}
-            // sortType={sortOrder}
-            // sortColumn={sortBy}
-            id="table"
+            wordWrap="break-word"
+            loading={isLoading || isFetching}
+            rowHeight={70}
+            headerHeight={50}
+            shouldUpdateScroll={false} // Prevent the scrollbar from scrolling to the top after the table
+            autoHeight={true}
+            data={allRequisitionList?.data}
           >
-            {/* SL No*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>SL</HeaderCell>
-              <Cell
-                dataKey="sl"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {/* {(rowData) => `${rowData.variants}`} */}
+            <Column width={50} align="center" verticalAlign="middle">
+              <HeaderCell style={headerCss}>
+                <div style={{ lineHeight: "40px" }}>
+                  <Checkbox
+                    inline
+                    checked={checked}
+                    indeterminate={indeterminate}
+                    onChange={handleCheckAll}
+                  />
+                </div>
+              </HeaderCell>
+
+              <Cell>
+                {(rowData) => (
+                  <div>
+                    <CheckCell
+                      dataKey="requisitionId"
+                      rowData={rowData}
+                      checkedKeys={checkedKeys}
+                      onChange={handleCheck}
+                    />
+                  </div>
+                )}
               </Cell>
             </Column>
 
@@ -267,7 +309,9 @@ const RequisitionListTable = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {(rowData) => `${rowData.requisitionDate}`}
+                {(rowData) =>
+                  ` ${moment(rowData.requisitionDate).format("ll")}`
+                }
               </Cell>
             </Column>
 
@@ -318,7 +362,9 @@ const RequisitionListTable = () => {
                 dataKey="chequeDate"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) => ` ${moment(rowData.chequeDate).format("ll")}`}
+              </Cell>
             </Column>
 
             {/* Status*/}
@@ -362,7 +408,7 @@ const RequisitionListTable = () => {
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
-            // total={couriersData?.meta?.total}
+            total={allRequisitionList?.meta?.total}
             prev
             next
             first
@@ -373,10 +419,10 @@ const RequisitionListTable = () => {
             size="lg"
             layout={["total", "-", "limit", "|", "pager", "skip"]}
             limitOptions={[10, 20, 30, 50]}
-            // limit={size}
-            // onChangeLimit={(limitChange) => setSize(limitChange)}
-            // activePage={page}
-            // onChangePage={setPage}
+            limit={size}
+            onChangeLimit={(limitChange) => setSize(limitChange)}
+            activePage={page}
+            onChangePage={setPage}
           />
         </div>
       </div>
