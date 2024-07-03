@@ -43,27 +43,6 @@ const FuelPurchaseAndConsumptionSection = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
-
   const handleSortColumn = (sortColumn: any, sortType: any) => {
     setLoading(true);
     setTimeout(() => {
@@ -144,9 +123,11 @@ const FuelPurchaseAndConsumptionSection = () => {
   const { data: fuelList, isLoading } = useGetFuelListQuery(query);
 
   //Fetching Vehicle No
+  //@ts-ignore
+
   const { data: vehicle, isLoading: vehicleLoading } = useGetVehicleQuery(null);
 
-  console.log("vehicle", vehicle?.data);
+  
 
   const VehicleNo = vehicle?.data.map((item: any) => ({
     label: item?.vehicleName,

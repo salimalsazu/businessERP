@@ -55,27 +55,6 @@ const LeaveHistoryTable = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
-
   const handleSortColumn = (sortColumn: any, sortType: any) => {
     setLoading(true);
     setTimeout(() => {
@@ -124,6 +103,7 @@ const LeaveHistoryTable = () => {
   const handleFilterDate = (date: Date[] | null) => {
     if (!date?.length) {
       setSelectedDate({
+        //@ts-ignore
         startDate: "",
         endDate: "",
       });
@@ -450,7 +430,7 @@ const LeaveHistoryTable = () => {
           </Table>
         </>
 
-        <div style={{ padding: "20px 10px 0px 10px" }}>
+        {/* <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
             // total={couriersData?.meta?.total}
             prev
@@ -468,7 +448,7 @@ const LeaveHistoryTable = () => {
             // activePage={page}
             // onChangePage={setPage}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

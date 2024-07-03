@@ -21,18 +21,4 @@ router.get('/daily', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), FoodExpControl
 // ! Get all Food Exp Day Wise-s---------------------------------->>>
 router.get('/monthly', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), FoodExpController.getAllFoodExpMonthly);
 
-// ! Get all getStyleWiseNoOfCourier----------------------------------->>>
-// router.get('/daywise', auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN), CourierController.getStyleWiseNoOfCourier);
-
-// ! Get Single Order----------------------------------->>>
-// router.get('/:courierId', auth(UserRoles.USER, UserRoles.ADMIN, UserRoles.SUPERADMIN), CourierController.getSingleCourier);
-
-// ! Update Order----------------------------------->>>
-// router.patch(
-//   '/update/:courierId',
-//   validateRequest(CourierValidation.updateCourier),
-//   auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-//   CourierController.updateCourierInformation
-// );
-
 export const FoodRoutes = router;

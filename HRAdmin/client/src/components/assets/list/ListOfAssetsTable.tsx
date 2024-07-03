@@ -48,26 +48,26 @@ const ListOfAssetsTable = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
+  // const getData = () => {
+  //   if (sortColumn && sortType) {
+  //     return data.sort((a: any, b: any) => {
+  //       let x = a[sortColumn];
+  //       let y = b[sortColumn];
+  //       if (typeof x === "string") {
+  //         x = x.charCodeAt();
+  //       }
+  //       if (typeof y === "string") {
+  //         y = y.charCodeAt();
+  //       }
+  //       if (sortType === "asc") {
+  //         return x - y;
+  //       } else {
+  //         return y - x;
+  //       }
+  //     });
+  //   }
+  //   return data;
+  // };
 
   const handleSortColumn = (sortColumn: any, sortType: any) => {
     setLoading(true);
@@ -105,11 +105,6 @@ const ListOfAssetsTable = () => {
       </Popover>
     );
   };
-
-  const VehicleNo = ["Excellent", "Good", "Low"].map((item) => ({
-    label: item,
-    value: item,
-  }));
 
   return (
     <div>

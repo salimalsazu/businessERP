@@ -65,7 +65,7 @@ const StationaryAssign = () => {
 
   //Stationary Item Data
   const { data: stationaryItemData, isLoading: isLoadingStationaryItem } =
-    useGetStationaryItemQuery(null);
+    useGetStationaryItemQuery({...query});
 
   // Map data for the SelectPicker
   const mappedData = stationaryItemData?.data.map((item: any) => ({
@@ -73,26 +73,7 @@ const StationaryAssign = () => {
     value: item.itemName,
   }));
 
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
+
 
   const handleSortColumn = (sortColumn: any, sortType: any) => {
     setLoading(true);

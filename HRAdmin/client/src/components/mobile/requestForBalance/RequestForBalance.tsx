@@ -266,7 +266,7 @@ const RequestForBalance = () => {
           </Table>
         </>
 
-        <div style={{ padding: "20px 10px 0px 10px" }}>
+        {/* <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
             // total={couriersData?.meta?.total}
             prev
@@ -284,7 +284,7 @@ const RequestForBalance = () => {
             // activePage={page}
             // onChangePage={setPage}
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Modal */}

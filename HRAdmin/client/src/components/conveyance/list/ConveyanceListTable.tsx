@@ -36,27 +36,6 @@ const ConveyanceListTable = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const getData = () => {
-    if (sortColumn && sortType) {
-      return data.sort((a: any, b: any) => {
-        let x = a[sortColumn];
-        let y = b[sortColumn];
-        if (typeof x === "string") {
-          x = x.charCodeAt();
-        }
-        if (typeof y === "string") {
-          y = y.charCodeAt();
-        }
-        if (sortType === "asc") {
-          return x - y;
-        } else {
-          return y - x;
-        }
-      });
-    }
-    return data;
-  };
-
   const handleSortColumn = (sortColumn: any, sortType: any) => {
     setLoading(true);
     setTimeout(() => {
@@ -198,6 +177,7 @@ const ConveyanceListTable = () => {
               }}
               onClean={() =>
                 handleFilterDate({
+                  //@ts-ignore
                   startDate: "",
                   endDate: "",
                 })
@@ -382,7 +362,7 @@ const ConveyanceListTable = () => {
           </Table>
         </>
 
-        <div style={{ padding: "20px 10px 0px 10px" }}>
+        {/* <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
             // total={couriersData?.meta?.total}
             prev
@@ -400,7 +380,7 @@ const ConveyanceListTable = () => {
             // activePage={page}
             // onChangePage={setPage}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

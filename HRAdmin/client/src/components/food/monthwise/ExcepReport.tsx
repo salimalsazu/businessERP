@@ -1,5 +1,6 @@
 import Excel from "exceljs";
 import { saveAs } from "file-saver";
+import moment from "moment";
 
 const columns = [
   { header: "Courier Date", key: "courierDate" },
@@ -30,7 +31,7 @@ export const saveExcel = async () => {
     // const rowIndexStart = 2;
 
     // let rowIndex = rowIndexStart;
-
+    //@ts-ignore
     couriersData?.data?.forEach((singleData: any) => {
       const customRows = {
         styleNo: singleData.styleNo,

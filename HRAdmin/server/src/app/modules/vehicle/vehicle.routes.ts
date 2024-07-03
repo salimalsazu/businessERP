@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { FuelListController, VehicleController } from './vehicle.controller';
+import { VehicleController } from './vehicle.controller';
 
 const router = express.Router();
 

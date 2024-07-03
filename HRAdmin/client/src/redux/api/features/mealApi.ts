@@ -10,7 +10,7 @@ const foodApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      providesTags: [tagTypes.service],
+      providesTags: [tagTypes.user],
     }),
 
     // create Faq
@@ -20,7 +20,7 @@ const foodApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.service],
+      invalidatesTags: [tagTypes.user],
     }),
     // update Faq
     updateService: builder.mutation({
@@ -29,7 +29,7 @@ const foodApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: data,
       }),
-      invalidatesTags: [tagTypes.service],
+      invalidatesTags: [tagTypes.user],
     }),
     // update Faq
     getSingleService: builder.query({
@@ -37,7 +37,7 @@ const foodApi = baseApi.injectEndpoints({
         url: `${FOOD_API}/${id}`,
         method: "GET",
       }),
-      providesTags: [tagTypes.service],
+      providesTags: [tagTypes.user],
     }),
 
     // delete Blog
@@ -46,7 +46,7 @@ const foodApi = baseApi.injectEndpoints({
         url: `/${FOOD_API}/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [tagTypes.service],
+      invalidatesTags: [tagTypes.user],
     }),
   }),
 });

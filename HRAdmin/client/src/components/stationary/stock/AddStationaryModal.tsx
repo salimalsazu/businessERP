@@ -78,6 +78,7 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
 
   // Stationary Item Data Fetching
 
+  //@ts-ignore
   const { data } = useGetStationaryItemQuery(null);
 
   // Sttaionary Item Data Posting
@@ -171,6 +172,7 @@ const AddStationaryModal = ({ handleClose, open }: any) => {
                       className="z-20"
                       isClearable
                       onChange={(selectedOption) => {
+                        //@ts-ignore
                         field.onChange(selectedOption?.value ?? null);
                       }}
                       onCreateOption={handleCreateItem}

@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FuelList, Prisma, VehicleAdd } from '@prisma/client';
+import { Prisma, VehicleAdd } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
 import {
-  FuelListRelationalFields,
-  FuelListRelationalFieldsMapper,
-  FuelListSearchableFields,
   VehicleRelationalFields,
   VehicleRelationalFieldsMapper,
   VehicleSearchableFields,

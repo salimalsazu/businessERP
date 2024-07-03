@@ -394,6 +394,7 @@ const RequisitionListTable = () => {
               }}
               onClean={() =>
                 handleFilterDate({
+                  //@ts-ignore
                   startDate: "",
                   endDate: "",
                 })

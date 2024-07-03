@@ -8,7 +8,7 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import { IMobileBalanceLimitRequest, IMobileBillFilterRequest, IMobileBillRequest } from './mobileBalance.interface';
+import { IMobileBalanceLimitRequest, IMobileBillFilterRequest } from './mobileBalance.interface';
 import { MobileBillRelationalFields, MobileBillRelationalFieldsMapper, MobileBillSearchableFields } from './mobileBalance.constants';
 
 // modules

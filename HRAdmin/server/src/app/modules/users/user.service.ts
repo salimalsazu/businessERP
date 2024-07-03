@@ -56,6 +56,7 @@ const getAllUserService = async (options: IPaginationOptions): Promise<IGenericR
       total,
       totalPage,
     },
+    //@ts-ignore
     data: result,
   };
 };
@@ -102,6 +103,7 @@ const getSingleUser = async (userId: string): Promise<IUsersResponse | null> => 
     throw new ApiError(httpStatus.NOT_FOUND, 'User not Found !!');
   }
 
+  //@ts-ignore
   return result;
 };
 
@@ -269,6 +271,7 @@ const getMyProfile = async (userId: string): Promise<IUsersResponse | null> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not Found !!');
   }
 
+  //@ts-ignore
   return result;
 };
 
