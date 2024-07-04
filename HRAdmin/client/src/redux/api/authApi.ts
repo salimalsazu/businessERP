@@ -5,10 +5,10 @@ const AUTH_URL = "/auth";
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     registration: build.mutation({
-      query: (loginData: any) => ({
+      query: (data: any) => ({
         url: `${AUTH_URL}/create-user`,
         method: "POST",
-        data: loginData,
+        data: data,
       }),
       invalidatesTags: [tagTypes.user],
     }),

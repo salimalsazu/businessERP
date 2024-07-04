@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Panel,
   ButtonGroup,
@@ -11,15 +11,25 @@ import {
   Input,
 } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, SubmitHandler } from "react-hook-form";
+import { useRegistrationMutation } from "@/redux/api/authApi";
+import { toast } from "sonner";
 
 const AddUserForm = () => {
+  interface IAddUser {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+  }
+
   const {
     handleSubmit,
     control,
     formState: { errors },
     trigger,
-  } = useForm();
+    reset,
+  } = useForm<IAddUser>();
 
   const [step, setStep] = useState(0);
 
@@ -42,9 +52,27 @@ const AddUserForm = () => {
 
   const onPrevious = () => onChange(step - 1);
 
-  const handleFileSubmit = (data) => {
-    alert(JSON.stringify(data, null, 2));
+  const [addUser, { isLoading, isSuccess, isError, error }] =
+    useRegistrationMutation();
+
+  const handleFileSubmit: SubmitHandler<IAddUser> = async (data) => {
+    await addUser(data);
   };
+
+  useEffect(() => {
+    if (isSuccess && !isError) {
+      toast.success("User added successfully!");
+      reset({
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+      });
+    }
+    if (isError && !isSuccess) {
+      toast.error("Error adding user!");
+    }
+  }, [isSuccess, isError, reset]);
 
   return (
     <div className="m-5">
@@ -185,6 +213,7 @@ const AddUserForm = () => {
             <div className="mt-6">
               <Button
                 appearance="ghost"
+                loading={isLoading}
                 onClick={handleSubmit(handleFileSubmit)}
               >
                 Submit
