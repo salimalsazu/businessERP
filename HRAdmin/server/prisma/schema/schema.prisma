@@ -8,40 +8,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  userId               String                 @id @default(uuid())
-  email                String                 @unique
-  password             String
-  userStatus           UserStatus             @default(Pending)
-  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
-  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
-  profileId            String?                @unique
-  profile              Profile?               @relation(fields: [profileId], references: [profileId])
-  userFood             UserFood[]
-  stationaryItemAssign StationaryItemAssign[]
-  assetAssign          AssetAssign[]
-  mobileBill           MobileBill[]
-  mobileBalanceLimit   MobileBalanceLimit[]
 
-  @@map("users")
-}
 
-model Profile {
-  profileId          String    @id @default(uuid())
-  firstName          String
-  lastName           String
-  jobId              String?
-  profileImage       String?
-  mobileNo           String?
-  mobileBillingLimit Int?
-  role               UserRoles @default(USER)
-  isMeal             isMeal    @default(Yes)
-  createdAt          DateTime  @default(now()) @db.Timestamptz(0)
-  updatedAt          DateTime  @updatedAt @db.Timestamptz(0)
-  user               User?
-
-  @@map("profiles")
-}
 
 model Foods {
   foodExpId    String     @id @default(uuid())
@@ -206,18 +174,7 @@ enum requestFor {
   Servicing
 }
 
-enum UserRoles {
-  SUPERADMIN
-  ADMIN
-  USER
-}
 
-enum UserStatus {
-  Active
-  Paused
-  Suspended
-  Pending
-}
 
 enum isMeal {
   Yes

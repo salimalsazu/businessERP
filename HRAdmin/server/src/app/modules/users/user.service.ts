@@ -250,20 +250,9 @@ const getMyProfile = async (userId: string): Promise<IUsersResponse | null> => {
       userId: true,
       email: true,
       userStatus: true,
-      profile: {
-        select: {
-          profileId: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-          profileImage: true,
-          createdAt: true,
-          updatedAt: true,
-          isMeal: true,
-        },
-      },
       createdAt: true,
       updatedAt: true,
+      profile: true,
     },
   });
 

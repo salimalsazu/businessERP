@@ -199,6 +199,15 @@ const SideBar = () => {
                   Repair and Assign
                 </Nav.Item>
               </Nav.Menu>
+
+              <Nav.Item
+                eventKey="3"
+                icon={<Icon as={CgDetailsMore} />}
+                as={Link}
+                href="/user"
+              >
+                User
+              </Nav.Item>
             </Nav>
           </Sidenav.Body>
           <Sidenav.Toggle

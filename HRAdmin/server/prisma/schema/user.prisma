@@ -1,0 +1,31 @@
+model User {
+  userId               String                 @id @default(uuid())
+  email                String                 @unique
+  password             String
+  userStatus           UserStatus             @default(Pending)
+  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
+  profileId            String?                @unique
+  profile              Profile?               @relation(fields: [profileId], references: [profileId])
+  userFood             UserFood[]
+  stationaryItemAssign StationaryItemAssign[]
+  assetAssign          AssetAssign[]
+  mobileBill           MobileBill[]
+  mobileBalanceLimit   MobileBalanceLimit[]
+
+  @@map("users")
+}
+
+
+enum UserRoles {
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  Active
+  Paused
+  Suspended
+  Pending
+}
