@@ -4,6 +4,11 @@ model Profile {
   lastName           String
   gender             Gender       @default(male)
   jobId              String?
+  jobTitle           String?
+  joiningDate        DateTime?
+  experience         String?
+  salary             Int?
+  address            String?
   nationalId         String?
   birthCertificateNo String?
   dateOfBirth       DateTime         @default(now())
@@ -11,6 +16,7 @@ model Profile {
   profileImage       String?
   mobileNo           String?
   mobileBillingLimit Int?
+  email             String?
   role               UserRoles @default(USER)
   isMeal             isMeal    @default(Yes)
   createdAt          DateTime  @default(now()) @db.Timestamptz(0)

@@ -11,21 +11,43 @@ import EmailFillIcon from "@rsuite/icons/EmailFill";
 import EditIcon from "@rsuite/icons/Edit";
 import DetailIcon from "@rsuite/icons/Detail";
 import "./userTable.css";
-import { SelectPicker } from "rsuite";
-import { text } from "stream/consumers";
+import { useState } from "react";
+import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
+import moment from "moment";
 
 const UserTable = () => {
+  const query: Record<string, any> = {};
+  const [page, setPage] = useState<number>(1);
+  const [size, setSize] = useState<number>(1);
+
+  query["limit"] = size;
+  query["page"] = page;
+
+  const {
+    data: allUsers,
+    isLoading,
+    error,
+  } = useGetAllUsersQuery({ ...query });
+
+
   return (
     <div>
       <div className="flex justify-between items-center my-10">
         <div>
-          <h1 className="text-xl font-light">Viewing 1-10 of 50</h1>
+          <h1 className="text-xl font-light">
+            Viewing 1-{size} of {allUsers?.data?.meta?.total}
+          </h1>
         </div>
 
         <div className="flex gap-2 text-xl items-center justify-center ">
           <span className="font-light">show:</span>
           <span>
-            <select className="flex justify-center items-center bg-none">
+            <select
+              onChange={(value) => {
+                setSize(Number(value.target.value));
+              }}
+              className="flex justify-center items-center bg-none"
+            >
               <option defaultChecked value="10">
                 10
               </option>
@@ -40,185 +62,78 @@ const UserTable = () => {
       <div className="flex flex-col gap-4">
         {/* Card 1 */}
 
-        <div className="flex flex-col bg-white shadow-md  relative group">
-          <div className="flex justify-start items-start gap-4 p-8">
-            <div>
-              <Image
-                src={profile}
-                width={100}
-                height={100}
-                alt="Profile Image"
-                className="rounded-full"
-              />
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">Richard Alpert</span>
-                <span className="flex gap-2 text-2xl ml-5">
-                  <MobileIcon />
-                  <EmailFillIcon />
-                </span>
-              </div>
+        {allUsers?.data?.data.map((user: any) => (
+          <div
+            key={user.userId}
+            className="flex flex-col bg-white shadow-md  relative group"
+          >
+            <div className="flex justify-start items-start gap-4 p-8">
               <div>
-                <span className="text-lg font-semibold">
-                  Senior Office Manager
-                </span>
-                <span className="text-yellow-800 font-bold text-xl">.</span>
-                <span className="text-lg font-extralight">Uttara, Dhaka</span>
+                <Image
+                  src={profile}
+                  width={100}
+                  height={100}
+                  alt="Profile Image"
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">
+                    {user?.profile?.firstName} {user?.profile?.lastName}
+                  </span>
+                  <span className="flex gap-2 text-2xl ml-5">
+                    <MobileIcon />
+                    <EmailFillIcon />
+                  </span>
+                </div>
+                <div>
+                  <span className="text-lg font-semibold">
+                    {user?.profile?.jobTitle}
+                  </span>
+                  <span className="text-yellow-800 font-bold text-xl">.</span>
+                  <span className="text-lg font-extralight">
+                    {user?.profile?.address}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex gap-8 text-lg bg-stone-200 p-5">
-            <div className="flex gap-3 items-center">
-              <span>
-                <TimeRoundIcon />
-              </span>
-              <span>Today</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <VisibleIcon />
-              </span>
-              <span>Sept 19, 2016</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <CalendarIcon />
-              </span>
-              <span>5+ Years exp</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <SiteFillIcon />
-              </span>
-              <span>Salary: 20,000</span>
-            </div>
-          </div>
-          <div className="flex gap-3 edit-icon absolute top-4 right-10 opacity-0 transition-opacity duration-300 hover:opacity-100 text-2xl text-blue-500 ">
-            <DetailIcon />
-            <EditIcon />
-          </div>
-        </div>
-
-        {/* Card 2 */}
-
-        <div className="flex flex-col bg-white shadow-md relative group">
-          <div className="flex justify-start items-start gap-4 p-8">
-            <div>
-              <Image
-                src={profile}
-                width={100}
-                height={100}
-                alt="Profile Image"
-                className="rounded-full"
-              />
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">Salim Al Sazu</span>
-                <span className="flex gap-2 text-2xl ml-5">
-                  <MobileIcon />
-                  <EmailFillIcon />
+            <div className="flex gap-8 text-lg bg-stone-200 p-5">
+              <div className="flex gap-3 items-center">
+                <span>
+                  <TimeRoundIcon />
+                </span>
+                <span>
+                  {moment(user?.profile?.joiningDate).format("DD MMMM YYYY")}
                 </span>
               </div>
-              <div>
-                <span className="text-lg font-semibold">Accounts Manager</span>
-                <span className="text-yellow-800 font-bold text-xl">.</span>
-                <span className="text-lg font-extralight">Banani, Dhaka</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-8 text-lg bg-stone-200 p-5">
-            <div className="flex gap-3 items-center">
-              <span>
-                <TimeRoundIcon />
-              </span>
-              <span>Today</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <VisibleIcon />
-              </span>
-              <span>Feb 15, 2020</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <CalendarIcon />
-              </span>
-              <span>2+ Years exp</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <SiteFillIcon />
-              </span>
-              <span>Salary: 30,000</span>
-            </div>
-          </div>
-          <div className="flex gap-3 edit-icon absolute top-4 right-10 opacity-0 transition-opacity duration-300 hover:opacity-100 text-2xl text-blue-500 cursor-pointer">
-            <DetailIcon />
-            <EditIcon />
-          </div>
-        </div>
-
-        {/* Card 3 */}
-
-        <div className="flex flex-col bg-white shadow-md relative group">
-          <div className="flex justify-start items-start gap-4 p-8">
-            <div>
-              <Image
-                src={profile}
-                width={100}
-                height={100}
-                alt="Profile Image"
-                className="rounded-full"
-              />
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">Salim Al Sazu</span>
-                <span className="flex gap-2 text-2xl ml-5">
-                  <MobileIcon />
-                  <EmailFillIcon />
+              <div className="flex gap-3 items-center">
+                <span>
+                  <VisibleIcon />
+                </span>
+                <span>
+                  {moment(user?.profile?.dateOfBirth).format("DD MMMM YYYY")}
                 </span>
               </div>
-              <div>
-                <span className="text-lg font-semibold">Accounts Manager</span>
-                <span className="text-yellow-800 font-bold text-xl">.</span>
-                <span className="text-lg font-extralight">Banani, Dhaka</span>
+              <div className="flex gap-3 items-center">
+                <span>
+                  <CalendarIcon />
+                </span>
+                <span>{user?.profile?.experience} Years exp</span>
+              </div>
+              <div className="flex gap-3 items-center">
+                <span>
+                  <SiteFillIcon />
+                </span>
+                <span>Salary: {user?.profile.salary}</span>
               </div>
             </div>
-          </div>
-          <div className="flex gap-8 text-lg bg-stone-200 p-5">
-            <div className="flex gap-3 items-center">
-              <span>
-                <TimeRoundIcon />
-              </span>
-              <span>Today</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <VisibleIcon />
-              </span>
-              <span>Feb 15, 2020</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <CalendarIcon />
-              </span>
-              <span>2+ Years exp</span>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span>
-                <SiteFillIcon />
-              </span>
-              <span>Salary: 30,000</span>
+            <div className="flex gap-3 edit-icon absolute top-4 right-10 opacity-0 transition-opacity duration-300 hover:opacity-100 text-2xl text-blue-500 ">
+              <DetailIcon />
+              <EditIcon />
             </div>
           </div>
-          <div className="flex gap-3 edit-icon absolute top-4 right-10 opacity-0 transition-opacity duration-300 hover:opacity-100 text-2xl text-blue-500 cursor-pointer">
-            <DetailIcon />
-            <EditIcon />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
