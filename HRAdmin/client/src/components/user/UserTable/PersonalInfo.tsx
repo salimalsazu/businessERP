@@ -52,7 +52,26 @@ const PersonalInfoSection = () => {
         <p className="bg-rose-100 text-yellow-600 font-bold  text-lg py-4  rounded-sm pl-5">
           Address
         </p>
-        <div className="mt-5 flex flex-col gap-2"></div>
+        <div className="mt-5 flex flex-col gap-2">
+          <div className="flex text-2xl font-light gap-1">
+            <span>House 10, Road 5, Block C, Banani, Dhaka</span>
+          </div>
+        </div>
+      </div>
+      <div className="my-5">
+        <p className="bg-rose-100 text-yellow-600 font-bold  text-lg py-4  rounded-sm pl-5">
+          Email & Phone
+        </p>
+        <div className="mt-5 flex flex-col gap-2">
+          <div className="flex text-2xl font-light gap-1">
+            <span className="font-semibold">Email:</span>
+            <span>salim@24-7sourcingbd.com</span>
+          </div>
+          <div className="flex text-2xl font-light gap-1">
+            <span className="font-semibold">Phone:</span>
+            <span>+8801714486218</span>
+          </div>
+        </div>
       </div>
     </div>
   );
