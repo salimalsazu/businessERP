@@ -19,7 +19,7 @@ import UserTableDrawer from "./UserTableDrawer";
 const UserTable = () => {
   const query: Record<string, any> = {};
   const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(1);
+  const [size, setSize] = useState<number>(10);
 
   query["limit"] = size;
   query["page"] = page;

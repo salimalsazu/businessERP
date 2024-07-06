@@ -3,6 +3,7 @@ import { Button, Drawer, Placeholder, Tabs } from "rsuite";
 import "./userTable.css";
 import PersonalInfoSection from "./PersonalInfo";
 import JobDetailsSection from "./JobDetailsSection";
+import { btnData } from "./Btn.Constant";
 
 const UserTableDrawer = ({ placement, setOpen, open }: any) => {
   const [activeKey, setActiveKey] = useState<string | undefined>("1");
@@ -21,18 +22,19 @@ const UserTableDrawer = ({ placement, setOpen, open }: any) => {
       <Drawer.Header>
         <Drawer.Title>
           <div className="flex gap-2 items-center">
-            <Button appearance="primary" onClick={() => handleTabChange("1")}>
-              Personal info
-            </Button>
-            <Button appearance="primary" onClick={() => handleTabChange("2")}>
-              Job Details
-            </Button>
-            <Button appearance="primary" onClick={() => handleTabChange("3")}>
-              History
-            </Button>
-            <Button appearance="primary" onClick={() => handleTabChange("3")}>
-              Others
-            </Button>
+            {btnData.map((btn) => (
+              <Button
+                key={btn.key}
+                appearance="primary"
+                onClick={() => handleTabChange(btn.key)}
+                style={{
+                  backgroundColor: activeKey === btn.key ? "#007bff" : "",
+                  color: activeKey === btn.key ? "#fff" : "",
+                }}
+              >
+                {btn.title}
+              </Button>
+            ))}
           </div>
         </Drawer.Title>
       </Drawer.Header>
