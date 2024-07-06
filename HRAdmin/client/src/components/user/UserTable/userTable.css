@@ -6,3 +6,11 @@
 .group:hover .edit-icon {
   opacity: 1;
 }
+
+.custom-tabs .rs-tabs-nav {
+  display: none;
+}
+
+.custom-tabs .rs-tabs-content {
+  border: none;
+}

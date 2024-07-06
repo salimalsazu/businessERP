@@ -9,11 +9,12 @@ import SiteFillIcon from "@rsuite/icons/SiteFill";
 import MobileIcon from "@rsuite/icons/Mobile";
 import EmailFillIcon from "@rsuite/icons/EmailFill";
 import EditIcon from "@rsuite/icons/Edit";
-import DetailIcon from "@rsuite/icons/Detail";
+// import DetailIcon from "@rsuite/icons/Detail";
 import "./userTable.css";
 import { useState } from "react";
 import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
 import moment from "moment";
+import UserTableDrawer from "./UserTableDrawer";
 
 const UserTable = () => {
   const query: Record<string, any> = {};
@@ -29,6 +30,10 @@ const UserTable = () => {
     error,
   } = useGetAllUsersQuery({ ...query });
 
+  //Drawer section for user details
+
+  const [open, setOpen] = useState<boolean | undefined>(false);
+  const [placement, setPlacement] = useState<string | undefined>(undefined);
 
   return (
     <div>
@@ -129,11 +134,20 @@ const UserTable = () => {
               </div>
             </div>
             <div className="flex gap-3 edit-icon absolute top-4 right-10 opacity-0 transition-opacity duration-300 hover:opacity-100 text-2xl text-blue-500 ">
-              <DetailIcon />
-              <EditIcon />
+              {/* <DetailIcon /> */}
+              <EditIcon
+                onClick={() => {
+                  setOpen(true);
+                  setPlacement("right");
+                }}
+              />
             </div>
           </div>
         ))}
+      </div>
+
+      <div>
+        <UserTableDrawer placement={placement} open={open} setOpen={setOpen} />
       </div>
     </div>
   );
