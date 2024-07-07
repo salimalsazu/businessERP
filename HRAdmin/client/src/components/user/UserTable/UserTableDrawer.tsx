@@ -5,7 +5,7 @@ import PersonalInfoSection from "./PersonalInfo";
 import JobDetailsSection from "./JobDetailsSection";
 import { btnData } from "./Btn.Constant";
 
-const UserTableDrawer = ({ placement, setOpen, open }: any) => {
+const UserTableDrawer = ({ userDetails, placement, setOpen, open }: any) => {
   const [activeKey, setActiveKey] = useState<string | undefined>("1");
 
   const handleTabChange = (key: string) => {
@@ -43,12 +43,12 @@ const UserTableDrawer = ({ placement, setOpen, open }: any) => {
           <div>
             {activeKey === "1" && (
               <div>
-                <PersonalInfoSection />
+                <PersonalInfoSection userDetails={userDetails} />
               </div>
             )}
             {activeKey === "2" && (
               <div>
-                <JobDetailsSection />
+                <JobDetailsSection userDetails={userDetails} />
               </div>
             )}
           </div>

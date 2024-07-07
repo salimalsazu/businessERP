@@ -1,4 +1,6 @@
-const JobDetailsSection = () => {
+import moment from "moment";
+
+const JobDetailsSection = (userDetails: any) => {
   return (
     <div>
       <div className="my-5">
@@ -8,11 +10,14 @@ const JobDetailsSection = () => {
         <div className="mt-5 flex flex-col gap-2">
           <div className="flex text-2xl font-light gap-1">
             <span className="font-semibold text-lg">A/C Name:</span>
-            <span>Salim Al Sazu</span>
+            <span>
+              {userDetails?.userDetails?.profile?.firstName}{" "}
+              {userDetails?.userDetails?.profile?.lastName}
+            </span>
           </div>
           <div className="flex text-2xl font-light gap-1">
             <span className="font-semibold text-lg">A/C No:</span>
-            <span>4008-12100002222</span>
+            <span>{userDetails?.userDetails?.profile?.bankAccountNo}</span>
           </div>
         </div>
       </div>
@@ -23,19 +28,28 @@ const JobDetailsSection = () => {
         <div className="mt-5 flex flex-col gap-2">
           <div className="flex text-2xl font-light gap-1">
             <span className="font-semibold text-lg">Job Id:</span>
-            <span>0010</span>
+            <span>{userDetails?.userDetails?.profile?.jobId}</span>
           </div>
           <div className="flex text-2xl font-light gap-1">
             <span className="font-semibold text-lg">Joining Date:</span>
-            <span>Jan 01, 2024</span>
+            <span>
+              {moment(userDetails?.userDetails?.profile?.joiningDate).format(
+                "DD-MM-YYYY"
+              )}
+            </span>
           </div>
           <div className="flex text-2xl font-light gap-1">
             <span className="font-semibold text-lg">Salary:</span>
-            <span>20,000.00</span>
+            <span>
+              {Number(
+                userDetails?.userDetails?.profile?.salary
+              ).toLocaleString()}
+              .00
+            </span>
           </div>
           <div className="flex text-2xl font-light gap-1">
             <span className="font-semibold text-lg">Experience:</span>
-            <span>5 Years</span>
+            <span>{userDetails?.userDetails?.profile?.experience} years</span>
           </div>
         </div>
       </div>
