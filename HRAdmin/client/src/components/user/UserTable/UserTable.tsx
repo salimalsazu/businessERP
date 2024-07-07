@@ -15,6 +15,8 @@ import { useState } from "react";
 import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
 import moment from "moment";
 import UserTableDrawer from "./UserTableDrawer";
+import UserEditModal from "./UserEditModal";
+import { Loader } from "rsuite";
 
 const UserTable = () => {
   const query: Record<string, any> = {};
@@ -35,6 +37,15 @@ const UserTable = () => {
   const [userDetails, setUserDetails] = useState<any>({});
   const [open, setOpen] = useState<boolean | undefined>(false);
   const [placement, setPlacement] = useState<string | undefined>(undefined);
+
+  //Modal section for user edit
+
+  const [openModal, setOpenModal] = useState<boolean | undefined>(false);
+  const [modalSize, setModalSize] = useState<string | undefined>("md" as any);
+
+  const handleClose = () => {
+    setOpenModal(false);
+  };
 
   return (
     <div>
@@ -66,6 +77,18 @@ const UserTable = () => {
         </div>
       </div>
       <div className="flex flex-col gap-4">
+        <div>
+          {isLoading && (
+            <Loader
+              center
+              size="lg"
+              content="Loading..."
+              backdrop
+              vertical
+              inverse
+            />
+          )}
+        </div>
         {/* Card 1 */}
 
         {allUsers?.data?.data.map((user: any) => (
@@ -142,7 +165,13 @@ const UserTable = () => {
                   setUserDetails(user);
                 }}
               />
-              <EditIcon />
+              <EditIcon
+                onClick={() => {
+                  setModalSize("50rem");
+                  setOpenModal(true);
+                  setUserDetails(user);
+                }}
+              />
             </div>
           </div>
         ))}
@@ -154,6 +183,15 @@ const UserTable = () => {
           placement={placement}
           open={open}
           setOpen={setOpen}
+        />
+      </div>
+
+      <div>
+        <UserEditModal
+          size={modalSize}
+          open={openModal}
+          handleClose={handleClose}
+          userDetails={userDetails}
         />
       </div>
     </div>
