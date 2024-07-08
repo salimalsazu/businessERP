@@ -121,7 +121,12 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
   if (isUserExist.userStatus === UserStatus.Pending && isUserExist.profile?.role !== 'SUPERADMIN') {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Pending ! Account is not verified Yet');
   }
-  if (isUserExist.userStatus === UserStatus.Suspended) {
+
+  if (isUserExist.userStatus === UserStatus.Paused && isUserExist.profile?.role !== 'SUPERADMIN') {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Paused ! Account is not verified Yet');
+  }
+
+  if (isUserExist.userStatus === UserStatus.Suspended && isUserExist.profile?.role !== 'SUPERADMIN') {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Your Account is Suspended');
   }
 

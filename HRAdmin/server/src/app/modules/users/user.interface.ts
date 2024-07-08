@@ -40,6 +40,20 @@ export type IUpdateProfileReqAndResponse = {
   lastName?: string;
   profileImage?: string;
   isMeal?: isMeal;
+  nationalId?: string;
+  jobId?: string;
+  jobTitle?: string;
+  joiningDate?: Date;
+  experience?: string;
+  salary?: number;
+  address?: string;
+  birthCertificateNo?: string;
+  dateOfBirth?: Date;
+  bankAccountNo?: string;
+  mobileNo?: string;
+  email?: string;
+  password?: string;
+  userStatus?: UserStatus;
 };
 export type IUserUpdateReqAndResponse = {
   firstName?: string;

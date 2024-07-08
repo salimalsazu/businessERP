@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Profile, User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
@@ -44,6 +45,7 @@ const getAllUserService = async (options: IPaginationOptions): Promise<IGenericR
       total,
       totalPage,
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     data: result,
   };
@@ -119,25 +121,45 @@ const updateProfileInfo = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Profile not Found !!');
   }
 
-  if ('userStatus' in payload) {
-    throw new ApiError(httpStatus.BAD_REQUEST, `userStatus cannot be changed`);
-  }
-
   // Update the Profile
-  const result = await prisma.profile.update({
-    where: {
-      profileId,
-    },
-    data: {
-      firstName: payload?.firstName,
-      lastName: payload?.lastName,
-      profileImage: payload?.profileImage,
-      isMeal: payload?.isMeal,
-    },
-  });
 
-  if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Profile Update Failed');
+  if (payload.password || payload.email || payload.userStatus) {
+    const { password, email, userStatus } = payload;
+
+    const updatedUserData: Partial<User> = {};
+
+    if (password) {
+      const hashPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+      updatedUserData['password'] = hashPassword;
+    }
+
+    if (email) updatedUserData['email'] = email;
+
+    if (userStatus) updatedUserData['userStatus'] = userStatus;
+
+    const result = await prisma.user.update({
+      where: {
+        profileId,
+      },
+      data: updatedUserData,
+    });
+
+    if (!result) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Profile Update Failed');
+    }
+  } else {
+    const profileUpdate = await prisma.profile.update({
+      where: {
+        profileId,
+      },
+      data: {
+        ...payload,
+      },
+    });
+
+    if (!profileUpdate) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Profile Update Failed');
+    }
   }
 
   return {

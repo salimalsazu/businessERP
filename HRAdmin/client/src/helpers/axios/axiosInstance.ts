@@ -1,6 +1,4 @@
-
 import axios from "axios";
-
 
 import { getNewAccessToken } from "../../hooks/services/auth.service";
 import { setToLocalStorage } from "../../utils/local-storage";

@@ -3,7 +3,6 @@ import { axiosInstance } from "./axiosInstance";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { IMeta } from "@/constant/common";
 
-
 export const axiosBaseQuery =
   (
     { baseUrl }: { baseUrl: string } = { baseUrl: "" }

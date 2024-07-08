@@ -25,7 +25,8 @@ const LoginSection = () => {
     formState: { errors },
   } = useForm<ILogin>();
 
-  const [login, { isLoading, isError, error }] = useUserLoginMutation();
+  const [login, { isLoading, isSuccess, isError, error, data }] =
+    useUserLoginMutation();
 
   const handleLogin: SubmitHandler<ILogin> = async (user) => {
     const data = { email: user.email, password: user.password };
@@ -38,18 +39,16 @@ const LoginSection = () => {
   };
 
   useEffect(() => {
-    try {
-      if (userLoggedIn) {
-        console.log("userLoggedIn", userLoggedIn);
-
-        router.push("/dashboard");
-        // message.("User logged in successfully!");
-        toast.success("User logged in successfully!");
-      }
-    } catch (error) {
-      router.push("/");
+    if (isSuccess && !isLoading && !isError && !error && data) {
+      router.push("/dashboard");
+      toast.success(data?.message);
     }
-  }, [userLoggedIn, router, isError]);
+
+    if (!isSuccess && !isLoading && isError && error && !data) {
+      //@ts-ignore
+      toast.error(error?.message);
+    }
+  }, [isSuccess, isLoading, isError, error, router, data]);
 
   return (
     <div className="border m-3 p-5 rounded  shadow-sm bg-sidebar ">

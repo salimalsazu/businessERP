@@ -59,15 +59,9 @@ const createUser = z.object({
 
 const updateUser = z.object({
   body: z.object({
-    firstName: z
-      .string({ invalid_type_error: 'First Name must be in string' })
-      .optional(),
-    lastName: z
-      .string({ invalid_type_error: 'Last Name must be in string' })
-      .optional(),
-    profileImage: z
-      .string({ invalid_type_error: 'profileImage must be in string' })
-      .optional(),
+    firstName: z.string({ invalid_type_error: 'First Name must be in string' }).optional(),
+    lastName: z.string({ invalid_type_error: 'Last Name must be in string' }).optional(),
+    profileImage: z.string({ invalid_type_error: 'profileImage must be in string' }).optional(),
     email: z
       .string({
         invalid_type_error: 'email must be in string',
