@@ -1,26 +1,26 @@
 model Requisition {
-    requisitionId String @id @default(uuid())
-    requisitionDate DateTime @db.Timestamptz(0)
-    title String
-    details String
-    bankName String
-    chequeNo String
-    chequeDate DateTime @db.Timestamptz(0)
-    amount Int
-    amountType ChequeType
-    status RequisitionStatus
-    createdAt DateTime @default(now()) @db.Timestamptz(0)
-    updatedAt DateTime @updatedAt @db.Timestamptz(0)
-
+  requisitionId   String            @id @default(uuid())
+  requisitionDate DateTime          @db.Timestamptz(0)
+  details         String
+  bankName        String
+  chequeNo        String
+  chequeDate      DateTime          @db.Timestamptz(0)
+  amount          Int
+  amountType      ChequeType
+  status          RequisitionStatus
+  createdAt       DateTime          @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(0)
+  accountId       String?
+  account         Account?          @relation(fields: [accountId], references: [accountId], onDelete: SetNull, onUpdate: SetNull)
 }
 
 enum ChequeType {
-    Cash
-    Cheque
+  Cash
+  Cheque
 }
 
 enum RequisitionStatus {
-    Pending
-    Approved
-    Rejected
+  Pending
+  Approved
+  Rejected
 }

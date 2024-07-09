@@ -2,7 +2,7 @@ model Profile {
   profileId          String    @id @default(uuid())
   firstName          String
   lastName           String
-  gender             Gender       @default(male)
+  gender             Gender    @default(male)
   jobId              String?
   jobTitle           String?
   joiningDate        DateTime?
@@ -11,12 +11,12 @@ model Profile {
   address            String?
   nationalId         String?
   birthCertificateNo String?
-  dateOfBirth       DateTime         @default(now())
+  dateOfBirth        DateTime  @default(now())
   bankAccountNo      String?
   profileImage       String?
   mobileNo           String?
   mobileBillingLimit Int?
-  email             String?
+  email              String?
   role               UserRoles @default(USER)
   isMeal             isMeal    @default(Yes)
   createdAt          DateTime  @default(now()) @db.Timestamptz(0)
@@ -27,6 +27,6 @@ model Profile {
 }
 
 enum Gender {
-    male
-    female
+  male
+  female
 }

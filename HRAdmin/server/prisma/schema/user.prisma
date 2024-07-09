@@ -16,7 +16,6 @@ model User {
   @@map("users")
 }
 
-
 enum UserRoles {
   SUPERADMIN
   ADMIN

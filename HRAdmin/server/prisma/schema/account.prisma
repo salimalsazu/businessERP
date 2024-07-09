@@ -1,0 +1,5 @@
+model Account {
+  accountId   String        @id @default(cuid())
+  accountName  String
+  requisition Requisition[]
+}

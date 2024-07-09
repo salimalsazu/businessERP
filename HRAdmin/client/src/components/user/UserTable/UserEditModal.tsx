@@ -15,6 +15,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import moment from "moment";
 import { useUpdateMyProfileMutation } from "@/redux/api/features/userApi";
 import { toast } from "sonner";
+import { storeUserInfo } from "@/hooks/services/auth.service";
 
 const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
   // console.log("userDetails", userDetails);
