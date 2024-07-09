@@ -32,6 +32,8 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
   ] = useUpdateMyProfileMutation();
 
   const handleEditUser: SubmitHandler<any> = async (data: any) => {
+    console.log("data", data);
+
     await updateUserProfile({
       profileId: userDetails?.profile?.profileId,
       payload: {
@@ -115,7 +117,6 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
                       {...field}
                       size="lg"
                       type="password"
-                      defaultValue={userDetails?.password}
                       placeholder="Password"
                       style={{ width: "100%" }}
                     />
@@ -160,7 +161,7 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
             <div className="flex flex-col gap-3 w-full">
               <div>
                 <Whisper speaker={<Tooltip>Last Name</Tooltip>}>
-                  <label htmlFor="email" className="text-sm font-medium">
+                  <label htmlFor="lastName" className="text-sm font-medium">
                     Last Name
                     <InfoOutlineIcon />
                   </label>
@@ -187,7 +188,7 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
             <div className="flex flex-col gap-3 w-full">
               <div>
                 <Whisper speaker={<Tooltip>Date of Birth</Tooltip>}>
-                  <label htmlFor="email" className="text-sm font-medium">
+                  <label htmlFor="dateOfBirth" className="text-sm font-medium">
                     Date of Birth
                     <InfoOutlineIcon />
                   </label>
@@ -221,7 +222,7 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
             <div className="flex flex-col gap-3 w-full">
               <div>
                 <Whisper speaker={<Tooltip>National Id</Tooltip>}>
-                  <label htmlFor="email" className="text-sm font-medium">
+                  <label htmlFor="nationalId" className="text-sm font-medium">
                     National Id
                     <InfoOutlineIcon />
                   </label>

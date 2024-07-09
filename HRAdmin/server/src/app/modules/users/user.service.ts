@@ -121,52 +121,43 @@ const updateProfileInfo = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'Profile not Found !!');
   }
 
-  // Update the Profile
-
-  if (payload.password || payload.email || payload.userStatus) {
-    const { password, email, userStatus } = payload;
-
-    const updatedUserData: Partial<User> = {};
-
-    if (password) {
-      const hashPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
-      updatedUserData['password'] = hashPassword;
-    }
-
-    if (email) updatedUserData['email'] = email;
-
-    if (userStatus) updatedUserData['userStatus'] = userStatus;
-
-    const result = await prisma.user.update({
-      where: {
-        profileId,
-      },
-      data: updatedUserData,
-    });
-
-    if (!result) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Profile Update Failed');
-    }
-  } else {
-    const profileUpdate = await prisma.profile.update({
-      where: {
-        profileId,
-      },
-      data: {
-        ...payload,
-      },
-    });
-
-    if (!profileUpdate) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Profile Update Failed');
-    }
+  // Prepare data for updating User
+  const updatedUserData: Partial<User> = {};
+  if (payload.password) {
+    updatedUserData.password = await bcrypt.hash(payload.password, Number(config.bcrypt_salt_rounds));
+  }
+  if (payload.email) {
+    updatedUserData.email = payload.email;
+  }
+  if (payload.userStatus) {
+    updatedUserData.userStatus = payload.userStatus;
   }
 
+  // Prepare data for updating Profile
+  const { password, email, userStatus, ...profileUpdateData } = payload;
+
+  // Perform the updates
+  await prisma.$transaction(async (prisma) => {
+    if (Object.keys(updatedUserData).length > 0) {
+      await prisma.user.update({
+        where: { profileId },
+        data: updatedUserData,
+      });
+    }
+    if (Object.keys(profileUpdateData).length > 0) {
+      await prisma.profile.update({
+        where: { profileId },
+        data: profileUpdateData,
+      });
+    }
+  });
+
   return {
-    message: 'Profile Information Updated Successful',
+    message: 'Profile Information Updated Successfully',
     updatedInfo: payload,
   };
 };
+
 
 // ! update user info -------------------------------------------------------->>>
 const updateUserInfo = async (
