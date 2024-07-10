@@ -4,6 +4,7 @@ import {
   Button,
   DatePicker,
   Input,
+  InputPicker,
   SelectPicker,
   Tooltip,
   Whisper,
@@ -12,8 +13,21 @@ import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useAddRequisitionMutation } from "@/redux/api/features/requisitionApi";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import {
+  useAddAccountMutation,
+  useGetAccountQuery,
+} from "@/redux/api/features/accountApi";
 
 const AddRequisitionForm = () => {
+  const { data: allAccounts } = useGetAccountQuery({});
+
+  const [addAccount] = useAddAccountMutation();
+
+  const handleAddAccount = async (data: any) => {
+    // console.log("data", data);
+    await addAccount(data);
+  };
+
   interface IRequisitionList {
     requisitionDate: Date;
     title: number;
@@ -116,11 +130,11 @@ const AddRequisitionForm = () => {
                 )}
               />
             </div>
-            <div className="flex flex-col gap-3 w-full lg:w-[70%] ">
+            <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper speaker={<Tooltip>Tile</Tooltip>}>
-                  <label htmlFor="title" className="text-sm font-medium">
-                    Title
+                <Whisper speaker={<Tooltip>Asset Category</Tooltip>}>
+                  <label htmlFor="assetName" className="text-sm font-medium">
+                    Account Name
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
@@ -128,19 +142,22 @@ const AddRequisitionForm = () => {
               <Controller
                 name="title"
                 control={control}
-                rules={{ required: "Title is required" }}
+                // defaultValue={""}
+                rules={{ required: "Account is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <Input
-                      className="z-20 w-full"
-                      {...field}
-                      min={1}
-                      size="lg"
-                      type="text"
-                      placeholder="Title Name"
-                      style={{
-                        width: "100%",
+                    <InputPicker
+                      creatable
+                      size={"lg"}
+                      data={allAccounts?.data?.data?.map((item: any) => ({
+                        label: item.accountName,
+                        value: item.accountId,
+                      }))}
+                      onCreate={(value, item) => {
+                        handleAddAccount({ accountName: value });
                       }}
+                      onChange={(value: string | null) => field.onChange(value)}
+                      style={{ width: "100%" }}
                     />
                     {/* <Form.ErrorMessage
                           show={
