@@ -3,75 +3,50 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { IRequestUser } from './account.interface';
-import { UserService } from './account.service';
+import { AccountService } from './account.service';
+import { accountFilterableFields } from './account.constants';
 
-const getAllUsersController = catchAsync(async (req: Request, res: Response) => {
+const createAccount = catchAsync(async (req: Request, res: Response) => {
+  const data = req.body;
+  console.log('data', data);
+  const result = await AccountService.createAccount(data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: 'Account created successfully',
+    data: result,
+  });
+});
+
+const getAllAccount = catchAsync(async (req: Request, res: Response) => {
+  const filter = pick(req.query, accountFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-  const result = await UserService.getAllUserService(options);
+  const result = await AccountService.getAccounts(filter, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'All Users retrieved successfully',
+    message: 'All Account retrieved successfully',
     data: result,
   });
 });
 
-const getSingleUser = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  const result = await UserService.getSingleUser(userId);
+// const updateUserInfo = catchAsync(async (req: Request, res: Response) => {
+//   const { userId } = req.params;
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User retrieved successfully',
-    data: result,
-  });
-});
+//   const result = await UserService.updateUserInfo(userId, req.body);
 
-const updateProfileInfo = catchAsync(async (req: Request, res: Response) => {
-  const { profileId } = req.params;
-  const payload = req.body;
-  const result = await UserService.updateProfileInfo(profileId, payload);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'User updated successfully',
+//     data: result,
+//   });
+// });
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Profile updated successfully',
-    data: result,
-  });
-});
-
-const updateUserInfo = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.params;
-
-  const result = await UserService.updateUserInfo(userId, req.body);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User updated successfully',
-    data: result,
-  });
-});
-
-const getMyProfile = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req.user as IRequestUser).userId;
-  const result = await UserService.getMyProfile(userId);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User retrieved successfully',
-    data: result,
-  });
-});
-
-export const UserController = {
-  getAllUsersController,
-  getSingleUser,
-  updateProfileInfo,
-  updateUserInfo,
-  getMyProfile,
+export const AccountController = {
+  createAccount,
+  getAllAccount,
+  // updateUserInfo,
 };
