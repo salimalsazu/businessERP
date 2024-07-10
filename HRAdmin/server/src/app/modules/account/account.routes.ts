@@ -11,7 +11,7 @@ const router = express.Router();
 router.post(
   '/',
   // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  // validateRequest(AccountValidation.addAccount),
+  validateRequest(AccountValidation.addAccount),
   AccountController.createAccount
 );
 
