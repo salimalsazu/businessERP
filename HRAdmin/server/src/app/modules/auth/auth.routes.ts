@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { AuthController } from './auth.controller';
+import { AuthLoginLimiter } from '../../../shared/Limit';
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post(
 //   }
 // );
 
-router.post('/login', AuthController.userLogin);
+router.post('/login', AuthLoginLimiter, AuthController.userLogin);
 
 router.post('/refresh-token', AuthController.refreshToken);
 
