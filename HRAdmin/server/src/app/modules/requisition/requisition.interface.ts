@@ -7,7 +7,7 @@ export type IRequisitionFilterRequest = {
 };
 export type IRequisitionCreateRequest = {
   requisitionDate: Date;
-  title: string;
+  accountId: string;
   details: string;
   bankName: string;
   chequeNo: string;

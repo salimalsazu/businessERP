@@ -199,7 +199,7 @@ const RequisitionListTable = () => {
 
     const tableColumn = [
       "Requisition Date",
-      "Title",
+      "Account",
       "Details",
       "Bank Name",
       "Cheque No",
@@ -210,13 +210,13 @@ const RequisitionListTable = () => {
 
     const tableRows = checkedBoxData.map((item: any) => [
       moment(item.requisitionDate).format("ll"),
-      item.title,
-      item.details,
-      item.bankName,
-      item.chequeNo,
-      moment(item.chequeDate).format("ll"),
-      item.amount,
-      item.amountType,
+      item?.account?.accountName,
+      item?.details,
+      item?.bankName,
+      item?.chequeNo,
+      moment(item?.chequeDate).format("ll"),
+      item?.amount,
+      item?.amountType,
     ]);
 
     // Calculate the total sum of the amount
@@ -481,12 +481,14 @@ const RequisitionListTable = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Title</HeaderCell>
+              <HeaderCell style={headerCss}>Account</HeaderCell>
               <Cell
-                dataKey="title"
+                // dataKey="title"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) => ` ${rowData.account?.accountName}`}
+              </Cell>
             </Column>
 
             {/* Details*/}

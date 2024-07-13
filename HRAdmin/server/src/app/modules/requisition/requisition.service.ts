@@ -14,11 +14,24 @@ import { RequisitionRelationalFields, RequisitionRelationalFieldsMapper, Requisi
 
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createRequisition = async (data: IRequisitionCreateRequest): Promise<Requisition> => {
-  //create requisition record
 
+
+
+
+  const isAccountExist = await prisma.account.findUnique({
+    where: {
+      accountId: data.accountId,
+    },
+  });
+
+  if (!isAccountExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
+  }
+
+  //create requisition record
   const dataObj = {
     requisitionDate: data.requisitionDate,
-    title: data.title,
+    accountId: isAccountExist.accountId,
     details: data.details,
     bankName: data.bankName,
     chequeNo: data.chequeNo,
@@ -101,6 +114,9 @@ const getRequisition = async (filters: IRequisitionFilterRequest, options: IPagi
   // Retrieve Courier with filtering and pagination
   const result = await prisma.requisition.findMany({
     where: whereConditions,
+    include: {
+      account: true,
+    },
     skip,
     take: limit,
     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },

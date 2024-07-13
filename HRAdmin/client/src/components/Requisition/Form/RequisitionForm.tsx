@@ -30,7 +30,7 @@ const AddRequisitionForm = () => {
 
   interface IRequisitionList {
     requisitionDate: Date;
-    title: number;
+    accountId: string;
     bankName: string;
     chequeNo: string;
     chequeDate: string;
@@ -54,7 +54,7 @@ const AddRequisitionForm = () => {
   ) => {
     const objRequisition = {
       requisitionDate: data.requisitionDate,
-      title: data.title,
+      accountId: data.accountId,
       bankName: data.bankName,
       chequeNo: data.chequeNo,
       chequeDate: data.chequeDate,
@@ -132,7 +132,7 @@ const AddRequisitionForm = () => {
             </div>
             <div className="flex flex-col gap-3 w-full ">
               <div>
-                <Whisper speaker={<Tooltip>Asset Category</Tooltip>}>
+                <Whisper speaker={<Tooltip>Account Name</Tooltip>}>
                   <label htmlFor="assetName" className="text-sm font-medium">
                     Account Name
                     <InfoOutlineIcon />
@@ -140,7 +140,7 @@ const AddRequisitionForm = () => {
                 </Whisper>
               </div>
               <Controller
-                name="title"
+                name="accountId"
                 control={control}
                 // defaultValue={""}
                 rules={{ required: "Account is required" }}

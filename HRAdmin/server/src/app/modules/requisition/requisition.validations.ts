@@ -7,7 +7,7 @@ const ChequeType = z.enum(['Cash', 'Cheque']);
 const createRequisition = z.object({
   body: z.object({
     requisitionDate: z.string(),
-    title: z.string(),
+    accountId: z.string(),
     details: z.string(),
     bankName: z.string(),
     chequeNo: z.string(),
