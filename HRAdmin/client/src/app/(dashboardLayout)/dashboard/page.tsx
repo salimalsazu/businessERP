@@ -11,7 +11,7 @@ const DashboardHomePage = () => {
         Secondary
       </button>
       */}
-
+      {/* Version Name */}
       <h1>Version: 0.0.1</h1>
     </div>
   );
