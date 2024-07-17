@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  ButtonToolbar,
   Checkbox,
   DateRangePicker,
   Dropdown,
+  IconButton,
   Pagination,
   Popover,
   Table,
@@ -20,6 +22,7 @@ import { useDebounced } from "@/redux/hooks";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { toWords } from "number-to-words";
+import EditIcon from "@rsuite/icons/Edit";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -549,7 +552,26 @@ const RequisitionListTable = () => {
                 dataKey="status"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
+              >
+                {(rowData) => (
+                  <div className="flex items-center gap-2">
+                    {rowData.status}
+                    <ButtonToolbar style={{ marginTop: 10 }}>
+                      <Whisper
+                        placement="bottomStart"
+                        trigger="click"
+                        speaker={renderMenu}
+                      >
+                        <IconButton
+                          appearance="primary"
+                          icon={<EditIcon />}
+                          circle
+                        />
+                      </Whisper>
+                    </ButtonToolbar>
+                  </div>
+                )}
+              </Cell>
             </Column>
 
             {/* {role !== "USER" && (
