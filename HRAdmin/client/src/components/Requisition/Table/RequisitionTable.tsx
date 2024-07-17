@@ -352,6 +352,36 @@ const RequisitionListTable = () => {
     );
   };
 
+  ///Status Edit
+
+  const statusOptions = [
+    { key: 1, value: "Pending" },
+    { key: 2, value: "Approved" },
+    { key: 3, value: "Rejected" },
+  ];
+
+  const StatusMenu = ({ onClose, left, top, className }: any, ref: any) => {
+    const handleSelect = (value: string) => {
+      onClose();
+      console.log(value);
+    };
+
+    return (
+      <Popover ref={ref} className={className} style={{ left, top }} full>
+        <Dropdown.Menu>
+          {statusOptions.map((option) => (
+            <Dropdown.Item
+              key={option.key}
+              onClick={() => handleSelect(option.value)}
+            >
+              {option.value}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Popover>
+    );
+  };
+
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between gap-2 w-full">
@@ -560,7 +590,7 @@ const RequisitionListTable = () => {
                       <Whisper
                         placement="bottomStart"
                         trigger="click"
-                        speaker={renderMenu}
+                        speaker={StatusMenu}
                       >
                         <IconButton
                           appearance="primary"

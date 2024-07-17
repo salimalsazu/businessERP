@@ -16,8 +16,6 @@ import { RequisitionRelationalFields, RequisitionRelationalFieldsMapper, Requisi
 const createRequisition = async (data: IRequisitionCreateRequest): Promise<Requisition> => {
 
 
-
-
   const isAccountExist = await prisma.account.findUnique({
     where: {
       accountId: data.accountId,
@@ -140,6 +138,7 @@ const getRequisition = async (filters: IRequisitionFilterRequest, options: IPagi
     data: result,
   };
 };
+
 
 export const RequisitionService = {
   createRequisition,
