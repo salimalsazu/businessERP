@@ -353,12 +353,12 @@ const RequisitionListTable = () => {
   };
 
   ///Status Edit
-
   const statusOptions = [
     { key: 1, value: "Pending" },
     { key: 2, value: "Approved" },
     { key: 3, value: "Rejected" },
   ];
+
 
   const StatusMenu = ({ onClose, left, top, className }: any, ref: any) => {
     const handleSelect = (value: string) => {

@@ -14,8 +14,6 @@ import { RequisitionRelationalFields, RequisitionRelationalFieldsMapper, Requisi
 
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createRequisition = async (data: IRequisitionCreateRequest): Promise<Requisition> => {
-
-
   const isAccountExist = await prisma.account.findUnique({
     where: {
       accountId: data.accountId,
@@ -139,6 +137,30 @@ const getRequisition = async (filters: IRequisitionFilterRequest, options: IPagi
   };
 };
 
+const updateRequisition = async (requisitionId: string, payload: any): Promise<any> => {
+  const findRequisition = await prisma.requisition.findUnique({
+    where: {
+      requisitionId,
+    },
+  });
+
+  if (!findRequisition) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Requisition Not Found');
+  }
+
+  const result = await prisma.requisition.update({
+    where: {
+      requisitionId: findRequisition.requisitionId,
+    },
+    data: payload,
+  });
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Update Failed');
+  }
+
+  return result;
+};
 
 export const RequisitionService = {
   createRequisition,
