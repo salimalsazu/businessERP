@@ -7,7 +7,7 @@ import { RequisitionValidation } from './requisition.validations';
 
 const router = express.Router();
 
-// ! Create New  Order ------------------------------->>>
+// ! Create New  Requisition ------------------------------->>>
 router.post(
   '/',
   validateRequest(RequisitionValidation.createRequisition),
@@ -15,7 +15,11 @@ router.post(
   RequisitionController.createNewRequisition
 );
 
-// ! Get all Food Exp Month Wise----------------------------------->>>
+// ! Get all Requisition ----------------------------------->>>
 router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), RequisitionController.getRequisition);
+
+// ! Update Requisition ----------------------------------->>>
+
+router.patch('/:requisitionId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), RequisitionController.updateRequisition);
 
 export const RequisitionRoutes = router;

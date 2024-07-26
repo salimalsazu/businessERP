@@ -36,50 +36,22 @@ const getRequisition = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// !----------------------------------get all Courier---------------------------------------->>>
-// const getAllFoodExpMonthly = catchAsync(async (req: Request, res: Response) => {
-//   const filters = pick(req.query, FoodExpFilterableFields);
-
-//   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-
-//   const result = await FoodExpService.getFoodExpMonthly(filters, options);
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Monthly Expenses Fetched successfully',
-//     data: result,
-//   });
-// });
-
-// !----------------------------------get Single Courier---------------------------------------->>>
-// const getSingleCourier = catchAsync(async (req: Request, res: Response) => {
-//   const { courierId } = req.params;
-//   const result = await CourierService.getSingleCourier(courierId);
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Courier retrieved successfully',
-//     data: result,
-//   });
-// });
-
 // !----------------------------------Update Courier---------------------------------------->>>
-// const updateCourierInformation = catchAsync(async (req: Request, res: Response) => {
-//   const { courierId } = req.params;
-//   const payload = req.body;
-//   const result = await CourierService.updateCourierInformation(courierId, payload);
+const updateRequisition = catchAsync(async (req: Request, res: Response) => {
+  const { requisitionId } = req.params;
+  const payload = req.body;
+  const result = await RequisitionService.updateRequisition(requisitionId, payload);
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Courier Updated successfully !',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Updated successfully !',
+    data: result,
+  });
+});
 
 export const RequisitionController = {
   createNewRequisition,
   getRequisition,
+  updateRequisition,
 };

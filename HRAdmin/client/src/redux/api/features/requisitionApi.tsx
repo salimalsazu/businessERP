@@ -21,7 +21,20 @@ const mobileBill = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.requisition],
     }),
+
+    updateRequisition: builder.mutation({
+      query: ({ requisitionId, payload }) => ({
+        url: `${REQUISITION_API}/${requisitionId}`,
+        method: "PATCH",
+        data: payload,
+      }),
+      invalidatesTags: [tagTypes.requisition],
+    }),
   }),
 });
 
-export const { useAddRequisitionMutation, useGetRequisitionQuery } = mobileBill;
+export const {
+  useAddRequisitionMutation,
+  useGetRequisitionQuery,
+  useUpdateRequisitionMutation,
+} = mobileBill;

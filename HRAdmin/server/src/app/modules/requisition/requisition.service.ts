@@ -165,4 +165,5 @@ const updateRequisition = async (requisitionId: string, payload: any): Promise<a
 export const RequisitionService = {
   createRequisition,
   getRequisition,
+  updateRequisition,
 };
