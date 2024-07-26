@@ -23,6 +23,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { toWords } from "number-to-words";
 import EditIcon from "@rsuite/icons/Edit";
+import StatusMenu from "./StatusEditModal";
+import StatusEditModal from "./StatusEditModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -352,35 +354,12 @@ const RequisitionListTable = () => {
     );
   };
 
-  ///Status Edit
-  const statusOptions = [
-    { key: 1, value: "Pending" },
-    { key: 2, value: "Approved" },
-    { key: 3, value: "Rejected" },
-  ];
+  //! Status Edit Modal
 
-
-  const StatusMenu = ({ onClose, left, top, className }: any, ref: any) => {
-    const handleSelect = (value: string) => {
-      onClose();
-      console.log(value);
-    };
-
-    return (
-      <Popover ref={ref} className={className} style={{ left, top }} full>
-        <Dropdown.Menu>
-          {statusOptions.map((option) => (
-            <Dropdown.Item
-              key={option.key}
-              onClick={() => handleSelect(option.value)}
-            >
-              {option.value}
-            </Dropdown.Item>
-          ))}
-        </Dropdown.Menu>
-      </Popover>
-    );
-  };
+  const [openStatusEdit, setOpenStatusEditModal] = useState(false);
+  const [statusData, setStatusData] = useState<any>({});
+  const handleOpenStatusModal = () => setOpenStatusEditModal(true);
+  const handleCloseStatusModal = () => setOpenStatusEditModal(false);
 
   return (
     <div>
@@ -586,43 +565,29 @@ const RequisitionListTable = () => {
                 {(rowData) => (
                   <div className="flex items-center gap-2">
                     {rowData.status}
-                    <ButtonToolbar style={{ marginTop: 10 }}>
-                      <Whisper
-                        placement="bottomStart"
-                        trigger="click"
-                        speaker={StatusMenu}
-                      >
-                        <IconButton
-                          appearance="primary"
-                          icon={<EditIcon />}
-                          circle
-                        />
-                      </Whisper>
-                    </ButtonToolbar>
+                    <IconButton
+                      appearance="primary"
+                      icon={<EditIcon />}
+                      circle
+                      onClick={() => {
+                        handleOpenStatusModal();
+                        setStatusData(rowData);
+                      }}
+                    />
                   </div>
                 )}
               </Cell>
             </Column>
-
-            {/* {role !== "USER" && (
-                  <Column width={70}>
-                    <HeaderCell style={headerCss}>Action</HeaderCell>
-                    <Cell style={cellCss} verticalAlign="middle" align="center">
-                      {(rowData: any) => (
-                        <IconButton
-                          onClick={() => {
-                            setCourierEditModalOpen(true);
-                            setCourierEditData(rowData);
-                          }}
-                          circle
-                          icon={<RiEdit2Line size={20} />}
-                        />
-                      )}
-                    </Cell>
-                  </Column>
-                )} */}
           </Table>
         </>
+
+        <div>
+          <StatusEditModal
+            open={openStatusEdit}
+            handleClose={handleCloseStatusModal}
+            rowData={statusData}
+          />
+        </div>
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
