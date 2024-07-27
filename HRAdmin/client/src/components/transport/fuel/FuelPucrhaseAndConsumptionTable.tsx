@@ -127,8 +127,6 @@ const FuelPurchaseAndConsumptionSection = () => {
 
   const { data: vehicle, isLoading: vehicleLoading } = useGetVehicleQuery(null);
 
-  
-
   const VehicleNo = vehicle?.data.map((item: any) => ({
     label: item?.vehicleName,
     value: item?.vehicleName,
@@ -341,6 +339,14 @@ const FuelPurchaseAndConsumptionSection = () => {
                 )}
               </Cell>
             </Column>
+
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Remarks</HeaderCell>
+              <Cell>
+                <Button appearance="link">Edit</Button>
+              </Cell>
+            </Column>
+
             {/* {role !== "USER" && (
                   <Column width={70}>
                     <HeaderCell style={headerCss}>Action</HeaderCell>
