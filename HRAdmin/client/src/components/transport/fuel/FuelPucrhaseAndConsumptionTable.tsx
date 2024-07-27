@@ -23,6 +23,7 @@ import AddFuelExpModal from "./AddFuelExpModal";
 import { useGetFuelListQuery } from "@/redux/api/features/fuelListApi";
 import moment from "moment";
 import { useGetVehicleQuery } from "@/redux/api/features/vehicleApi";
+import FuelStatusEditDrawer from "./FuelStatusEditDrawer";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -131,6 +132,24 @@ const FuelPurchaseAndConsumptionSection = () => {
     label: item?.vehicleName,
     value: item?.vehicleName,
   }));
+
+  //Fuel Edit Drawer
+
+  const [openFuelDrawer, setOpenFuelDrawer] = useState(false);
+  const [placement, setPlacement] = useState();
+  const [fuelEditData, setFuelEditData] = useState<any>();
+
+  const handleOpenFuelDrawer = ({
+    key,
+    rowData,
+  }: {
+    key: any;
+    rowData: any;
+  }) => {
+    setOpenFuelDrawer(true);
+    setPlacement(key);
+    setFuelEditData(rowData);
+  };
 
   return (
     <div>
@@ -343,7 +362,16 @@ const FuelPurchaseAndConsumptionSection = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Remarks</HeaderCell>
               <Cell>
-                <Button appearance="link">Edit</Button>
+                {(rowData) => (
+                  <Button
+                    appearance="link"
+                    onClick={() =>
+                      handleOpenFuelDrawer({ key: "bottom", rowData })
+                    }
+                  >
+                    Edit
+                  </Button>
+                )}
               </Cell>
             </Column>
 
@@ -366,6 +394,15 @@ const FuelPurchaseAndConsumptionSection = () => {
                 )} */}
           </Table>
         </>
+
+        <div>
+          <FuelStatusEditDrawer
+            placement={placement}
+            open={openFuelDrawer}
+            setOpen={setOpenFuelDrawer}
+            rowData={fuelEditData}
+          />
+        </div>
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination

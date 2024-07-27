@@ -361,6 +361,10 @@ const RequisitionListTable = () => {
   const handleOpenStatusModal = () => setOpenStatusEditModal(true);
   const handleCloseStatusModal = () => setOpenStatusEditModal(false);
 
+
+
+
+
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between gap-2 w-full">
