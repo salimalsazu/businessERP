@@ -1,0 +1,34 @@
+model Salary {
+  salaryId                   String @id @default(uuid())
+  salaryMonth                SalaryMonth
+  salaryYear                 String
+  userId                     String
+  user                       User   @relation(fields: [userId], references: [userId])
+  basicSalary                Int
+  houseRent                  Int
+  medicalAllowance           Int
+  conveyance                 Int
+  otherAllowance             Int
+  totalSalary                Int
+  absentDeduction            Int
+  advanceSalaryDeduction     Int
+  mealAndMobileBillDeduction Int
+  netPayableSalary           Int
+  tdsOnSalary                Int
+  netSalary                  Int
+}
+
+enum SalaryMonth {
+  January
+  February
+  March
+  April
+  May
+  June
+  July
+  August
+  September
+  October
+  November
+  December
+}

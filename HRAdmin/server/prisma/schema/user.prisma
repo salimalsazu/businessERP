@@ -12,6 +12,7 @@ model User {
   assetAssign          AssetAssign[]
   mobileBill           MobileBill[]
   mobileBalanceLimit   MobileBalanceLimit[]
+  salary               Salary[]
 
   @@map("users")
 }
