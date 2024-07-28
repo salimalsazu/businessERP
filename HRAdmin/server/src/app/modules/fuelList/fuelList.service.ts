@@ -7,7 +7,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
 import { FuelListRelationalFields, FuelListRelationalFieldsMapper, FuelListSearchableFields } from './fuelList.constants';
-import { IFuelListFilterRequest, IFuelListRequest } from './fuelList.interface';
+import { IFuelListFilterRequest, IFuelListRequest, IFuelUpdateRequest } from './fuelList.interface';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 
@@ -171,137 +171,71 @@ const GetFuelList = async (filters: IFuelListFilterRequest, options: IPagination
   };
 };
 
-// // !----------------------------------get Single Courier---------------------------------------->>>
-// const getSingleCourier = async (courierId: string): Promise<Courier | null> => {
-//   const result = await prisma.courier.findUnique({
-//     where: {
-//       courierId,
-//     },
-//     include: {
-//       style: true,
-//     },
-//   });
+const updateFuelList = async (payload: IFuelUpdateRequest, fuelListId: string): Promise<FuelList> => {
+  const findFuelList = await prisma.fuelList.findUnique({
+    where: {
+      fuelListId,
+    },
+  });
 
-//   if (!result) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Courier Not Found!!');
-//   }
+  if (!findFuelList) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Fuel List Not Found');
+  }
 
-//   return result;
-// };
-// // !----------------------------------Update Courier---------------------------------------->>>
-// const updateCourierInformation = async (courierId: string, payload: ICourierUpdateRequest): Promise<Courier> => {
-//   const result = await prisma.$transaction(async transactionClient => {
-//     const existingCourier = await transactionClient.courier.findUnique({
-//       where: {
-//         courierId,
-//       },
-//     });
+  console.log('findFuelList', findFuelList);
 
-//     if (!existingCourier) {
-//       throw new ApiError(httpStatus.NOT_FOUND, 'Courier Not Found!!');
-//     }
+  const lastFuelEntry = await prisma.fuelList.findFirst({
+    where: {
+      vehicleId: findFuelList.vehicleId,
+    },
+    orderBy: [
+      { createdAt: 'desc' }, // Add createdAt as a secondary sorting condition
+    ],
+  });
 
-//     const updatedCourierDetails = {
-//       courierName: payload?.courierName,
-//       awbNo: payload?.awbNo,
-//       courierDate: payload?.courierDate,
-//       courierDetails: payload?.courierDetails,
-//       styleNo: payload?.styleNo,
-//     };
+  const kmCurrentData = payload?.kmCurrent ?? undefined;
+  const kmPrevious = findFuelList.kmPrevious ?? 0;
 
-//     const updatedCourier = await transactionClient.courier.update({
-//       where: {
-//         courierId,
-//       },
-//       data: updatedCourierDetails,
-//     });
+  const kmConsumed = kmCurrentData !== undefined ? kmCurrentData - kmPrevious : undefined;
 
-//     return updatedCourier;
-//   });
+  let usage = 0;
 
-//   if (!result) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update Courier');
-//   }
+  if (kmConsumed !== undefined) {
+    usage = lastFuelEntry?.kmConsumed ? Number(((kmConsumed / lastFuelEntry.kmConsumed) * 100).toFixed(2)) : 0;
+  } else {
+    usage = 0;
+  }
 
-//   return result;
-// };
+  const fuelCost = payload?.fuelCost ?? findFuelList.fuelCost ?? 0;
+  const fuelQuantity = payload?.fuelQuantity ?? findFuelList.fuelQuantity ?? 1;
 
-// const getStyleWiseNoOfCourier = async (
-//   filters: IStylesFilterRequest,
-//   options: IPaginationOptions
-// ): Promise<IGenericResponse<IStyleWiseCourier[]>> => {
-//   // Calculate pagination options
-//   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+  const perLitreCost = fuelCost / fuelQuantity;
 
-//   // Destructure filter properties
-//   const { searchTerm, ...filterData } = filters;
+  const fuelListData: any = {
+    purchaseDate: payload?.purchaseDate,
+    kmCurrent: payload?.kmCurrent,
+    fuelQuantity: payload?.fuelQuantity,
+    fuelCost: payload?.fuelCost,
+    perLitreCost: perLitreCost,
+    kmConsumed: kmConsumed,
+    kmPrevious: findFuelList.kmPrevious,
+    usage: usage,
+  };
 
-//   // Define an array to hold filter conditions
-//   const andConditions: Prisma.StylesWhereInput[] = [];
+  console.log('fuelListData', fuelListData);
 
-//   // Add search term condition if provided
-//   if (searchTerm) {
-//     andConditions.push({
-//       OR: StyleWiseCourierSearchableFields.map((field: any) => ({
-//         [field]: {
-//           contains: searchTerm,
-//           mode: 'insensitive',
-//         },
-//       })),
-//     });
-//   }
+  const result = await prisma.fuelList.update({
+    where: {
+      fuelListId,
+    },
+    data: fuelListData,
+  });
 
-//   // Add filterData conditions if filterData is provided
-//   if (Object.keys(filterData).length > 0) {
-//     const filterConditions = Object.keys(filterData).map(key => {
-//       return {
-//         [key]: {
-//           equals: (filterData as any)[key],
-//         },
-//       };
-//     });
-//     andConditions.push({ AND: filterConditions });
-//   }
-
-//   // Create a whereConditions object with AND conditions
-//   const whereConditions: Prisma.StylesWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
-
-//   // Retrieve Courier with filtering and pagination
-//   const result = await prisma.styles.findMany({
-//     select: {
-//       styleNo: true,
-//       _count: {
-//         select: {
-//           couriers: true,
-//         },
-//       },
-//     },
-//     where: whereConditions,
-//     skip,
-//     take: limit,
-//     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
-//   });
-
-//   // Count total matching orders for pagination
-//   const total = await prisma.styles.count({
-//     where: whereConditions,
-//   });
-
-//   // Calculate total pages
-//   const totalPage = Math.ceil(total / limit);
-
-//   return {
-//     meta: {
-//       page,
-//       limit,
-//       total,
-//       totalPage,
-//     },
-//     data: result,
-//   };
-// };
+  return result;
+};
 
 export const FuelListService = {
   createFuelList,
   GetFuelList,
+  updateFuelList,
 };

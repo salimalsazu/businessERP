@@ -18,4 +18,6 @@ router.get(
   FuelListController.GetFuelList
 );
 
+router.patch('/:fuelListId', FuelListController.updateFuelList);
+
 export const FuelListRoutes = router;

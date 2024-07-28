@@ -23,7 +23,20 @@ const fuelList = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.fuel],
     }),
+
+    updateFuelList: builder.mutation({
+      query: ({ payload, fuelListId }) => ({
+        url: `${FUEL_LIST_API}/${fuelListId}`,
+        method: "PATCH",
+        data: payload,
+      }),
+      invalidatesTags: [tagTypes.fuel],
+    }),
   }),
 });
 
-export const { useCreateFuelListMutation, useGetFuelListQuery } = fuelList;
+export const {
+  useCreateFuelListMutation,
+  useGetFuelListQuery,
+  useUpdateFuelListMutation,
+} = fuelList;

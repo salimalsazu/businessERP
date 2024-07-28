@@ -16,3 +16,15 @@ export type IFuelListRequest = {
   kmConsumed: number;
   usage: number;
 };
+
+export type IFuelUpdateRequest = {
+  purchaseDate?: Date;
+  vehicleId?: string;
+  kmPrevious?: number;
+  kmCurrent?: number | undefined;
+  fuelQuantity?: number | undefined;
+  fuelCost?: number | undefined;
+  perLitreCost?: number | undefined;
+  kmConsumed?: number;
+  usage?: number;
+};

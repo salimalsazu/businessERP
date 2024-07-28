@@ -11,19 +11,20 @@ import {
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useGetVehicleQuery } from "@/redux/api/features/vehicleApi";
 import moment from "moment";
+import { useUpdateFuelListMutation } from "@/redux/api/features/fuelListApi";
 
 const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
-  console.log("rowData", rowData);
-
   //@ts-ignore
   const { data: vehicle } = useGetVehicleQuery(null);
 
+  const [updateFuelList, { isLoading }] = useUpdateFuelListMutation();
+
   interface IFuelExp {
-    purchaseDate: string;
-    vehicleId: string;
-    kmCurrent: number;
-    fuelCost: number;
-    fuelQuantity: number;
+    purchaseDate?: string;
+    vehicleId?: string;
+    kmCurrent?: number;
+    fuelCost?: number;
+    fuelQuantity?: number;
   }
 
   const {
@@ -38,12 +39,17 @@ const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
     const fuelData = {
       purchaseDate: data.purchaseDate,
       vehicleId: data.vehicleId,
-      kmCurrent: Number(data.kmCurrent),
-      fuelCost: Number(data.fuelCost),
-      fuelQuantity: Number(data.fuelQuantity),
+      kmCurrent: Number(data.kmCurrent) || undefined,
+      fuelCost: Number(data.fuelCost) || undefined,
+      fuelQuantity: Number(data.fuelQuantity) || undefined,
     };
 
     console.log("fuelData", fuelData);
+
+    await updateFuelList({
+      payload: fuelData,
+      fuelListId: rowData?.fuelListId,
+    });
   };
 
   return (
@@ -76,7 +82,6 @@ const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
                     rowData?.purchaseDate &&
                     moment(rowData?.purchaseDate).toDate()
                   }
-                  rules={{ required: "Date is required" }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
                       <DatePicker
@@ -121,7 +126,6 @@ const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
                   name="vehicleId"
                   control={control}
                   defaultValue={rowData?.vehicleId || ""}
-                  rules={{ required: "Vehicle No is required" }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
                       <InputPicker
@@ -180,13 +184,6 @@ const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
                 <Controller
                   name="kmCurrent"
                   control={control}
-                  rules={{
-                    required: " Current KM is required",
-                    min: {
-                      value: 1,
-                      message: "Current KM must be greater than 0",
-                    },
-                  }}
                   render={({ field }: any) => (
                     <div className="rs-form-control-wrapper ">
                       <InputNumber
@@ -235,13 +232,6 @@ const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
                 <Controller
                   name="fuelCost"
                   control={control}
-                  rules={{
-                    required: "Fuel Cost is required",
-                    min: {
-                      value: 1,
-                      message: "Fuel Cost must be greater than 0",
-                    },
-                  }}
                   render={({ field }: any) => (
                     <div className="rs-form-control-wrapper ">
                       <InputNumber
@@ -290,13 +280,6 @@ const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
                 <Controller
                   name="fuelQuantity"
                   control={control}
-                  rules={{
-                    required: "Ltr is required",
-                    min: {
-                      value: 1,
-                      message: "Ltr must be greater than 0",
-                    },
-                  }}
                   render={({ field }: any) => (
                     <div className="rs-form-control-wrapper ">
                       <InputNumber
@@ -328,7 +311,7 @@ const FuelStatusEditDrawer = ({ placement, open, setOpen, rowData }: any) => {
             <div className="flex justify-end mt-5">
               <Button
                 type="submit"
-                // loading={isLoading}
+                loading={isLoading}
                 size="lg"
                 className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
               >
