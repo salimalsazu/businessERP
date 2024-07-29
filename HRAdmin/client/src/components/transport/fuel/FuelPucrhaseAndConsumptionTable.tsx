@@ -358,24 +358,6 @@ const FuelPurchaseAndConsumptionSection = () => {
                 )}
               </Cell>
             </Column>
-
-            {/* {role !== "USER" && (
-                  <Column width={70}>
-                    <HeaderCell style={headerCss}>Action</HeaderCell>
-                    <Cell style={cellCss} verticalAlign="middle" align="center">
-                      {(rowData: any) => (
-                        <IconButton
-                          onClick={() => {
-                            setCourierEditModalOpen(true);
-                            setCourierEditData(rowData);
-                          }}
-                          circle
-                          icon={<RiEdit2Line size={20} />}
-                        />
-                      )}
-                    </Cell>
-                  </Column>
-                )} */}
           </Table>
         </>
 

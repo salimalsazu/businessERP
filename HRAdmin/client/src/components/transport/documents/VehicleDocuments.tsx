@@ -25,6 +25,7 @@ import moment from "moment";
 import pdfIcon from "../../../../public/pdf.svg";
 import Image from "next/image";
 import { fileUrlKey } from "@/helpers/config/envConfig";
+import VehicleDocumentEdit from "./VehicleDocumentEdit";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -125,6 +126,24 @@ const VehicleDocumentsTableSection = () => {
     label: item?.vehicleName,
     value: item?.vehicleName,
   }));
+
+  //Document Edit
+
+  const [openDocumentEdit, setOpenDocumentEdit] = useState(false);
+  const [placement, setPlacement] = useState();
+  const [documentEditData, setDocumentEditData] = useState<any>();
+
+  const handleOpenDocumentDrawer = ({
+    key,
+    rowData,
+  }: {
+    key: any;
+    rowData: any;
+  }) => {
+    setOpenDocumentEdit(true);
+    setPlacement(key);
+    setDocumentEditData(rowData);
+  };
 
   return (
     <div>
@@ -312,26 +331,32 @@ const VehicleDocumentsTableSection = () => {
                 }}
               ></Cell>
             </Column>
-
-            {/* {role !== "USER" && (
-                  <Column width={70}>
-                    <HeaderCell style={headerCss}>Action</HeaderCell>
-                    <Cell style={cellCss} verticalAlign="middle" align="center">
-                      {(rowData: any) => (
-                        <IconButton
-                          onClick={() => {
-                            setCourierEditModalOpen(true);
-                            setCourierEditData(rowData);
-                          }}
-                          circle
-                          icon={<RiEdit2Line size={20} />}
-                        />
-                      )}
-                    </Cell>
-                  </Column>
-                )} */}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>Remarks</HeaderCell>
+              <Cell>
+                {(rowData) => (
+                  <Button
+                    appearance="link"
+                    onClick={() =>
+                      handleOpenDocumentDrawer({ key: "right", rowData })
+                    }
+                  >
+                    Edit
+                  </Button>
+                )}
+              </Cell>
+            </Column>
           </Table>
         </>
+
+        <div>
+          <VehicleDocumentEdit
+            placement={placement}
+            open={openDocumentEdit}
+            setOpen={setOpenDocumentEdit}
+            rowData={documentEditData}
+          />
+        </div>
 
         <div style={{ padding: "20px 10px 0px 10px" }}>
           <Pagination
