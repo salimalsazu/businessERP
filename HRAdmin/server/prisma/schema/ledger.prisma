@@ -1,0 +1,22 @@
+model ledger {
+    ledgerId    String   @id @default(cuid())
+    ledgerName  String
+    ledgerType  String
+    createdAt   DateTime @default(now()) @db.Timestamptz(0)
+    updatedAt   DateTime @updatedAt @db.Timestamptz(0)
+    transaction Transaction[]
+}
+
+
+
+model Transaction {
+    transactionId String @id @default(cuid())
+    transactionDate DateTime
+    transactionType String
+    transactionAmount Int
+    transactionDescription String
+    ledger ledger @relation(fields: [ledgerId], references: [ledgerId])
+    ledgerId String
+    createdAt DateTime @default(now()) @db.Timestamptz(0)
+    updatedAt DateTime @updatedAt @db.Timestamptz(0)
+}

@@ -284,7 +284,7 @@ const AddVehicleDocumentsModal = ({ handleClose, open, vehicle }: any) => {
             </div>
           </div>
 
-          <div className="flex justify-between  gap-[24px] mb-5">
+          <div className="mb-5 w-full">
             {/* Input Field */}
             <div className="flex flex-col gap-3 w-full ">
               <div>
@@ -308,7 +308,7 @@ const AddVehicleDocumentsModal = ({ handleClose, open, vehicle }: any) => {
                       value={field.value}
                       onChange={(value: string | null) => field.onChange(value)}
                       style={{
-                        width: "auto",
+                        width: "100%",
                       }}
                       // renderMenu={(menu) =>
                       //   renderLoading(menu, isLoadingStyleNo)

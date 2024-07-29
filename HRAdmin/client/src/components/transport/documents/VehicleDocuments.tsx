@@ -189,7 +189,7 @@ const VehicleDocumentsTableSection = () => {
                   />
                 </svg>
               </span>
-              <span className="text-sm font-semibold">Add Fuel Exp</span>
+              <span className="text-sm font-semibold">Add Document</span>
             </Button>
           </div>
         </div>
