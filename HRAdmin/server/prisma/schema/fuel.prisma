@@ -7,7 +7,6 @@ model FuelList {
   fuelCost     Int
   perLitreCost Int
   kmConsumed   Int
-  usage        Int
   vehicleId    String
   vehicleAdd   VehicleAdd? @relation(fields: [vehicleId], references: [vehicleId])
   createdAt    DateTime    @default(now()) @db.Timestamptz(0)

@@ -40,13 +40,7 @@ const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
 
   console.log('lastFuelEntry', lastFuelEntry);
 
-  let kmPrevious = 0;
-
-  if (lastFuelEntry) {
-    kmPrevious = lastFuelEntry.kmCurrent || 0;
-    const kmConsumed = data.kmCurrent - kmPrevious;
-  }
-
+  const kmPrevious = lastFuelEntry?.kmCurrent || 0;
   const perLitreCost = data.fuelCost / data.fuelQuantity;
   const kmConsumed = data.kmCurrent - kmPrevious;
 

@@ -361,10 +361,6 @@ const RequisitionListTable = () => {
   const handleOpenStatusModal = () => setOpenStatusEditModal(true);
   const handleCloseStatusModal = () => setOpenStatusEditModal(false);
 
-
-
-
-
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between gap-2 w-full">
@@ -478,6 +474,18 @@ const RequisitionListTable = () => {
                     />
                   </div>
                 )}
+              </Cell>
+            </Column>
+
+            {/* SL No*/}
+            <Column flexGrow={1}>
+              <HeaderCell style={headerCss}>SL</HeaderCell>
+              <Cell
+                dataKey="sl"
+                verticalAlign="middle"
+                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+              >
+                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
               </Cell>
             </Column>
 
