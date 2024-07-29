@@ -343,22 +343,6 @@ const FuelPurchaseAndConsumptionSection = () => {
               ></Cell>
             </Column>
 
-            {/* Deduction*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Usage</HeaderCell>
-              <Cell
-                dataKey="usage"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {(rowData) => (
-                  <div>
-                    {rowData.usage}% {/* Add the percentage sign here */}
-                  </div>
-                )}
-              </Cell>
-            </Column>
-
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Remarks</HeaderCell>
               <Cell>

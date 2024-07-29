@@ -41,12 +41,10 @@ const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
   console.log('lastFuelEntry', lastFuelEntry);
 
   let kmPrevious = 0;
-  let usage = 0;
 
   if (lastFuelEntry) {
     kmPrevious = lastFuelEntry.kmCurrent || 0;
     const kmConsumed = data.kmCurrent - kmPrevious;
-    usage = lastFuelEntry.kmConsumed ? Number(((kmConsumed / lastFuelEntry.kmConsumed) * 100).toFixed(2)) : 0;
   }
 
   const perLitreCost = data.fuelCost / data.fuelQuantity;
@@ -61,7 +59,6 @@ const createFuelList = async (data: IFuelListRequest): Promise<FuelList> => {
     perLitreCost: perLitreCost,
     kmConsumed: kmConsumed,
     kmPrevious: kmPrevious,
-    usage: usage,
   };
 
   const result = await prisma.fuelList.create({
@@ -198,14 +195,6 @@ const updateFuelList = async (payload: IFuelUpdateRequest, fuelListId: string): 
 
   const kmConsumed = kmCurrentData !== undefined ? kmCurrentData - kmPrevious : undefined;
 
-  let usage = 0;
-
-  if (kmConsumed !== undefined) {
-    usage = lastFuelEntry?.kmConsumed ? Number(((kmConsumed / lastFuelEntry.kmConsumed) * 100).toFixed(2)) : 0;
-  } else {
-    usage = 0;
-  }
-
   const fuelCost = payload?.fuelCost ?? findFuelList.fuelCost ?? 0;
   const fuelQuantity = payload?.fuelQuantity ?? findFuelList.fuelQuantity ?? 1;
 
@@ -219,10 +208,7 @@ const updateFuelList = async (payload: IFuelUpdateRequest, fuelListId: string): 
     perLitreCost: perLitreCost,
     kmConsumed: kmConsumed,
     kmPrevious: findFuelList.kmPrevious,
-    usage: usage,
   };
-
-  console.log('fuelListData', fuelListData);
 
   const result = await prisma.fuelList.update({
     where: {
