@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FuelList, Prisma, TransportDoc, docStatus } from '@prisma/client';
+import { Prisma, TransportDoc, docStatus } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 
-import {
-  TransportDocRelationalFields,
-  TransportDocRelationalFieldsMapper,
-  transportSearchableFields,
-} from './transport.constants';
-import {  ITransportDocCreateRequest, ITransportDocFilterRequest } from './transport.interface';
+import { TransportDocRelationalFields, TransportDocRelationalFieldsMapper, transportSearchableFields } from './transport.constants';
+import { ITransportDocCreateRequest, ITransportDocFilterRequest, ITransportDocUpdateRequest } from './transport.interface';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { IUploadFile } from '../../../interfaces/file';
+import { errorLogger } from '../../../shared/logger';
+import { Request } from 'express';
 
 // modules
 
@@ -44,7 +42,7 @@ const addTransportDoc = async (req: Request): Promise<TransportDoc> => {
       docName: data.docName,
       docNumber: data.docNumber,
       docStatus: docStatus.Valid,
-      note : data.note,
+      note: data.note,
       vehicleId: isVehicleExist.vehicleId,
       docFile: filePath,
     };
@@ -166,137 +164,61 @@ const getTransportDoc = async (filters: ITransportDocFilterRequest, options: IPa
   };
 };
 
-// // !----------------------------------get Single Courier---------------------------------------->>>
-// const getSingleCourier = async (courierId: string): Promise<Courier | null> => {
-//   const result = await prisma.courier.findUnique({
-//     where: {
-//       courierId,
-//     },
-//     include: {
-//       style: true,
-//     },
-//   });
+const updateTransportDoc = async (transportDocId: string, req: Request): Promise<TransportDoc> => {
+  const file = req.file as IUploadFile;
+  const filePath = file?.path?.substring(8);
 
-//   if (!result) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Courier Not Found!!');
-//   }
+  const { docName, docNumber, docExpiryDate, docFile, docStatus, note } = req.body as ITransportDocUpdateRequest;
 
-//   return result;
-// };
-// // !----------------------------------Update Courier---------------------------------------->>>
-// const updateCourierInformation = async (courierId: string, payload: ICourierUpdateRequest): Promise<Courier> => {
-//   const result = await prisma.$transaction(async transactionClient => {
-//     const existingCourier = await transactionClient.courier.findUnique({
-//       where: {
-//         courierId,
-//       },
-//     });
+  // deleting old style Image
+  //@ts-ignore
+  const oldFilePaths = 'uploads/' + oldFilePaths;
+  if (oldFilePaths !== undefined && filePath !== undefined) {
+    // @ts-ignore
+    fs.unlink(oldFilePaths, err => {
+      if (err) {
+        errorLogger.error('Error deleting old file');
+      }
+    });
+  }
 
-//     if (!existingCourier) {
-//       throw new ApiError(httpStatus.NOT_FOUND, 'Courier Not Found!!');
-//     }
+  const result = await prisma.$transaction(async transactionClient => {
+    const existingDoc = await transactionClient.transportDoc.findUnique({
+      where: {
+        transportDocId,
+      },
+    });
 
-//     const updatedCourierDetails = {
-//       courierName: payload?.courierName,
-//       awbNo: payload?.awbNo,
-//       courierDate: payload?.courierDate,
-//       courierDetails: payload?.courierDetails,
-//       styleNo: payload?.styleNo,
-//     };
+    if (!existingDoc) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Product Not Found!!');
+    }
 
-//     const updatedCourier = await transactionClient.courier.update({
-//       where: {
-//         courierId,
-//       },
-//       data: updatedCourierDetails,
-//     });
+    const updatedDetails = {
+      productName,
+      productPrice,
+      subCategoryId,
+      productImage: filePath,
+    };
 
-//     return updatedCourier;
-//   });
+    const updatedProduct = await transactionClient.product.update({
+      where: {
+        productId,
+      },
+      data: updatedDetails,
+    });
 
-//   if (!result) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update Courier');
-//   }
+    return updatedProduct;
+  });
 
-//   return result;
-// };
+  if (!result) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update Product Information');
+  }
 
-// const getStyleWiseNoOfCourier = async (
-//   filters: IStylesFilterRequest,
-//   options: IPaginationOptions
-// ): Promise<IGenericResponse<IStyleWiseCourier[]>> => {
-//   // Calculate pagination options
-//   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-
-//   // Destructure filter properties
-//   const { searchTerm, ...filterData } = filters;
-
-//   // Define an array to hold filter conditions
-//   const andConditions: Prisma.StylesWhereInput[] = [];
-
-//   // Add search term condition if provided
-//   if (searchTerm) {
-//     andConditions.push({
-//       OR: StyleWiseCourierSearchableFields.map((field: any) => ({
-//         [field]: {
-//           contains: searchTerm,
-//           mode: 'insensitive',
-//         },
-//       })),
-//     });
-//   }
-
-//   // Add filterData conditions if filterData is provided
-//   if (Object.keys(filterData).length > 0) {
-//     const filterConditions = Object.keys(filterData).map(key => {
-//       return {
-//         [key]: {
-//           equals: (filterData as any)[key],
-//         },
-//       };
-//     });
-//     andConditions.push({ AND: filterConditions });
-//   }
-
-//   // Create a whereConditions object with AND conditions
-//   const whereConditions: Prisma.StylesWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
-
-//   // Retrieve Courier with filtering and pagination
-//   const result = await prisma.styles.findMany({
-//     select: {
-//       styleNo: true,
-//       _count: {
-//         select: {
-//           couriers: true,
-//         },
-//       },
-//     },
-//     where: whereConditions,
-//     skip,
-//     take: limit,
-//     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
-//   });
-
-//   // Count total matching orders for pagination
-//   const total = await prisma.styles.count({
-//     where: whereConditions,
-//   });
-
-//   // Calculate total pages
-//   const totalPage = Math.ceil(total / limit);
-
-//   return {
-//     meta: {
-//       page,
-//       limit,
-//       total,
-//       totalPage,
-//     },
-//     data: result,
-//   };
-// };
+  return result;
+};
 
 export const TransportDocService = {
   addTransportDoc,
   getTransportDoc,
+  updateTransportDoc,
 };

@@ -12,9 +12,11 @@ import { FileType } from "rsuite/esm/Uploader";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { FileUploader } from "@/helpers/fileUploader/fileUploader";
 import { useGetVehicleQuery } from "@/redux/api/features/vehicleApi";
-import EditIcon from "@rsuite/icons/Edit";
+import moment from "moment";
 
-const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
+const VehicleDocumentEdit = ({ placement, open, setOpen, rowData }: any) => {
+  console.log("rowData", rowData);
+
   const { data: vehicle } = useGetVehicleQuery({});
 
   interface ITransportDoc {
@@ -22,15 +24,9 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
     docName?: string;
     docNumber?: string;
     documentType?: string;
-    docStatus: docStatus;
     note?: string;
     vehicleId?: string;
     docFile?: FileType | undefined;
-  }
-
-  enum docStatus {
-    Valid = "Valid",
-    Expired = "Expired",
   }
 
   const {
@@ -44,13 +40,14 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
     data: ITransportDoc
   ) => {
     const transportData = {
-      docExpiryDate: data.docExpiryDate,
-      docName: data.docName,
-      docNumber: data.docNumber,
-      docStatus: docStatus.Valid,
-      note: data.note,
-      vehicleId: data.vehicleId,
+      docExpiryDate: data?.docExpiryDate,
+      docName: data?.docName,
+      docNumber: data?.docNumber,
+      note: data?.note,
+      vehicleId: data?.vehicleId,
     };
+
+    console.log("transportData", transportData);
 
     const transportDocData = JSON.stringify(transportData);
     const formData = new FormData();
@@ -88,7 +85,10 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
                 <Controller
                   name="docExpiryDate"
                   control={control}
-                  rules={{ required: "Date is required" }}
+                  defaultValue={
+                    rowData?.docExpiryDate &&
+                    moment(rowData.docExpiryDate).toDate()
+                  }
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
                       <DatePicker
@@ -132,8 +132,7 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
                 <Controller
                   name="vehicleId"
                   control={control}
-                  defaultValue={""}
-                  rules={{ required: "Vehicle No is required" }}
+                  defaultValue={rowData?.vehicleId}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
                       <InputPicker
@@ -182,8 +181,7 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
                 <Controller
                   name="docName"
                   control={control}
-                  defaultValue={""}
-                  rules={{ required: "Document Name is required" }}
+                  defaultValue={rowData?.docName}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
                       <Input
@@ -224,8 +222,7 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
                 <Controller
                   name="docNumber"
                   control={control}
-                  defaultValue={""}
-                  rules={{ required: "Document Name is required" }}
+                  defaultValue={rowData?.docNumber}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
                       <Input
@@ -269,8 +266,7 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
                 <Controller
                   name="note"
                   control={control}
-                  defaultValue={""}
-                  rules={{ required: "Document Type is required" }}
+                  defaultValue={rowData?.note}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
                       <Input
@@ -318,6 +314,7 @@ const VehicleDocumentEdit = ({ placement, open, setOpen }: any) => {
                 <Controller
                   name="docFile"
                   control={control}
+                  defaultValue={rowData?.docFile}
                   render={({ field }: any) => (
                     <div className="rs-form-control-wrapper ">
                       <FileUploader field={field} />

@@ -30,3 +30,13 @@ export type ITransportDocCreateRequest = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+
+export type ITransportDocUpdateRequest = {
+  docName?: string;
+  docNumber?: string;
+  docStatus?: docStatus;
+  docExpiryDate?: Date;
+  docFile?: string;
+  note?: string;
+}
