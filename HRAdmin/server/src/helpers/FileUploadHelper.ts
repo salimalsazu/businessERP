@@ -37,7 +37,7 @@ import path from 'path';
 // assets photos
 const assetStorage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, 'uploads/assets/');
+    callback(null, 'data/uploads/assets/');
   },
   filename: function (req, file, cb) {
     const uniqueFilename = Date.now() + '-' + file.originalname;
@@ -69,7 +69,7 @@ const uploadAssetImage = multer({
 
 const storageForFile = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, 'uploads/file/');
+    callback(null, 'data/uploads/file/');
   },
   filename: function (req, file, cb) {
     const uniqueFilename = Date.now() + '-' + file.originalname;
@@ -96,6 +96,12 @@ const uploadFile = multer({
     return cb(new Error('Only Pdf file is required !!'));
   },
 });
+
+
+
+
+
+
 
 export const FileUploadHelper = {
   uploadAssetImage,

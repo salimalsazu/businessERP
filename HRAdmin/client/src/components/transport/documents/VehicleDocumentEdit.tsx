@@ -13,11 +13,14 @@ import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { FileUploader } from "@/helpers/fileUploader/fileUploader";
 import { useGetVehicleQuery } from "@/redux/api/features/vehicleApi";
 import moment from "moment";
+import { useUpdateTransportDocMutation } from "@/redux/api/features/transportDocApi";
 
 const VehicleDocumentEdit = ({ placement, open, setOpen, rowData }: any) => {
   console.log("rowData", rowData);
 
   const { data: vehicle } = useGetVehicleQuery({});
+
+  const [updateTransportDoc] = useUpdateTransportDocMutation();
 
   interface ITransportDoc {
     docExpiryDate?: Date;
@@ -54,7 +57,10 @@ const VehicleDocumentEdit = ({ placement, open, setOpen, rowData }: any) => {
     formData.append("file", data.docFile?.blobFile as Blob);
     formData.append("data", transportDocData);
 
-    // await creatingTransportDoc(formData);
+    await updateTransportDoc({
+      transportDocId: rowData?.transportDocId,
+      payload: formData,
+    });
 
     await reset();
   };

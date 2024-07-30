@@ -5,7 +5,6 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-
 import { TransportDocRelationalFields, TransportDocRelationalFieldsMapper, transportSearchableFields } from './transport.constants';
 import { ITransportDocCreateRequest, ITransportDocFilterRequest, ITransportDocUpdateRequest } from './transport.interface';
 import httpStatus from 'http-status';
@@ -13,6 +12,7 @@ import ApiError from '../../../errors/ApiError';
 import { IUploadFile } from '../../../interfaces/file';
 import { errorLogger } from '../../../shared/logger';
 import { Request } from 'express';
+import fs from 'fs';
 
 // modules
 
@@ -20,7 +20,7 @@ const addTransportDoc = async (req: Request): Promise<TransportDoc> => {
   //@ts-ignore
   const file = req.file as IUploadFile;
 
-  const filePath = file?.path?.substring(8);
+  const filePath = file?.path?.substring(13);
 
   //@ts-ignore
   const data = req.body as ITransportDocCreateRequest;
@@ -70,7 +70,7 @@ const getTransportDoc = async (filters: ITransportDocFilterRequest, options: IPa
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, startDate, endDate, vehicleName, docExpiryDate, ...filterData } = filters;
+  const { searchTerm, startDate, endDate, vehicleName, ...filterData } = filters;
 
   // Define an array to hold filter conditions
   const andConditions: Prisma.TransportDocWhereInput[] = [];
@@ -166,13 +166,12 @@ const getTransportDoc = async (filters: ITransportDocFilterRequest, options: IPa
 
 const updateTransportDoc = async (transportDocId: string, req: Request): Promise<TransportDoc> => {
   const file = req.file as IUploadFile;
-  const filePath = file?.path?.substring(8);
+  const filePath = file?.path?.substring(13);
 
-  const { docName, docNumber, docExpiryDate, docFile, docStatus, note } = req.body as ITransportDocUpdateRequest;
+  const { docName, docNumber, docExpiryDate, vehicleId, docStatus, note, oldFilePath } = req.body as ITransportDocUpdateRequest;
 
-  // deleting old style Image
-  //@ts-ignore
-  const oldFilePaths = 'uploads/' + oldFilePaths;
+  const oldFilePaths = 'uploads/' + oldFilePath;
+  // Deleting old style Image
   if (oldFilePaths !== undefined && filePath !== undefined) {
     // @ts-ignore
     fs.unlink(oldFilePaths, err => {
@@ -190,28 +189,31 @@ const updateTransportDoc = async (transportDocId: string, req: Request): Promise
     });
 
     if (!existingDoc) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Product Not Found!!');
+      throw new ApiError(httpStatus.NOT_FOUND, 'Doc Not Found!!');
     }
 
     const updatedDetails = {
-      productName,
-      productPrice,
-      subCategoryId,
-      productImage: filePath,
+      docExpiryDate,
+      docName,
+      docNumber,
+      docStatus,
+      note,
+      vehicleId,
+      docFile: filePath,
     };
 
-    const updatedProduct = await transactionClient.product.update({
+    const updatedDoc = await transactionClient.transportDoc.update({
       where: {
-        productId,
+        transportDocId,
       },
       data: updatedDetails,
     });
 
-    return updatedProduct;
+    return updatedDoc;
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update Product Information');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update Doc Information');
   }
 
   return result;

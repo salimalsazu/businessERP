@@ -5,24 +5,8 @@ import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routes from './app/routes';
 
 import cookieParser from 'cookie-parser';
-import fs from 'fs';
 
 const app: Application = express();
-
-// create uploads directory while starting the application
-if (!fs.existsSync('./uploads')) {
-  fs.mkdirSync('./uploads');
-}
-// Create styles directory in the /uploads path while starting the application
-if (!fs.existsSync('./uploads/assets')) {
-  fs.mkdirSync('./uploads/assets');
-}
-
-//Upload File
-
-if (!fs.existsSync('./uploads/file')) {
-  fs.mkdirSync('./uploads/file');
-}
 
 app.use(
   cors({
@@ -38,7 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('uploads'));
+app.use(express.static('data/uploads'));
 
 app.use('/api/v1', routes);
 

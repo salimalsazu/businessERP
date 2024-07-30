@@ -23,8 +23,21 @@ const transportDoc = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.doc],
     }),
+
+    updateTransportDoc: builder.mutation({
+      query: ({ transportDocId, payload }) => ({
+        url: `${TRANSPORT_DOC_API}/${transportDocId}`,
+        method: "PATCH",
+        data: payload,
+        contentType: "multipart/form-data", /// For Image and Data must be use this
+      }),
+      invalidatesTags: [tagTypes.doc],
+    }),
   }),
 });
 
-export const { useAddTransportDocMutation, useGetTransportDocQuery } =
-  transportDoc;
+export const {
+  useAddTransportDocMutation,
+  useGetTransportDocQuery,
+  useUpdateTransportDocMutation,
+} = transportDoc;

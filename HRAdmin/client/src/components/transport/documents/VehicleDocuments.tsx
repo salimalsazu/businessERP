@@ -303,19 +303,32 @@ const VehicleDocumentsTableSection = () => {
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
-                {(rowData) => (
-                  <Image
-                    onClick={() =>
-                      window.open(`${fileUrlKey()}/${rowData?.docFile}`)
-                    }
-                    src={pdfIcon}
-                    alt="Pdf File"
-                    width={30}
-                    height={30}
-                  />
-                )}
+                {(rowData) => {
+                  const fileName = rowData?.docFile;
+                  const displayFileName = fileName
+                    ? fileName.length > 10
+                      ? `...${fileName.slice(-10)}`
+                      : fileName
+                    : "";
+
+                  return (
+                    <div className="flex items-center gap-2">
+                      <Image
+                        onClick={() =>
+                          window.open(`${fileUrlKey()}/${fileName}`)
+                        }
+                        src={pdfIcon}
+                        alt="Pdf File"
+                        width={30}
+                        height={30}
+                      />
+                      {displayFileName}
+                    </div>
+                  );
+                }}
               </Cell>
             </Column>
+
             {/* Details*/}
             <Column flexGrow={3}>
               <HeaderCell style={headerCss}>Note</HeaderCell>

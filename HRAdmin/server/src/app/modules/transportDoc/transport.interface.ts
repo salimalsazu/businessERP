@@ -31,7 +31,6 @@ export type ITransportDocCreateRequest = {
   updatedAt: Date;
 };
 
-
 export type ITransportDocUpdateRequest = {
   docName?: string;
   docNumber?: string;
@@ -39,4 +38,6 @@ export type ITransportDocUpdateRequest = {
   docExpiryDate?: Date;
   docFile?: string;
   note?: string;
-}
+  vehicleId?: string;
+  oldFilePath?: string;
+};
