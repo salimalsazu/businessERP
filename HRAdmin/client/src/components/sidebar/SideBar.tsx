@@ -100,7 +100,14 @@ const SideBar = () => {
               >
                 Requisition
               </Nav.Item>
-
+              <Nav.Item
+                eventKey="3"
+                icon={<Icon as={CgDetailsMore} />}
+                as={Link}
+                href="/ledger"
+              >
+                Ledger
+              </Nav.Item>
               <Nav.Menu
                 eventKey="3"
                 trigger="hover"
