@@ -1,3 +1,6 @@
+"use client";
+
+import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
 import { useState } from "react";
 import { Button, Checkbox, Pagination, Table, Whisper } from "rsuite";
@@ -5,8 +8,6 @@ import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
 
 const LedgerSection = () => {
-
-
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -19,9 +20,37 @@ const LedgerSection = () => {
 
   const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
 
+    // ! fetching data
+    const {
+      data: allRequisitionList,
+      isLoading,
+      isFetching,
+    } = useGetRequisitionQuery({ ...query });
+
   const checkedBoxData = allRequisitionList?.data?.filter((obj: any) =>
     checkedKeys.includes(obj.requisitionId)
   );
+
+  let checked = false;
+  let indeterminate = false;
+
+  if (checkedKeys?.length === allRequisitionList?.data?.length) {
+    checked = true;
+  } else if (checkedKeys?.length === 0) {
+    checked = false;
+  } else if (
+    checkedKeys?.length > 0 &&
+    checkedKeys?.length < allRequisitionList?.data?.length
+  ) {
+    indeterminate = true;
+  }
+
+  const handleCheckAll = (value: any, checked: any) => {
+    const keys = checked
+      ? allRequisitionList?.data?.map((item: any) => item.requisitionId)
+      : [];
+    setCheckedKeys(keys);
+  };
 
   const handleCheck = (value: any, check: any) => {
     const keys = check
@@ -48,7 +77,6 @@ const LedgerSection = () => {
       </div>
     );
   };
-
 
   return (
     <div>
@@ -295,8 +323,6 @@ const LedgerSection = () => {
               </Cell>
             </Column>
           </Table>
-
-  
 
           <div style={{ padding: "20px 10px 0px 10px" }}>
             <Pagination
