@@ -1,9 +1,9 @@
 model Salary {
-  salaryId                   String @id @default(uuid())
+  salaryId                   String      @id @default(uuid())
   salaryMonth                SalaryMonth
   salaryYear                 String
   userId                     String
-  user                       User   @relation(fields: [userId], references: [userId])
+  user                       User        @relation(fields: [userId], references: [userId])
   basicSalary                Int
   houseRent                  Int
   medicalAllowance           Int

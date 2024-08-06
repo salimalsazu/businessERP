@@ -4,4 +4,6 @@ model Account {
   requisition Requisition[]
   createdAt   DateTime      @default(now()) @db.Timestamptz(0)
   updatedAt   DateTime      @updatedAt @db.Timestamptz(0)
+
+  transaction Transaction[]
 }
