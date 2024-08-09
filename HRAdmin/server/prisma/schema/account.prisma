@@ -1,6 +1,8 @@
 model Account {
   accountId   String        @id @default(cuid())
   accountName String
+  openingBalance Int     @default(0)
+  closingBalance Int     @default(0)
   requisition Requisition[]
   createdAt   DateTime      @default(now()) @db.Timestamptz(0)
   updatedAt   DateTime      @updatedAt @db.Timestamptz(0)

@@ -13,8 +13,46 @@ import { generateTransactionId } from './trIdAutoIncrement';
 
 // modules
 // !----------------------------------Create New Courier---------------------------------------->>>
-const createTransaction = async (data: ITransactionCreateRequest): Promise<Transaction> => {
-  // Check if account exist
+// const createTransaction = async (data: ITransactionCreateRequest): Promise<Transaction> => {
+//   // Check if account exist
+//   const isAccountExist = await prisma.account.findUnique({
+//     where: {
+//       accountId: data.accountId,
+//     },
+//   });
+
+//   if (!isAccountExist) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
+//   }
+
+//   // const trAutoIncrement = isAccountExist.accountName + Math.floor(Math.random() * 1000) + 1;
+
+//   const trAutoIncrement = generateTransactionId(isAccountExist.accountName);
+
+//   //create transaction record
+//   const dataObj = {
+//     transactionDate: data.transactionDate,
+//     transactionType: data.transactionType,
+//     transactionAmount: data.transactionAmount,
+//     transactionDescription: data.transactionDescription,
+//     trId: trAutoIncrement,
+//     accountId: data.accountId,
+//   };
+
+//   // Create food expenses record
+//   const result = await prisma.transaction.create({
+//     data: dataObj,
+//   });
+
+//   if (!result) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Transaction');
+//   }
+
+//   return result;
+// };
+
+const createTransaction = async (data: ITransactionCreateRequest): Promise<any> => {
+  // Check if account exists
   const isAccountExist = await prisma.account.findUnique({
     where: {
       accountId: data.accountId,
@@ -25,11 +63,10 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<Trans
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
   }
 
-  // const trAutoIncrement = isAccountExist.accountName + Math.floor(Math.random() * 1000) + 1;
-
+  // Generate transaction ID
   const trAutoIncrement = generateTransactionId(isAccountExist.accountName);
 
-  //create transaction record
+  // Create transaction record
   const dataObj = {
     transactionDate: data.transactionDate,
     transactionType: data.transactionType,
@@ -39,7 +76,7 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<Trans
     accountId: data.accountId,
   };
 
-  // Create food expenses record
+  // Create transaction record in database
   const result = await prisma.transaction.create({
     data: dataObj,
   });
@@ -48,7 +85,44 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<Trans
     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Transaction');
   }
 
-  return result;
+  // Fetch current balance
+  const account = await prisma.account.findUnique({
+    where: {
+      accountId: data.accountId,
+    },
+  });
+
+  if (!account) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
+  }
+
+  // Calculate new closing balance
+  const closingBalance = (account.closingBalance || 0) + data.transactionAmount; // Assuming deduction for the transaction
+
+  // Update account with new balance
+  const accountBalanceUpdate = await prisma.account.update({
+    where: {
+      accountId: data.accountId,
+    },
+    data: {
+      closingBalance: closingBalance,
+    },
+  });
+
+  if (!accountBalanceUpdate) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update account balance');
+  }
+
+  // Return the result with closing balance
+  return {
+    statusCode: 200,
+    success: true,
+    message: 'Transaction successfully',
+    data: {
+      ...result,
+      closingBalance: closingBalance,
+    },
+  };
 };
 
 // !----------------------------------get all Food Exp Daily---------------------------------------->>>

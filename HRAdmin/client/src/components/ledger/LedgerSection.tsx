@@ -2,6 +2,7 @@
 
 import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
+import moment from "moment";
 import { useState } from "react";
 import { Button, Checkbox, Pagination, Table, Whisper } from "rsuite";
 import { Cell, HeaderCell } from "rsuite-table";
@@ -20,12 +21,12 @@ const LedgerSection = () => {
 
   const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
 
-    // ! fetching data
-    const {
-      data: allRequisitionList,
-      isLoading,
-      isFetching,
-    } = useGetRequisitionQuery({ ...query });
+  // ! fetching data
+  const {
+    data: allRequisitionList,
+    isLoading,
+    isFetching,
+  } = useGetRequisitionQuery({ ...query });
 
   const checkedBoxData = allRequisitionList?.data?.filter((obj: any) =>
     checkedKeys.includes(obj.requisitionId)
@@ -223,7 +224,7 @@ const LedgerSection = () => {
 
             {/* Style No*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Requisition Date</HeaderCell>
+              <HeaderCell style={headerCss}>Transaction Date</HeaderCell>
               <Cell
                 dataKey="date"
                 verticalAlign="middle"
@@ -236,8 +237,8 @@ const LedgerSection = () => {
             </Column>
 
             {/* Details*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Account</HeaderCell>
+            <Column flexGrow={5}>
+              <HeaderCell style={headerCss}>Particular</HeaderCell>
               <Cell
                 // dataKey="title"
                 verticalAlign="middle"
@@ -249,7 +250,7 @@ const LedgerSection = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Details</HeaderCell>
+              <HeaderCell style={headerCss}>Tr Id</HeaderCell>
               <Cell
                 dataKey="details"
                 verticalAlign="middle"
@@ -259,7 +260,7 @@ const LedgerSection = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Bank Name</HeaderCell>
+              <HeaderCell style={headerCss}>Taka</HeaderCell>
               <Cell
                 dataKey="bankName"
                 verticalAlign="middle"
@@ -269,58 +270,12 @@ const LedgerSection = () => {
 
             {/* Details*/}
             <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Cheque No </HeaderCell>
+              <HeaderCell style={headerCss}>Taka </HeaderCell>
               <Cell
                 dataKey="chequeNo"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
-            </Column>
-
-            {/* Status*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Cheque Date</HeaderCell>
-              <Cell
-                dataKey="chequeDate"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {(rowData) => ` ${moment(rowData.chequeDate).format("ll")}`}
-              </Cell>
-            </Column>
-
-            {/* Status*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Amount Type</HeaderCell>
-              <Cell
-                dataKey="amountType"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-            {/* Status*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Status</HeaderCell>
-              <Cell
-                dataKey="status"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {(rowData) => (
-                  <div className="flex items-center gap-2">
-                    {rowData.status}
-                    <IconButton
-                      appearance="primary"
-                      icon={<EditIcon />}
-                      circle
-                      onClick={() => {
-                        handleOpenStatusModal();
-                        setStatusData(rowData);
-                      }}
-                    />
-                  </div>
-                )}
-              </Cell>
             </Column>
           </Table>
 
