@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Prisma, Requisition, RequisitionStatus } from '@prisma/client';
+import { Prisma, Requisition, Transaction } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-import { ITransactionCreateRequest } from './transaction.interface';
+import { ITransactionCreateRequest, ITransactionFilterRequest } from './transaction.interface';
+import { TransactionRelationalFields, TransactionRelationalFieldsMapper, TransactionSearchableFields } from './transaction.constants';
+import { generateTransactionId } from './trIdAutoIncrement';
 
 // modules
 // !----------------------------------Create New Courier---------------------------------------->>>
-const createTransaction = async (data: ITransactionCreateRequest): Promise<Requisition> => {
+const createTransaction = async (data: ITransactionCreateRequest): Promise<Transaction> => {
+  // Check if account exist
   const isAccountExist = await prisma.account.findUnique({
     where: {
       accountId: data.accountId,
@@ -22,33 +25,34 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<Requi
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
   }
 
-  //create requisition record
+  // const trAutoIncrement = isAccountExist.accountName + Math.floor(Math.random() * 1000) + 1;
+
+  const trAutoIncrement = generateTransactionId(isAccountExist.accountName);
+
+  //create transaction record
   const dataObj = {
-    requisitionDate: data.requisitionDate,
-    accountId: isAccountExist.accountId,
-    details: data.details,
-    bankName: data.bankName,
-    chequeNo: data.chequeNo,
-    chequeDate: data.chequeDate,
-    amount: data.amount,
-    amountType: data.amountType,
-    status: RequisitionStatus.Pending,
+    transactionDate: data.transactionDate,
+    transactionType: data.transactionType,
+    transactionAmount: data.transactionAmount,
+    transactionDescription: data.transactionDescription,
+    trId: trAutoIncrement,
+    accountId: data.accountId,
   };
 
   // Create food expenses record
-  const result = await prisma.requisition.create({
+  const result = await prisma.transaction.create({
     data: dataObj,
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Requisition');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Transaction');
   }
 
   return result;
 };
 
 // !----------------------------------get all Food Exp Daily---------------------------------------->>>
-const getTransaction = async (filters: IRequisitionFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Requisition[]>> => {
+const getTransaction = async (filters: ITransactionFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Requisition[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -61,7 +65,7 @@ const getTransaction = async (filters: IRequisitionFilterRequest, options: IPagi
   // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: RequisitionSearchableFields.map((field: any) => ({
+      OR: TransactionSearchableFields.map((field: any) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -85,9 +89,9 @@ const getTransaction = async (filters: IRequisitionFilterRequest, options: IPagi
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (RequisitionRelationalFields.includes(key)) {
+        if (TransactionRelationalFields.includes(key)) {
           return {
-            [RequisitionRelationalFieldsMapper[key]]: {
+            [TransactionRelationalFieldsMapper[key]]: {
               requisitionDate: (filterData as any)[key],
             },
           };

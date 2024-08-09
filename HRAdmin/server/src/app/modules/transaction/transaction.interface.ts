@@ -1,26 +1,21 @@
-import { ChequeType, RequisitionStatus } from '@prisma/client';
-
 export type ITransactionFilterRequest = {
   searchTerm?: string | undefined;
   startDate?: string | null;
   endDate?: string | null;
 };
 export type ITransactionCreateRequest = {
-  requisitionDate: Date;
+  transactionDate: Date;
+  transactionType: string;
+  transactionAmount: number;
+  transactionDescription: string;
+  trId: string;
   accountId: string;
-  details: string;
-  bankName: string;
-  chequeNo: string;
-  chequeDate: Date;
-  amount: number;
-  amountType: ChequeType;
-  status: RequisitionStatus;
 };
 
 export type ITransactionUpdateRequest = {
-  styleNo?: string;
-  courierName?: string;
-  awbNo?: string;
-  courierDate?: Date;
-  courierDetails?: string;
+  transactionDate?: Date;
+  transactionType?: string;
+  transactionAmount?: number;
+  transactionDescription?: string;
+  accountId?: string;
 };

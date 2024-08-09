@@ -7,6 +7,7 @@ import { TransactionService } from './transaction.service';
 import { TransactionFilterableFields } from './transaction.constants';
 
 // !----------------------------------Create New Courier---------------------------------------->>>
+
 const createNewTransaction = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
   const result = await TransactionService.createTransaction(data);
@@ -14,14 +15,13 @@ const createNewTransaction = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Requisition added successfully',
+    message: 'Transaction successfully',
     data: result,
   });
 });
 
 // !----------------------------------get all Courier---------------------------------------->>>
 const getTransaction = catchAsync(async (req: Request, res: Response) => {
-
   const filters = pick(req.query, TransactionFilterableFields);
 
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
@@ -51,7 +51,7 @@ const updateTransaction = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const RequisitionController = {
+export const TransactionController = {
   createNewTransaction,
   getTransaction,
   updateTransaction,

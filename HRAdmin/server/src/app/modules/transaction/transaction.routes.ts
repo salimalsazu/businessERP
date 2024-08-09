@@ -1,25 +1,25 @@
 import { UserRoles } from '@prisma/client';
 import express from 'express';
 import auth from '../../middlewares/auth';
-import { RequisitionController } from './transaction.controller';
+import { TransactionController } from './transaction.controller';
 import validateRequest from '../../middlewares/validateRequest';
-import { RequisitionValidation } from './transaction.validations';
+import { TransactionValidation } from './transaction.validations';
 
 const router = express.Router();
 
 // ! Create New  Requisition ------------------------------->>>
 router.post(
   '/',
-  validateRequest(RequisitionValidation.createRequisition),
+  validateRequest(TransactionValidation.createTransaction),
   auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  RequisitionController.createNewRequisition
+  TransactionController.createNewTransaction
 );
 
 // ! Get all Requisition ----------------------------------->>>
-router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), RequisitionController.getRequisition);
+router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), TransactionController.getTransaction);
 
 // ! Update Requisition ----------------------------------->>>
 
-router.patch('/:requisitionId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), RequisitionController.updateRequisition);
+router.patch('/:transactionId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), TransactionController.updateTransaction);
 
-export const RequisitionRoutes = router;
+export const TransactionRoutes = router;
