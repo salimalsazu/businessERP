@@ -9,7 +9,8 @@ export type ITransactionCreateRequest = {
   transactionAmount: number;
   transactionDescription: string;
   trId: string;
-  accountId: string;
+  debitAccountId: string;
+  creditAccountId: string;
 };
 
 export type ITransactionUpdateRequest = {
@@ -18,4 +19,6 @@ export type ITransactionUpdateRequest = {
   transactionAmount?: number;
   transactionDescription?: string;
   accountId?: string;
+  debitAccountId?: string;
+  creditAccountId?: string
 };

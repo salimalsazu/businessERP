@@ -7,6 +7,7 @@ export type IAccountFilterRequest = {
 
 export type IAccountCreate = {
   accountName: string;
+  openingBalance: number;
 };
 
 export type IUpdateUserRequest = {

@@ -20,6 +20,7 @@ const createAccount = async (data: IAccountCreate): Promise<Account> => {
   const result = await prisma.account.create({
     data: {
       accountName: data.accountName,
+      openingBalance: data.openingBalance,
     },
   });
 
@@ -76,6 +77,10 @@ const getAccounts = async (filters: IAccountFilterRequest, options: IPaginationO
   // Retrieve Courier with filtering and pagination
   const result = await prisma.account.findMany({
     where: whereConditions,
+    include: {
+      transactionCredit: true,
+      transactionDebit: true,
+    },
     skip,
     take: limit,
     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },

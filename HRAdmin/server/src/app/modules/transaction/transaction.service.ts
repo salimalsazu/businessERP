@@ -53,18 +53,33 @@ import { generateTransactionId } from './trIdAutoIncrement';
 
 const createTransaction = async (data: ITransactionCreateRequest): Promise<any> => {
   // Check if account exists
-  const isAccountExist = await prisma.account.findUnique({
+  const isDebitAccountExist = await prisma.account.findUnique({
     where: {
-      accountId: data.accountId,
+      accountId: data.debitAccountId,
     },
   });
 
-  if (!isAccountExist) {
+  if (!isDebitAccountExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
   }
 
+  // Check if account exists
+  const isCreditAccountExist = await prisma.account.findUnique({
+    where: {
+      accountId: data.creditAccountId,
+    },
+  });
+
+  if (!isCreditAccountExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
+  }
+
+  if (isDebitAccountExist.accountId === isCreditAccountExist.accountId) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Debit and Credit account cannot be the same');
+  }
+
   // Generate transaction ID
-  const trAutoIncrement = generateTransactionId(isAccountExist.accountName);
+  const trAutoIncrement = generateTransactionId(isDebitAccountExist.accountName);
 
   // Create transaction record
   const dataObj = {
@@ -73,7 +88,8 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
     transactionAmount: data.transactionAmount,
     transactionDescription: data.transactionDescription,
     trId: trAutoIncrement,
-    accountId: data.accountId,
+    debitAccountId: data.debitAccountId,
+    creditAccountId: data.creditAccountId,
   };
 
   // Create transaction record in database
@@ -86,23 +102,23 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
   }
 
   // Fetch current balance
-  const account = await prisma.account.findUnique({
+  const debitAccount = await prisma.account.findUnique({
     where: {
-      accountId: data.accountId,
+      accountId: data.debitAccountId,
     },
   });
 
-  if (!account) {
+  if (!debitAccount) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
   }
 
   // Calculate new closing balance
-  const closingBalance = (account.closingBalance || 0) + data.transactionAmount; // Assuming deduction for the transaction
+  const closingBalance = (debitAccount.closingBalance || 0) + data.transactionAmount; // Assuming deduction for the transaction
 
   // Update account with new balance
   const accountBalanceUpdate = await prisma.account.update({
     where: {
-      accountId: data.accountId,
+      accountId: debitAccount.accountId,
     },
     data: {
       closingBalance: closingBalance,
@@ -113,20 +129,47 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update account balance');
   }
 
+  const creditAccount = await prisma.account.findUnique({
+    where: {
+      accountId: data.creditAccountId,
+    },
+  });
+
+  if (!creditAccount) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
+  }
+
+  // Calculate new closing balance
+  const closingBalanceCredit = (creditAccount.closingBalance || 0) - data.transactionAmount; // Assuming deduction for the transaction
+
+  // Update account with new balance
+
+  const accountBalanceUpdateCredit = await prisma.account.update({
+    where: {
+      accountId: creditAccount.accountId,
+    },
+    data: {
+      closingBalance: closingBalanceCredit,
+    },
+  });
+
+  if (!accountBalanceUpdateCredit) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update account balance');
+  }
+
   // Return the result with closing balance
   return {
-    statusCode: 200,
+    statusCode: httpStatus.OK,
     success: true,
     message: 'Transaction successfully',
     data: {
       ...result,
-      closingBalance: closingBalance,
     },
   };
 };
 
 // !----------------------------------get all Food Exp Daily---------------------------------------->>>
-const getTransaction = async (filters: ITransactionFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Requisition[]>> => {
+const getTransaction = async (filters: ITransactionFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Transaction[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -134,7 +177,7 @@ const getTransaction = async (filters: ITransactionFilterRequest, options: IPagi
   const { searchTerm, startDate, endDate, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.RequisitionWhereInput[] = [];
+  const andConditions: Prisma.TransactionWhereInput[] = [];
 
   // Add search term condition if provided
   if (searchTerm) {
@@ -152,7 +195,7 @@ const getTransaction = async (filters: ITransactionFilterRequest, options: IPagi
 
   if (startDate && endDate) {
     andConditions.push({
-      requisitionDate: {
+      createdAt: {
         gte: startDate, // Greater than or equal to startDate
         lte: endDate, // Less than or equal to endDate
       },
@@ -181,13 +224,14 @@ const getTransaction = async (filters: ITransactionFilterRequest, options: IPagi
   }
 
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.RequisitionWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.TransactionWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.requisition.findMany({
+  const result = await prisma.transaction.findMany({
     where: whereConditions,
     include: {
-      account: true,
+      creditAccount: true,
+      debitAccount: true,
     },
     skip,
     take: limit,
