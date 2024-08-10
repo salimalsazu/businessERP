@@ -1,4 +1,4 @@
-model Transaction {
+model Transactions {
   transactionId          String   @id @default(cuid())
   transactionDate        DateTime
   transactionType        String
