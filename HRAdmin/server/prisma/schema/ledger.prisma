@@ -1,11 +1,13 @@
 model Transaction {
-  transactionId          String   @id @default(cuid())
+  transactionId          String     @id @default(cuid())
   transactionDate        DateTime
   transactionType        String
   transactionAmount      Int
   transactionDescription String
-  accountId              String
-  account                Account  @relation(fields: [accountId], references: [accountId])
-  createdAt              DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt              DateTime @updatedAt @db.Timestamptz(0)
+  debitAccountId         String
+  creditAccountId        String
+  debitAccount           Account    @relation("DebitAccount", fields: [debitAccountId], references: [accountId])
+  creditAccount          Account    @relation("CreditAccount", fields: [creditAccountId], references: [accountId])
+  createdAt              DateTime   @default(now()) @db.Timestamptz(0)
+  updatedAt              DateTime   @updatedAt @db.Timestamptz(0)
 }
