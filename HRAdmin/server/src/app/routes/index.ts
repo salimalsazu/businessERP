@@ -13,6 +13,7 @@ import { MobileBillRoutes } from '../modules/mobileBill/mobileBill.routes';
 import { MobileBalanceRoutes } from '../modules/mobileBalanceRequest/mobileBalance.routes';
 import { RequisitionRoutes } from '../modules/requisition/requisition.routes';
 import { AccountRoutes } from '../modules/account/account.routes';
+import { TransactionRoutes } from '../modules/transaction/transaction.routes';
 
 const router = express.Router();
 
@@ -72,6 +73,10 @@ const moduleRoutes = [
   {
     path: '/account',
     route: AccountRoutes,
+  },
+  {
+    path: '/transaction',
+    route: TransactionRoutes,
   },
 ];
 
