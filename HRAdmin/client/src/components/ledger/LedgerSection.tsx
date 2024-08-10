@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetAccountQuery } from "@/redux/api/features/accountApi";
 import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
 import moment from "moment";
@@ -23,32 +24,32 @@ const LedgerSection = () => {
 
   // ! fetching data
   const {
-    data: allRequisitionList,
+    data: allAccountList,
     isLoading,
     isFetching,
-  } = useGetRequisitionQuery({ ...query });
+  } = useGetAccountQuery({ ...query });
 
-  const checkedBoxData = allRequisitionList?.data?.filter((obj: any) =>
+  const checkedBoxData = allAccountList?.data?.filter((obj: any) =>
     checkedKeys.includes(obj.requisitionId)
   );
 
   let checked = false;
   let indeterminate = false;
 
-  if (checkedKeys?.length === allRequisitionList?.data?.length) {
+  if (checkedKeys?.length === allAccountList?.data?.length) {
     checked = true;
   } else if (checkedKeys?.length === 0) {
     checked = false;
   } else if (
     checkedKeys?.length > 0 &&
-    checkedKeys?.length < allRequisitionList?.data?.length
+    checkedKeys?.length < allAccountList?.data?.length
   ) {
     indeterminate = true;
   }
 
   const handleCheckAll = (value: any, checked: any) => {
     const keys = checked
-      ? allRequisitionList?.data?.map((item: any) => item.requisitionId)
+      ? allAccountList?.data?.map((item: any) => item.requisitionId)
       : [];
     setCheckedKeys(keys);
   };

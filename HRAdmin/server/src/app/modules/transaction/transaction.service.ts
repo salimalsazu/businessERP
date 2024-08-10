@@ -182,14 +182,42 @@ const getTransaction = async (filters: ITransactionFilterRequest, options: IPagi
   // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: TransactionSearchableFields.map((field: any) => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
-        },
-      })),
-    });
+      OR: TransactionSearchableFields.map((field: any) => {
+        if (field === 'accountName') {
+          // Create conditions for both creditAccount and debitAccount
+          return {
+            OR: [
+              {
+                creditAccount: {
+                  accountName: {
+                    contains: searchTerm,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                debitAccount: {
+                  accountName: {
+                    contains: searchTerm,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ],
+          } as Prisma.TransactionWhereInput;
+        } else {
+          // Handle all other fields
+          return {
+            [field]: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          } as Prisma.TransactionWhereInput;
+        }
+      }),
+    } as Prisma.TransactionWhereInput);
   }
+  
 
   // Add date range condition if both startDate and endDate are provided
 
@@ -239,7 +267,7 @@ const getTransaction = async (filters: ITransactionFilterRequest, options: IPagi
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.requisition.count({
+  const total = await prisma.transaction.count({
     where: whereConditions,
   });
 
