@@ -21,6 +21,7 @@ const createAccount = async (data: IAccountCreate): Promise<Account> => {
     data: {
       accountName: data.accountName,
       openingBalance: data.openingBalance,
+      closingBalance: data.closingBalance,
     },
   });
 
@@ -78,8 +79,22 @@ const getAccounts = async (filters: IAccountFilterRequest, options: IPaginationO
   const result = await prisma.account.findMany({
     where: whereConditions,
     include: {
-      transactionCredit: true,
-      transactionDebit: true,
+      transactionCredit: {
+        select: {
+          debitAccount: true,
+          transactionAmount: true,
+          trId: true,
+          transactionId: true,
+        },
+      },
+      transactionDebit: {
+        select: {
+          creditAccount: true,
+          transactionAmount: true,
+          trId: true,
+          transactionId: true,
+        },
+      },
     },
     skip,
     take: limit,
