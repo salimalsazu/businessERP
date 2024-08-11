@@ -1,5 +1,4 @@
 "use client";
-
 import { useGetAccountQuery } from "@/redux/api/features/accountApi";
 import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
@@ -11,7 +10,7 @@ import Column from "rsuite/esm/Table/TableColumn";
 
 const LedgerSection = () => {
   const query: Record<string, any> = {};
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("aramex");
 
   const [selectedDate, setSelectedDate] = useState({
     startDate: "",
@@ -29,7 +28,28 @@ const LedgerSection = () => {
     isFetching,
   } = useGetAccountQuery({ ...query });
 
-  const checkedBoxData = allAccountList?.data?.filter((obj: any) =>
+  console.log("allAccountList", allAccountList);
+
+  const transactions = [
+    ...allAccountList?.data?.data[1].transactionCredit.map((transaction: any) => ({
+      date: transaction.transactionDate.split("T")[0],
+      particular: transaction.transactionDescription,
+      trID: transaction.trId,
+      debit: "-",
+      credit: transaction.transactionAmount,
+    })),
+    ...allAccountList?.data?.data[1].transactionDebit.map((transaction: any) => ({
+      date: transaction.transactionDate.split("T")[0],
+      particular: transaction.transactionDescription,
+      trID: transaction.trId,
+      debit: transaction.transactionAmount,
+      credit: "-",
+    })),
+  ];
+
+  console.log("transactions", transactions);
+
+  const checkedBoxData = allAccountList?.data?.data?.filter((obj: any) =>
     checkedKeys.includes(obj.requisitionId)
   );
 
@@ -174,111 +194,48 @@ const LedgerSection = () => {
         </div>
 
         <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full">
-          <Table
-            bordered={true}
-            cellBordered={true}
-            wordWrap="break-word"
-            // loading={isLoading || isFetching}
-            rowHeight={70}
-            headerHeight={50}
-            shouldUpdateScroll={false} // Prevent the scrollbar from scrolling to the top after the table
-            autoHeight={true}
-            // data={allRequisitionList?.data}
-          >
-            <Column width={50} align="center" verticalAlign="middle">
-              <HeaderCell style={headerCss}>
-                <div style={{ lineHeight: "40px" }}>
-                  <Checkbox
-                    inline
-                    checked={checked}
-                    indeterminate={indeterminate}
-                    onChange={handleCheckAll}
-                  />
-                </div>
-              </HeaderCell>
-
-              <Cell>
-                {(rowData) => (
-                  <div>
-                    <CheckCell
-                      dataKey="requisitionId"
-                      rowData={rowData}
-                      checkedKeys={checkedKeys}
-                      onChange={handleCheck}
-                    />
-                  </div>
-                )}
-              </Cell>
-            </Column>
-
-            {/* SL No*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>SL</HeaderCell>
-              <Cell
-                dataKey="sl"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
-              </Cell>
-            </Column>
-
-            {/* Style No*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Transaction Date</HeaderCell>
-              <Cell
-                dataKey="date"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {(rowData) =>
-                  ` ${moment(rowData.requisitionDate).format("ll")}`
-                }
-              </Cell>
-            </Column>
-
-            {/* Details*/}
-            <Column flexGrow={5}>
-              <HeaderCell style={headerCss}>Particular</HeaderCell>
-              <Cell
-                // dataKey="title"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              >
-                {(rowData) => ` ${rowData.account?.accountName}`}
-              </Cell>
-            </Column>
-
-            {/* Details*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Tr Id</HeaderCell>
-              <Cell
-                dataKey="details"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Details*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Taka</HeaderCell>
-              <Cell
-                dataKey="bankName"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-
-            {/* Details*/}
-            <Column flexGrow={1}>
-              <HeaderCell style={headerCss}>Taka </HeaderCell>
-              <Cell
-                dataKey="chequeNo"
-                verticalAlign="middle"
-                style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-          </Table>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={{ border: "1px solid black", padding: "8px" }}>
+                  Transaction Date
+                </th>
+                <th style={{ border: "1px solid black", padding: "8px" }}>
+                  Particular
+                </th>
+                <th style={{ border: "1px solid black", padding: "8px" }}>
+                  trID
+                </th>
+                <th style={{ border: "1px solid black", padding: "8px" }}>
+                  Debit (Taka)
+                </th>
+                <th style={{ border: "1px solid black", padding: "8px" }}>
+                  Credit (Taka)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td style={{ border: "1px solid black", padding: "8px" }}>
+                    {transaction?.date}
+                  </td>
+                  <td style={{ border: "1px solid black", padding: "8px" }}>
+                    {transaction?.particular}
+                  </td>
+                  <td style={{ border: "1px solid black", padding: "8px" }}>
+                    {transaction?.trID}
+                  </td>
+                  <td style={{ border: "1px solid black", padding: "8px" }}>
+                    {transaction?.debit}
+                  </td>
+                  <td style={{ border: "1px solid black", padding: "8px" }}>
+                    {transaction?.credit}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
           <div style={{ padding: "20px 10px 0px 10px" }}>
             <Pagination
