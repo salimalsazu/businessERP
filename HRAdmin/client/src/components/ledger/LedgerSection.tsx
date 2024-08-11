@@ -31,14 +31,14 @@ const LedgerSection = () => {
   console.log("allAccountList", allAccountList);
 
   const transactions = [
-    ...allAccountList?.data?.data[1].transactionCredit.map((transaction: any) => ({
+    ...allAccountList?.data?.data[0].transactionCredit.map((transaction: any) => ({
       date: transaction.transactionDate.split("T")[0],
       particular: transaction.transactionDescription,
       trID: transaction.trId,
       debit: "-",
       credit: transaction.transactionAmount,
     })),
-    ...allAccountList?.data?.data[1].transactionDebit.map((transaction: any) => ({
+    ...allAccountList?.data?.data[0].transactionDebit.map((transaction: any) => ({
       date: transaction.transactionDate.split("T")[0],
       particular: transaction.transactionDescription,
       trID: transaction.trId,
