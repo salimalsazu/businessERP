@@ -10,7 +10,7 @@ import Column from "rsuite/esm/Table/TableColumn";
 
 const LedgerSection = () => {
   const query: Record<string, any> = {};
-  const [searchTerm, setSearchTerm] = useState<string>("aramex");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [selectedDate, setSelectedDate] = useState({
     startDate: "",
@@ -30,22 +30,28 @@ const LedgerSection = () => {
 
   console.log("allAccountList", allAccountList);
 
-  const transactions = [
-    ...allAccountList?.data?.data[0].transactionCredit.map((transaction: any) => ({
-      date: transaction.transactionDate.split("T")[0],
-      particular: transaction.transactionDescription,
-      trID: transaction.trId,
-      debit: "-",
-      credit: transaction.transactionAmount,
-    })),
-    ...allAccountList?.data?.data[0].transactionDebit.map((transaction: any) => ({
-      date: transaction.transactionDate.split("T")[0],
-      particular: transaction.transactionDescription,
-      trID: transaction.trId,
-      debit: transaction.transactionAmount,
-      credit: "-",
-    })),
-  ];
+  const transactions = searchTerm
+    ? allAccountList?.data?.data
+        ?.filter((account: any) =>
+          account.accountName.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        ?.flatMap((account: any) => [
+          ...(account.transactionCredit || []).map((transaction: any) => ({
+            date: transaction.transactionDate.split("T")[0],
+            particular: transaction.transactionDescription,
+            trID: transaction.trId,
+            debit: "-",
+            credit: transaction.transactionAmount,
+          })),
+          ...(account.transactionDebit || []).map((transaction: any) => ({
+            date: transaction.transactionDate.split("T")[0],
+            particular: transaction.transactionDescription,
+            trID: transaction.trId,
+            debit: transaction.transactionAmount,
+            credit: "-",
+          })),
+        ])
+    : [];
 
   console.log("transactions", transactions);
 
@@ -127,7 +133,7 @@ const LedgerSection = () => {
                   </svg>
                 </div>
                 <input
-                  // onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   id="searchTerm"
                   className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB] w-full pl-10 py-2 rounded-lg focus:outline-none "
@@ -215,25 +221,36 @@ const LedgerSection = () => {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction, index) => (
-                <tr key={index}>
-                  <td style={{ border: "1px solid black", padding: "8px" }}>
-                    {transaction?.date}
-                  </td>
-                  <td style={{ border: "1px solid black", padding: "8px" }}>
-                    {transaction?.particular}
-                  </td>
-                  <td style={{ border: "1px solid black", padding: "8px" }}>
-                    {transaction?.trID}
-                  </td>
-                  <td style={{ border: "1px solid black", padding: "8px" }}>
-                    {transaction?.debit}
-                  </td>
-                  <td style={{ border: "1px solid black", padding: "8px" }}>
-                    {transaction?.credit}
+              {transactions?.length > 0 ? (
+                transactions.map((transaction, index) => (
+                  <tr key={index}>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {transaction?.date}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {transaction?.particular}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {transaction?.trID}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {transaction?.debit}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {transaction?.credit}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={5}
+                    style={{ padding: "8px", textAlign: "center" }}
+                  >
+                    No transactions found.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
 
