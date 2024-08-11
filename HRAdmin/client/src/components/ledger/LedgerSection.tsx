@@ -28,9 +28,6 @@ const LedgerSection = () => {
     isFetching,
   } = useGetAccountQuery({ ...query });
 
-  let totalDebit = 0;
-  let totalCredit = 0;
-
   // State for totals
   const [totals, setTotals] = useState({ totalDebit: 0, totalCredit: 0 });
 
@@ -77,17 +74,7 @@ const LedgerSection = () => {
     return { transactions: filteredTransactions };
   }, [allAccountList, searchTerm]);
 
-  console.log("transactions", transactions);
-
-  const accountDetails = allAccountList?.data?.data?.map(
-    (transaction: any) => ({
-      accountName: transaction.accountName,
-      closingBalance: transaction.closingBalance,
-    })
-  );
-
-  console.log("accountDetails", accountDetails);
-
+  //Checked Box
   const checkedBoxData = allAccountList?.data?.data?.filter((obj: any) =>
     checkedKeys.includes(obj.requisitionId)
   );
