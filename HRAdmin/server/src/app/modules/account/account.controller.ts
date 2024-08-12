@@ -32,21 +32,20 @@ const getAllAccount = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// const updateUserInfo = catchAsync(async (req: Request, res: Response) => {
-//   const { userId } = req.params;
+const getAccountByName = catchAsync(async (req: Request, res: Response) => {
+  const accountName = req.params.accountName;
+  const result = await AccountService.getAccountByName(accountName);
 
-//   const result = await UserService.updateUserInfo(userId, req.body);
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'User updated successfully',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Account retrieved successfully',
+    data: result,
+  });
+});
 
 export const AccountController = {
   createAccount,
   getAllAccount,
-  // updateUserInfo,
+  getAccountByName,
 };

@@ -22,6 +22,16 @@ router.get(
   AccountController.getAllAccount
 );
 
+// !  get Account by Name ------------------------------>>>
+router.get(
+  '/:accountName',
+  // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
+  AccountController.getAccountByName
+);
+
+
+
+
 // !  Update  Profile data ------------------------------>>>
 // router.patch(
 //   '/update-profile/:profileId',

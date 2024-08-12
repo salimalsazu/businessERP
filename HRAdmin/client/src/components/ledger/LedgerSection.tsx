@@ -3,6 +3,7 @@ import { useGetAccountQuery } from "@/redux/api/features/accountApi";
 import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
 import moment from "moment";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   Button,
@@ -236,6 +237,21 @@ const LedgerSection = () => {
         </div>
 
         <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full">
+          <div className="flex justify-end items-center my-2">
+            {searchTerm && (
+              <Link href={`/ledger/${searchTerm}`}>
+                <Button
+                  appearance="primary"
+                  //Open in a new Tab
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Details
+                </Button>
+              </Link>
+            )}
+          </div>
+
           <Table
             bordered={true}
             cellBordered={true}

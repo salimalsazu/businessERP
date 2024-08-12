@@ -120,91 +120,43 @@ const getAccounts = async (filters: IAccountFilterRequest, options: IPaginationO
   };
 };
 
-// ! update user info -------------------------------------------------------->>>
-// const updateUserInfo = async (
-//   userId: string,
-//   payload: IUserUpdateReqAndResponse
-// ): Promise<{
-//   message: string;
-//   updatedInfo: IUserUpdateReqAndResponse;
-// }> => {
-//   if ('userId' in payload) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, `User ID cannot be changed`);
-//   }
+// ! single Account info -------------------------------------------------------->>>
 
-//   // Check if the user exists
-//   const existingUser = await prisma.user.findUnique({
-//     where: {
-//       userId,
-//     },
-//   });
+const getAccountByName = async (accountName: string): Promise<Account | null> => {
+  const result = await prisma.account.findFirst({
+    where: {
+      accountName,
+    },
+    include: {
+      transactionCredit: {
+        select: {
+          debitAccount: true,
+          transactionAmount: true,
+          trId: true,
+          transactionId: true,
+        },
+      },
+      transactionDebit: {
+        select: {
+          creditAccount: true,
+          transactionAmount: true,
+          trId: true,
+          transactionId: true,
+        },
+      },
+    },
+  });
 
-//   if (!existingUser) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'User not Found !!');
-//   }
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Account not found');
+  }
 
-//   const { password, email, userStatus, firstName, lastName, role, profileId, isMeal } = payload;
-
-//   const updatedData: Partial<User> = {};
-
-//   // If a new password is provided, hash and include it in the update
-//   if (password) {
-//     const hashPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
-//     updatedData['password'] = hashPassword;
-//   }
-
-//   if (userStatus) updatedData['userStatus'] = userStatus;
-
-//   if (email) updatedData['email'] = email;
-
-//   //  update the user Information
-
-//   const result = await prisma.user.update({
-//     where: {
-//       userId,
-//     },
-//     data: updatedData,
-//   });
-
-//   const updatedProfileData: Partial<Profile> = {};
-
-//   if (firstName) updatedProfileData['firstName'] = firstName;
-//   if (lastName) updatedProfileData['lastName'] = lastName;
-//   if (role) updatedProfileData['role'] = role;
-//   if (isMeal) updatedProfileData['isMeal'] = isMeal;
-
-//   if (updatedProfileData) {
-//     const updateProfile = await prisma.profile.update({
-//       where: {
-//         profileId,
-//       },
-//       data: updatedProfileData,
-//     });
-//     if (!updateProfile) {
-//       throw new ApiError(httpStatus.BAD_REQUEST, 'User Update Failed');
-//     }
-//   }
-
-//   if (!result) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'User Update Failed');
-//   }
-
-//   return {
-//     message: 'User Information Updated Successful',
-//     updatedInfo: {
-//       email: email,
-//       password: password,
-//       userStatus: userStatus,
-//       firstName,
-//       lastName,
-//       role,
-//     },
-//   };
-// };
+  return result;
+};
 
 // ! --------------- exports all user service
 export const AccountService = {
   createAccount,
   getAccounts,
-  // updateUserInfo,
+  getAccountByName,
 };
