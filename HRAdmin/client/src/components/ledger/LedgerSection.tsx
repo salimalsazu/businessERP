@@ -4,13 +4,22 @@ import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
 import moment from "moment";
 import { useMemo, useState } from "react";
-import { Button, Checkbox, Pagination, Table, Whisper } from "rsuite";
+import {
+  Button,
+  Checkbox,
+  InputPicker,
+  Pagination,
+  Table,
+  Whisper,
+} from "rsuite";
 import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
 
 const LedgerSection = () => {
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  console.log("searchTerm", searchTerm);
 
   const [selectedDate, setSelectedDate] = useState({
     startDate: "",
@@ -27,6 +36,11 @@ const LedgerSection = () => {
     isLoading,
     isFetching,
   } = useGetAccountQuery({ ...query });
+
+  const searchAccount = allAccountList?.data?.data?.map((account: any) => ({
+    label: account.accountName,
+    value: account.accountName,
+  }));
 
   // State for totals
   const [totals, setTotals] = useState({ totalDebit: 0, totalCredit: 0 });
@@ -152,13 +166,15 @@ const LedgerSection = () => {
                     />
                   </svg>
                 </div>
-                <input
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  type="text"
+                <InputPicker
+                  // onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={setSearchTerm}
+                  data={searchAccount}
+                  block
                   id="searchTerm"
-                  className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB] w-full pl-10 py-2 rounded-lg focus:outline-none "
+                  className="w-full"
+                  loading={isLoading || isFetching}
                   placeholder="Search with Ledger Name"
-                  required
                 />
               </div>
             </div>
