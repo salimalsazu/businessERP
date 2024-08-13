@@ -33,8 +33,11 @@ const getAllAccount = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAccountByName = catchAsync(async (req: Request, res: Response) => {
+  const filter = pick(req.query, accountFilterableFields);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
   const accountName = req.params.accountName;
-  const result = await AccountService.getAccountByName(accountName);
+  const result = await AccountService.getAccountByName(accountName, filter, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

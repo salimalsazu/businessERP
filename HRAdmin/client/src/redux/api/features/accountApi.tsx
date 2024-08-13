@@ -22,13 +22,24 @@ const accountApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.account],
     }),
     getAccountByName: builder.query({
-      query: ({accountName}) => ({
-        url: `${ACCOUNT_API}/${accountName}`,
-        method: "GET",
-      }),
+      query: (arg: { accountName: string; [key: string]: any } | null) => {
+        if (!arg || !arg.accountName) return { url: "/account", method: "GET" }; // Default URL if no arguments provided
+
+        const { accountName, ...params } = arg;
+
+        return {
+          url: `/account/${accountName}`,
+          method: "GET",
+          params, // Optional parameters added to the request
+        };
+      },
       providesTags: [tagTypes.account],
     }),
   }),
 });
 
-export const { useAddAccountMutation, useGetAccountQuery, useGetAccountByNameQuery } = accountApi;
+export const {
+  useAddAccountMutation,
+  useGetAccountQuery,
+  useGetAccountByNameQuery,
+} = accountApi;

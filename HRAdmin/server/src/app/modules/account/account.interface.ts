@@ -3,6 +3,9 @@ import { UserRoles } from '@prisma/client';
 
 export type IAccountFilterRequest = {
   searchTerm?: string | undefined;
+  trId?: string | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
 };
 
 export type IAccountCreate = {
