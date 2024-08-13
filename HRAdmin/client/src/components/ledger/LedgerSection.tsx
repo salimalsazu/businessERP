@@ -4,7 +4,7 @@ import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
 import moment from "moment";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Checkbox,
@@ -15,12 +15,11 @@ import {
 } from "rsuite";
 import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
+import AddTransactionSection from "./AddTransaction";
 
 const LedgerSection = () => {
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-  console.log("searchTerm", searchTerm);
 
   const [selectedDate, setSelectedDate] = useState({
     startDate: "",
@@ -42,6 +41,8 @@ const LedgerSection = () => {
     label: account.accountName,
     value: account.accountName,
   }));
+
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
 
   // State for totals
   const [totals, setTotals] = useState({ totalDebit: 0, totalCredit: 0 });
@@ -145,30 +146,10 @@ const LedgerSection = () => {
     <div>
       <div className="bg-gray-100 rounded-sm m-5 p-5">
         <div className="my-5 mx-2 flex flex-col-reverse gap-10">
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-5 shadow-sm border p-5">
             <div className="w-full">
-              <label htmlFor="voice-search" className="sr-only">
-                Search
-              </label>
-              <div className="relative w-full">
-                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none w-full">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="#919eab"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                    />
-                  </svg>
-                </div>
+              <div>
                 <InputPicker
-                  // onChange={(e) => setSearchTerm(e.target.value)}
                   onChange={setSearchTerm}
                   data={searchAccount}
                   block
@@ -178,6 +159,15 @@ const LedgerSection = () => {
                   placeholder="Search with Ledger Name"
                 />
               </div>
+            </div>
+            <div className="flex justify-end items-center my-2">
+              {searchTerm && (
+                <Link href={`/ledger/${searchTerm}`} legacyBehavior>
+                  <a target="_blank" rel="noopener noreferrer">
+                    <Button appearance="primary">Details</Button>
+                  </a>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -208,50 +198,14 @@ const LedgerSection = () => {
                 <span className="text-sm font-semibold">Add Ledger</span>
               </Button>
             </div>
-            <div>
-              <Button
-                className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
-                type="button"
-                // onClick={handleOpen}
-              >
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="#fff"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4.5v15m7.5-7.5h-15"
-                    />
-                  </svg>
-                </span>
-                <span className="text-sm font-semibold">Add Transaction</span>
-              </Button>
-            </div>
           </div>
         </div>
 
-        <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full">
-          <div className="flex justify-end items-center my-2">
-            {searchTerm && (
-              <Link href={`/ledger/${searchTerm}`}>
-                <Button
-                  appearance="primary"
-                  //Open in a new Tab
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Details
-                </Button>
-              </Link>
-            )}
-          </div>
+        <div className="shadow-sm border p-5">
+          <AddTransactionSection />
+        </div>
 
+        <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full">
           <Table
             bordered={true}
             cellBordered={true}
@@ -370,7 +324,7 @@ const LedgerSection = () => {
             </Column>
           </Table>
 
-          <div
+          {/* <div
             style={{
               marginTop: "20px",
               textAlign: "right",
@@ -380,9 +334,9 @@ const LedgerSection = () => {
           >
             <div>Total Debit: {totals.totalDebit.toFixed(2)}</div>
             <div>Total Credit: {totals.totalCredit.toFixed(2)}</div>
-          </div>
+          </div> */}
 
-          <div style={{ padding: "20px 10px 0px 10px" }}>
+          {/* <div style={{ padding: "20px 10px 0px 10px" }}>
             <Pagination
               total={allAccountList?.data?.meta?.total}
               prev
@@ -400,7 +354,7 @@ const LedgerSection = () => {
               activePage={page}
               onChangePage={setPage}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

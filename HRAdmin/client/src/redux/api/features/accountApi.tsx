@@ -21,7 +21,14 @@ const accountApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.account],
     }),
+    getAccountByName: builder.query({
+      query: ({accountName}) => ({
+        url: `${ACCOUNT_API}/${accountName}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.account],
+    }),
   }),
 });
 
-export const { useAddAccountMutation, useGetAccountQuery } = accountApi;
+export const { useAddAccountMutation, useGetAccountQuery, useGetAccountByNameQuery } = accountApi;

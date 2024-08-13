@@ -134,6 +134,7 @@ const getAccountByName = async (accountName: string): Promise<Account | null> =>
           transactionAmount: true,
           trId: true,
           transactionId: true,
+          createdAt: true,
         },
       },
       transactionDebit: {
@@ -142,6 +143,7 @@ const getAccountByName = async (accountName: string): Promise<Account | null> =>
           transactionAmount: true,
           trId: true,
           transactionId: true,
+          createdAt: true,
         },
       },
     },
