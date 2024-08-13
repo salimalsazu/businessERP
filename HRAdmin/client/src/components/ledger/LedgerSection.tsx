@@ -16,6 +16,7 @@ import {
 import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
 import AddTransactionSection from "./AddTransaction";
+import AddLedgerSection from "./AddLedger";
 
 const LedgerSection = () => {
   const query: Record<string, any> = {};
@@ -142,6 +143,10 @@ const LedgerSection = () => {
     );
   };
 
+  //Drawer
+
+  const [openDrawer, setOpenDrawer] = useState(false);
+
   return (
     <div>
       <div className="bg-gray-100 rounded-sm m-5 p-5">
@@ -156,7 +161,7 @@ const LedgerSection = () => {
                   id="searchTerm"
                   className="w-full"
                   loading={isLoading || isFetching}
-                  placeholder="Search with Ledger Name"
+                  placeholder="Search with Ledger / Account Name"
                 />
               </div>
             </div>
@@ -177,7 +182,7 @@ const LedgerSection = () => {
               <Button
                 className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
                 type="button"
-                // onClick={handleOpen}
+                onClick={() => setOpenDrawer(true)}
               >
                 <span>
                   <svg
@@ -195,12 +200,23 @@ const LedgerSection = () => {
                     />
                   </svg>
                 </span>
-                <span className="text-sm font-semibold">Add Ledger</span>
+                <span className="text-sm font-semibold">
+                  Add Ledger/Account
+                </span>
               </Button>
             </div>
           </div>
         </div>
 
+        {/* Add Ledger & Account Form */}
+        <div>
+          <AddLedgerSection
+            openDrawer={openDrawer}
+            setOpenDrawer={setOpenDrawer}
+          />
+        </div>
+
+        {/* Transaction Form */}
         <div className="shadow-sm border p-5">
           <AddTransactionSection />
         </div>

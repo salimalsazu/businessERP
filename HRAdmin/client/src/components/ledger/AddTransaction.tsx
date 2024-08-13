@@ -5,12 +5,10 @@ import {
   DatePicker,
   Input,
   InputPicker,
-  SelectPicker,
   Tooltip,
   Whisper,
 } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
-import { useAddRequisitionMutation } from "@/redux/api/features/requisitionApi";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import {
@@ -81,7 +79,7 @@ const AddTransactionSection = () => {
   return (
     <div className="m-5">
       <div>
-        <h1 className="text-lg font-semibold mb-5">Add Requisition:</h1>
+        <h1 className="text-lg font-semibold mb-5">Add Transaction:</h1>
       </div>
       <div>
         <form onSubmit={handleSubmit(handleCreateItemList)}>
@@ -149,15 +147,11 @@ const AddTransactionSection = () => {
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
                     <InputPicker
-                      creatable
                       size={"lg"}
                       data={["CASH", "CHEQUE"].map((item) => ({
                         label: item,
                         value: item,
                       }))}
-                      onCreate={(value, item) => {
-                        handleAddAccount({ accountName: value });
-                      }}
                       onChange={(value: string | null) => field.onChange(value)}
                       style={{ width: "100%" }}
                     />
