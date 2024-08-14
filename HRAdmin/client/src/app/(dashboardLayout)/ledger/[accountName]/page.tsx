@@ -4,7 +4,7 @@ import { useGetAccountByNameQuery } from "@/redux/api/features/accountApi";
 import { useDebounced } from "@/redux/hooks";
 import { headerCss } from "@/utils/TableCSS";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   Panel,
@@ -56,7 +56,28 @@ const SingleAccountDetails = ({ params }: any) => {
     ...query,
   });
 
-  console.log("data", data);
+  const [totalDebit, setTotalDebit] = useState<number>(0);
+  const [totalCredit, setTotalCredit] = useState<number>(0);
+
+  useEffect(() => {
+    if (data) {
+      const { transactionCredit, transactionDebit } = data?.data?.data ?? {};
+
+      let debitTotal = 0;
+      let creditTotal = 0;
+
+      (transactionCredit ?? []).forEach((transaction: any) => {
+        creditTotal += transaction.transactionAmount;
+      });
+
+      (transactionDebit ?? []).forEach((transaction: any) => {
+        debitTotal += transaction.transactionAmount;
+      });
+
+      setTotalDebit(debitTotal);
+      setTotalCredit(creditTotal);
+    }
+  }, [data]);
 
   if (!data) {
     return <Loader center content="Loading..." />;
@@ -203,277 +224,277 @@ const SingleAccountDetails = ({ params }: any) => {
   return (
     <div style={{ padding: "20px" }}>
       <div>
-        {data?.data?.data === null ? (
-          <h1 className="text-xl flex justify-center items-center text-red-600">
-            No Transaction Found.
-          </h1>
-        ) : (
+        <div>
           <div>
             <div>
-              <div>
-                <h1 className="text-xl bg-blue-50 shadow-sm p-2 rounded-md">
-                  Account Details Page
-                </h1>
-                <Panel bordered className="shadow-sm my-2">
-                  <Grid fluid>
-                    <Row className="show-grid">
-                      <Col xs={24} sm={12} md={6}>
-                        <p>
-                          <strong>Account ID:</strong>
-                        </p>
-                        <p>{accountId}</p>
-                      </Col>
-                      <Col xs={24} sm={12} md={6}>
-                        <p>
-                          <strong>Account Name:</strong>
-                        </p>
-                        <h2 className="text-lg font-semibold">{accountName}</h2>
-                      </Col>
-                      <Col xs={24} sm={12} md={6}>
-                        <p>
-                          <strong>Opening Balance:</strong>
-                        </p>
-                        <p>{openingBalance}</p>
-                      </Col>
-                      <Col xs={24} sm={12} md={6}>
-                        <p>
-                          <strong>Closing Balance:</strong>
-                        </p>
-                        <p>{formattedClosingBalance}</p>
-                      </Col>
-                    </Row>
-                    <Row className="show-grid" style={{ marginTop: "20px" }}>
-                      <Col xs={24} sm={12} md={6}>
-                        <p>
-                          <strong>Created At:</strong>
-                        </p>
-                        <p>{new Date(createdAt).toLocaleString()}</p>
-                      </Col>
-                      <Col xs={24} sm={12} md={6}>
-                        <p>
-                          <strong>Updated At:</strong>
-                        </p>
-                        <p>{new Date(updatedAt).toLocaleString()}</p>
-                      </Col>
-                    </Row>
-                  </Grid>
-                </Panel>
-              </div>
-              <div className="my-5 mx-2 flex justify-between gap-2 w-full">
-                <div className="flex items-center gap-5">
-                  <div className="w-[300px]">
-                    <label htmlFor="voice-search" className="sr-only">
-                      Search
-                    </label>
-                    <div className="relative w-full">
-                      <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={2}
-                          stroke="#919eab"
-                          className="w-6 h-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                          />
-                        </svg>
-                      </div>
-                      <input
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        type="text"
-                        id="searchTerm"
-                        className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB] w-full pl-10 py-2 rounded-lg focus:outline-none"
-                        placeholder="Search with Name"
-                        required
-                      />
+              <h1 className="text-xl bg-blue-50 shadow-sm p-2 rounded-md">
+                Account Details Page
+              </h1>
+              <Panel bordered className="shadow-sm my-2">
+                <Grid fluid>
+                  <Row className="show-grid">
+                    <Col xs={24} sm={12} md={6}>
+                      <p>
+                        <strong>Account ID:</strong>
+                      </p>
+                      <p>{accountId}</p>
+                    </Col>
+                    <Col xs={24} sm={12} md={6}>
+                      <p>
+                        <strong>Account Name:</strong>
+                      </p>
+                      <h2 className="text-lg font-semibold">{accountName}</h2>
+                    </Col>
+                    <Col xs={24} sm={12} md={6}>
+                      <p>
+                        <strong>Opening Balance:</strong>
+                      </p>
+                      <p>{openingBalance}</p>
+                    </Col>
+                    <Col xs={24} sm={12} md={6}>
+                      <p>
+                        <strong>Closing Balance:</strong>
+                      </p>
+                      <p>{formattedClosingBalance}</p>
+                    </Col>
+                  </Row>
+                  <Row className="show-grid" style={{ marginTop: "20px" }}>
+                    <Col xs={24} sm={12} md={6}>
+                      <p>
+                        <strong>Created At:</strong>
+                      </p>
+                      <p>{new Date(createdAt).toLocaleString()}</p>
+                    </Col>
+                    <Col xs={24} sm={12} md={6}>
+                      <p>
+                        <strong>Updated At:</strong>
+                      </p>
+                      <p>{new Date(updatedAt).toLocaleString()}</p>
+                    </Col>
+                  </Row>
+                </Grid>
+              </Panel>
+            </div>
+            <div className="my-5 mx-2 flex justify-between gap-2 w-full">
+              <div className="flex items-center gap-5">
+                <div className="w-full">
+                  <label htmlFor="voice-search" className="sr-only">
+                    Search
+                  </label>
+                  <div className="relative w-full">
+                    <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none w-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="#919eab"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                        />
+                      </svg>
                     </div>
-                  </div>
-                  <div>
-                    <DateRangePicker
-                      // @ts-ignore
-                      // ranges={predefinedRanges}
-                      placement="auto"
-                      onChange={(value: Date[] | null): void => {
-                        handleFilterDate(value);
-                      }}
-                      onClean={() =>
-                        handleFilterDate({
-                          //@ts-ignore
-                          startDate: "",
-                          endDate: "",
-                        })
-                      }
-                      size="lg"
-                      style={{ width: 300 }}
-                      placeholder="Filter By Date"
+                    <input
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      type="text"
+                      id="searchTerm"
+                      size={100}
+                      className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB] w-full pl-10 py-2 rounded-lg focus:outline-none"
+                      placeholder="Search with Tr No Ex Conveyance01"
+                      required
                     />
                   </div>
                 </div>
-
-                <div className="mr-2">
-                  <Whisper
-                    placement="bottomEnd"
-                    speaker={renderMenu}
-                    trigger={["click"]}
-                  >
-                    <Button type="button" appearance="primary">
-                      <span>{/* <LiaFileExportSolid size={25} /> */}</span>
-                      <span>Export</span>
-                    </Button>
-                  </Whisper>
+                <div>
+                  <DateRangePicker
+                    // @ts-ignore
+                    // ranges={predefinedRanges}
+                    placement="auto"
+                    onChange={(value: Date[] | null): void => {
+                      handleFilterDate(value);
+                    }}
+                    onClean={() =>
+                      handleFilterDate({
+                        //@ts-ignore
+                        startDate: "",
+                        endDate: "",
+                      })
+                    }
+                    size="lg"
+                    style={{ width: 300 }}
+                    placeholder="Filter By Date"
+                  />
                 </div>
               </div>
 
-              <div>
-                <h1 className="text-xl bg-blue-50 shadow-sm p-2 rounded-md">
-                  Transactions
-                </h1>
-                <Panel bordered style={{ marginTop: "20px" }}>
-                  <Table
-                    bordered={true}
-                    cellBordered={true}
-                    wordWrap="break-word"
-                    rowHeight={70}
-                    headerHeight={50}
-                    shouldUpdateScroll={false} // Prevent the scrollbar from scrolling to the top after the table
-                    autoHeight={true}
-                    data={transactions}
-                  >
-                    <Column width={50} align="center" verticalAlign="middle">
-                      <HeaderCell style={headerCss}>
-                        <div style={{ lineHeight: "40px" }}>
-                          <Checkbox
-                            inline
-                            checked={checked}
-                            indeterminate={indeterminate}
-                            onChange={handleCheckAll}
-                          />
-                        </div>
-                      </HeaderCell>
-
-                      <Cell>
-                        {(rowData) => (
-                          <div>
-                            <CheckCell
-                              dataKey="transactionId"
-                              rowData={rowData}
-                              checkedKeys={checkedKeys}
-                              onChange={handleCheck}
-                            />
-                          </div>
-                        )}
-                      </Cell>
-                    </Column>
-
-                    {/* SL No*/}
-                    <Column flexGrow={1}>
-                      <HeaderCell style={headerCss}>SL</HeaderCell>
-                      <Cell
-                        dataKey="sl"
-                        verticalAlign="middle"
-                        style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                      >
-                        {(rowData, rowIndex: any) => (
-                          <span>{rowIndex + 1}</span>
-                        )}
-                      </Cell>
-                    </Column>
-
-                    {/* Style No*/}
-                    <Column flexGrow={1}>
-                      <HeaderCell style={headerCss}>
-                        Transaction Date
-                      </HeaderCell>
-                      <Cell
-                        dataKey="date"
-                        verticalAlign="middle"
-                        style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                      ></Cell>
-                    </Column>
-
-                    {/* Details*/}
-                    <Column flexGrow={4}>
-                      <HeaderCell style={headerCss}>Particular</HeaderCell>
-                      <Cell
-                        dataKey="particular"
-                        verticalAlign="middle"
-                        style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                      >
-                        {(rowData) => ` ${rowData.particular}`}
-                      </Cell>
-                    </Column>
-
-                    {/* Details*/}
-                    <Column flexGrow={1}>
-                      <HeaderCell style={headerCss}>TR No</HeaderCell>
-                      <Cell
-                        dataKey="trID"
-                        verticalAlign="middle"
-                        style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                      ></Cell>
-                    </Column>
-
-                    {/* Details*/}
-                    <Column flexGrow={2}>
-                      <HeaderCell style={headerCss}>Transaction Id</HeaderCell>
-                      <Cell
-                        dataKey="transactionId"
-                        verticalAlign="middle"
-                        style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                      ></Cell>
-                    </Column>
-
-                    {/* Details*/}
-                    <Column flexGrow={1}>
-                      <HeaderCell style={headerCss}>Debit</HeaderCell>
-                      <Cell
-                        dataKey="debit"
-                        verticalAlign="middle"
-                        style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                      ></Cell>
-                    </Column>
-
-                    {/* Status*/}
-                    <Column flexGrow={1}>
-                      <HeaderCell style={headerCss}>Credit</HeaderCell>
-                      <Cell
-                        dataKey="chequeDate"
-                        verticalAlign="middle"
-                        style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                      >
-                        {(rowData) => ` ${rowData.credit}`}
-                      </Cell>
-                    </Column>
-                  </Table>
-                </Panel>
+              <div className="mr-2">
+                <Whisper
+                  placement="bottomEnd"
+                  speaker={renderMenu}
+                  trigger={["click"]}
+                >
+                  <Button type="button" appearance="primary">
+                    <span>{/* <LiaFileExportSolid size={25} /> */}</span>
+                    <span>Export</span>
+                  </Button>
+                </Whisper>
               </div>
             </div>
 
-            <div style={{ padding: "20px 10px 0px 10px" }}>
-              <Pagination
-                total={data?.data?.meta?.total}
-                prev
-                next
-                first
-                last
-                ellipsis
-                boundaryLinks
-                maxButtons={5}
-                size="lg"
-                layout={["total", "-", "limit", "|", "pager", "skip"]}
-                limitOptions={[5, 10, 20, 30, 50]}
-                limit={size}
-                onChangeLimit={(limitChange: any) => setSize(limitChange)}
-                activePage={page}
-                onChangePage={setPage}
-              />
+            <div>
+              <h1 className="text-xl bg-blue-50 shadow-sm p-2 rounded-md">
+                Transactions
+              </h1>
+              <Panel bordered style={{ marginTop: "20px" }}>
+                <Table
+                  bordered={true}
+                  cellBordered={true}
+                  wordWrap="break-word"
+                  rowHeight={70}
+                  headerHeight={50}
+                  shouldUpdateScroll={false} // Prevent the scrollbar from scrolling to the top after the table
+                  autoHeight={true}
+                  data={transactions}
+                >
+                  <Column width={50} align="center" verticalAlign="middle">
+                    <HeaderCell style={headerCss}>
+                      <div style={{ lineHeight: "40px" }}>
+                        <Checkbox
+                          inline
+                          checked={checked}
+                          indeterminate={indeterminate}
+                          onChange={handleCheckAll}
+                        />
+                      </div>
+                    </HeaderCell>
+
+                    <Cell>
+                      {(rowData) => (
+                        <div>
+                          <CheckCell
+                            dataKey="transactionId"
+                            rowData={rowData}
+                            checkedKeys={checkedKeys}
+                            onChange={handleCheck}
+                          />
+                        </div>
+                      )}
+                    </Cell>
+                  </Column>
+
+                  {/* SL No*/}
+                  <Column flexGrow={1}>
+                    <HeaderCell style={headerCss}>SL</HeaderCell>
+                    <Cell
+                      dataKey="sl"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    >
+                      {(rowData, rowIndex: any) => <span>{rowIndex + 1}</span>}
+                    </Cell>
+                  </Column>
+
+                  {/* Style No*/}
+                  <Column flexGrow={1}>
+                    <HeaderCell style={headerCss}>Transaction Date</HeaderCell>
+                    <Cell
+                      dataKey="date"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    ></Cell>
+                  </Column>
+
+                  {/* Details*/}
+                  <Column flexGrow={4}>
+                    <HeaderCell style={headerCss}>Particular</HeaderCell>
+                    <Cell
+                      dataKey="particular"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    >
+                      {(rowData) => ` ${rowData.particular}`}
+                    </Cell>
+                  </Column>
+
+                  {/* Details*/}
+                  <Column flexGrow={1}>
+                    <HeaderCell style={headerCss}>TR No</HeaderCell>
+                    <Cell
+                      dataKey="trID"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    ></Cell>
+                  </Column>
+
+                  {/* Details*/}
+                  <Column flexGrow={2}>
+                    <HeaderCell style={headerCss}>Transaction Id</HeaderCell>
+                    <Cell
+                      dataKey="transactionId"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    ></Cell>
+                  </Column>
+
+                  {/* Details*/}
+                  <Column flexGrow={1}>
+                    <HeaderCell style={headerCss}>Debit</HeaderCell>
+                    <Cell
+                      dataKey="debit"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    ></Cell>
+                  </Column>
+
+                  {/* Status*/}
+                  <Column flexGrow={1}>
+                    <HeaderCell style={headerCss}>Credit</HeaderCell>
+                    <Cell
+                      dataKey="chequeDate"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    >
+                      {(rowData) => ` ${rowData.credit}`}
+                    </Cell>
+                  </Column>
+                </Table>
+              </Panel>
             </div>
           </div>
-        )}
+
+          <div className="flex items-start gap-2 border p-2 shadow-sm">
+            <h1 className="text-sm">
+              <span>Total Debit : {totalDebit}</span>
+            </h1>
+            <h1 className="text-sm">
+              <span>Total Credit : {totalCredit}</span>
+            </h1>
+          </div>
+
+          <div style={{ padding: "20px 10px 0px 10px" }}>
+            <Pagination
+              total={data?.data?.meta?.total}
+              prev
+              next
+              first
+              last
+              ellipsis
+              boundaryLinks
+              maxButtons={5}
+              size="lg"
+              layout={["total", "-", "limit", "|", "pager", "skip"]}
+              limitOptions={[5, 10, 20, 30, 50]}
+              limit={size}
+              onChangeLimit={(limitChange: any) => setSize(limitChange)}
+              activePage={page}
+              onChangePage={setPage}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

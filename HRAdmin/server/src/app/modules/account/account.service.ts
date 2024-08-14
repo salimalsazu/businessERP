@@ -505,8 +505,6 @@ const getAccountByName = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { searchTerm, startDate, endDate } = filters;
 
-  console.log('limit', limit);
-
   // Building the transaction filter conditions
   const transactionConditions: Prisma.TransactionWhereInput = {};
 
@@ -524,20 +522,17 @@ const getAccountByName = async (
     // Adjust date range to include the entire day
     if (start && end) {
       end.setHours(23, 59, 59, 999);
-
       transactionConditions.createdAt = {
         gte: start,
         lte: end,
       };
     } else if (start) {
       start.setHours(0, 0, 0, 0);
-
       transactionConditions.createdAt = {
         gte: start,
       };
     } else if (end) {
       end.setHours(23, 59, 59, 999);
-
       transactionConditions.createdAt = {
         lte: end,
       };
@@ -578,56 +573,53 @@ const getAccountByName = async (
 
   const totalPage = Math.ceil(total / limit);
 
-  const result = await prisma.account.findFirst({
+  // Retrieve transactions matching the conditions
+  const creditTransactions = await prisma.transaction.findMany({
     where: {
-      accountName,
-      AND: [
-        {
-          OR: [
-            {
-              transactionCredit: {
-                some: transactionConditions,
-              },
-            },
-            {
-              transactionDebit: {
-                some: transactionConditions,
-              },
-            },
-          ],
-        },
-      ],
-    },
-    include: {
-      transactionCredit: {
-        select: {
-          debitAccount: true,
-          transactionAmount: true,
-          trId: true,
-          transactionId: true,
-          createdAt: true,
-          transactionDate: true,
-        },
-        where: transactionConditions,
-        take: limit,
-        skip: skip,
+      creditAccount: {
+        accountName,
       },
-      transactionDebit: {
-        select: {
-          creditAccount: true,
-          transactionAmount: true,
-          trId: true,
-          transactionId: true,
-          createdAt: true,
-          transactionDate: true,
-        },
-        where: transactionConditions,
-        take: limit,
-        skip: skip,
-      },
+      ...transactionConditions,
     },
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'asc' },
+    select: {
+      debitAccount: true,
+      transactionAmount: true,
+      trId: true,
+      transactionId: true,
+      createdAt: true,
+      transactionDate: true,
+    },
+    take: limit,
+    skip: skip,
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
   });
+
+  const debitTransactions = await prisma.transaction.findMany({
+    where: {
+      debitAccount: {
+        accountName,
+      },
+      ...transactionConditions,
+    },
+    select: {
+      creditAccount: true,
+      transactionAmount: true,
+      trId: true,
+      transactionId: true,
+      createdAt: true,
+      transactionDate: true,
+    },
+    take: limit,
+    skip: skip,
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
+  });
+
+  // Combine account details with transactions
+  const result = {
+    ...accountExists,
+    transactionCredit: creditTransactions,
+    transactionDebit: debitTransactions,
+  };
 
   return {
     meta: {

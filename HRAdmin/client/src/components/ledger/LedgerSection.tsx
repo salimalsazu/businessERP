@@ -340,7 +340,7 @@ const LedgerSection = () => {
             </Column>
           </Table>
 
-          {/* <div
+          <div
             style={{
               marginTop: "20px",
               textAlign: "right",
@@ -350,7 +350,7 @@ const LedgerSection = () => {
           >
             <div>Total Debit: {totals.totalDebit.toFixed(2)}</div>
             <div>Total Credit: {totals.totalCredit.toFixed(2)}</div>
-          </div> */}
+          </div> 
 
           {/* <div style={{ padding: "20px 10px 0px 10px" }}>
             <Pagination
