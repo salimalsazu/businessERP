@@ -522,18 +522,18 @@ const getAccountByName = async (
     // Adjust date range to include the entire day
     if (start && end) {
       end.setHours(23, 59, 59, 999);
-      transactionConditions.createdAt = {
+      transactionConditions.transactionDate = {
         gte: start,
         lte: end,
       };
     } else if (start) {
       start.setHours(0, 0, 0, 0);
-      transactionConditions.createdAt = {
+      transactionConditions.transactionDate = {
         gte: start,
       };
     } else if (end) {
       end.setHours(23, 59, 59, 999);
-      transactionConditions.createdAt = {
+      transactionConditions.transactionDate = {
         lte: end,
       };
     }
