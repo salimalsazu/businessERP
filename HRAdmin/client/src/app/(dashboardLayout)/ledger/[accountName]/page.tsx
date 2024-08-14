@@ -3,6 +3,8 @@
 import { useGetAccountByNameQuery } from "@/redux/api/features/accountApi";
 import { useDebounced } from "@/redux/hooks";
 import { headerCss } from "@/utils/TableCSS";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 import {
@@ -26,7 +28,6 @@ import "rsuite/dist/rsuite.min.css";
 const { Column, HeaderCell, Cell } = Table;
 
 const SingleAccountDetails = ({ params }: any) => {
-  console.log("params", params);
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
@@ -150,28 +151,9 @@ const SingleAccountDetails = ({ params }: any) => {
     }
   };
 
-  const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
-    const handleSelect = () => {
-      onClose();
-    };
-    return (
-      <Popover ref={ref} className={className} style={{ left, top }} full>
-        <Dropdown.Menu onSelect={handleSelect}>
-          <Dropdown.Item
-            // disabled={!isLoading && !allRequisitionList?.data?.length}
-            // onClick={generatePDF}
-            eventKey={1}
-          >
-            Export to PDF
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Popover>
-    );
-  };
-
   //Checked Box
   const checkedBoxData = transactions?.filter((obj: any) =>
-    checkedKeys.includes(obj.requisitionId)
+    checkedKeys.includes(obj.transactionId)
   );
 
   let checked = false;
@@ -218,6 +200,117 @@ const SingleAccountDetails = ({ params }: any) => {
           checked={checkedKeys.some((item: any) => item === rowData[dataKey])}
         />
       </div>
+    );
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const centerX = (text: any) => (pageWidth - doc.getTextWidth(text)) / 2;
+
+    // Custom header
+    const header = () => {
+      doc.setFontSize(18);
+      doc.text(
+        "24/7 Sourcing Private Ltd",
+        centerX("24/7 Sourcing Private Ltd"),
+        22
+      );
+      doc.setFontSize(12);
+      doc.setTextColor(40);
+      doc.text(`${params.accountName}`, centerX("Ledger"), 30);
+      doc.setFontSize(8);
+      doc.setTextColor(35);
+      doc.text(
+        "House 60, Lake Drive Road, Sector:07, Uttara, Dhaka-1230",
+        centerX("House 60, Lake Drive Road, Sector:07, Uttara, Dhaka-1230"),
+        35
+      );
+    };
+
+    const tableColumn = [
+      "Transaction Date",
+      "Particular",
+      "TR No",
+      "Transaction Id",
+      "Debit",
+      "Credit",
+    ];
+
+    const tableRows = checkedBoxData.map((item: any) => [
+      moment(item.date).format("ll"),
+      item?.particular,
+      item?.trID,
+      item?.transactionId,
+      item?.debit,
+      item?.credit,
+    ]);
+
+    // Calculate the total sum of the amount
+    const totalDebit = checkedBoxData.reduce(
+      (sum: any, item: any) => sum + item.debit,
+      0
+    );
+
+    const totalCredit = checkedBoxData.reduce(
+      (sum: any, item: any) => sum + item.credit,
+      0
+    );
+
+    let finalY = 0; // Variable to store final Y position
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      didDrawPage: (data) => {
+        // Header and Footer on each page
+        header();
+      },
+      margin: { top: 40 },
+      didDrawCell: (data) => {
+        // Update finalY position
+        finalY = data.cell.y + data.cell.height;
+        // Check if it's the last row of the table on the last page
+        if (
+          data.row.index === tableRows.length - 1 &&
+          data.cell.section === "body"
+        ) {
+          // Calculate the y position for the "Approved by" text
+          const yPosition = finalY + 30;
+          const xPosition = pageWidth - 60; // Adjust this value to position the text on the right side
+          doc.setFontSize(10);
+          // Add line for signature
+          doc.line(xPosition - 10, yPosition, xPosition + 30, yPosition);
+          doc.text("Approved by", xPosition, yPosition + 5);
+        }
+      },
+    });
+
+    // Add total sum row
+    doc.setFontSize(10);
+    doc.text(`Total Debit: ${totalDebit}`, 14, finalY + 10);
+    doc.text(`Total Credit: ${totalCredit}`, 14, finalY + 20);
+
+    doc.save("ledger.pdf");
+  };
+
+  const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
+    const handleSelect = () => {
+      onClose();
+    };
+    return (
+      <Popover ref={ref} className={className} style={{ left, top }} full>
+        <Dropdown.Menu onSelect={handleSelect}>
+          <Dropdown.Item
+            // disabled={!isLoading && !allRequisitionList?.data?.length}
+            onClick={generatePDF}
+            eventKey={1}
+          >
+            Export to PDF
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Popover>
     );
   };
 
