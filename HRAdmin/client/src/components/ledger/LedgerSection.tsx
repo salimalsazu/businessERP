@@ -148,8 +148,8 @@ const LedgerSection = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
-    <div>
-      <div className="bg-gray-100 rounded-sm m-5 p-5">
+    <div >
+      <div className=" rounded-sm m-5 p-5">
         <div className="my-5 mx-2 flex flex-col-reverse gap-10">
           <div className="flex items-center gap-5 shadow-sm border p-5">
             <div className="w-full">
@@ -209,7 +209,7 @@ const LedgerSection = () => {
         </div>
 
         {/* Add Ledger & Account Form */}
-        <div>
+        <div  >
           <AddLedgerSection
             openDrawer={openDrawer}
             setOpenDrawer={setOpenDrawer}

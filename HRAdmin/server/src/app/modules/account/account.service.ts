@@ -366,6 +366,137 @@ const getAccounts = async (filters: IAccountFilterRequest, options: IPaginationO
 //   };
 // };
 
+// const getAccountByName = async (
+//   accountName: string,
+//   filters: IAccountFilterRequest,
+//   options: IPaginationOptions
+// ): Promise<IGenericResponse<Account | null>> => {
+//   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+//   const { searchTerm, startDate, endDate } = filters;
+
+//   console.log('Filters:', filters);
+
+//   // Building the transaction filter conditions
+//   const transactionConditions: Prisma.TransactionWhereInput = {};
+
+//   if (searchTerm) {
+//     transactionConditions.trId = {
+//       contains: searchTerm,
+//       mode: 'insensitive',
+//     };
+//   }
+
+//   if (startDate || endDate) {
+//     const start = startDate ? new Date(startDate) : undefined;
+//     const end = endDate ? new Date(endDate) : undefined;
+
+//     // Adjust date range to include the entire day
+//     if (start && end) {
+//       end.setHours(23, 59, 59, 999);
+
+//       console.log('Parsed Start Date:', start);
+//       console.log('Parsed End Date:', end);
+
+//       transactionConditions.createdAt = {
+//         gte: start,
+//         lte: end,
+//       };
+//     } else if (start) {
+//       start.setHours(0, 0, 0, 0);
+
+//       transactionConditions.createdAt = {
+//         gte: start,
+//       };
+//     } else if (end) {
+//       end.setHours(23, 59, 59, 999);
+
+//       transactionConditions.createdAt = {
+//         lte: end,
+//       };
+//     }
+//   }
+
+//   console.log('Transaction Conditions:', transactionConditions);
+
+//   const result = await prisma.account.findFirst({
+//     where: {
+//       accountName,
+//       AND: [
+//         {
+//           OR: [
+//             {
+//               transactionCredit: {
+//                 some: transactionConditions,
+//               },
+//             },
+//             {
+//               transactionDebit: {
+//                 some: transactionConditions,
+//               },
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//     include: {
+//       transactionCredit: {
+//         select: {
+//           debitAccount: true,
+//           transactionAmount: true,
+//           trId: true,
+//           transactionId: true,
+//           createdAt: true,
+//         },
+//         where: transactionConditions,
+//       },
+//       transactionDebit: {
+//         select: {
+//           creditAccount: true,
+//           transactionAmount: true,
+//           trId: true,
+//           transactionId: true,
+//           createdAt: true,
+//         },
+//         where: transactionConditions,
+//       },
+//     },
+//     skip,
+//     take: limit,
+//     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
+//   });
+
+//   console.log('Prisma Query Result:', result);
+
+//   // Manually count transactions in transactionCredit
+//   const creditTransactions = result?.transactionCredit ?? [];
+//   const creditCount = creditTransactions.length;
+
+//   // Manually count transactions in transactionDebit
+//   const debitTransactions = result?.transactionDebit ?? [];
+//   const debitCount = debitTransactions.length;
+
+//   // Combine counts
+//   const total = creditCount + debitCount;
+
+//   const totalPage = Math.ceil(total / limit);
+
+//   if (!result) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Account not found');
+//   }
+
+//   return {
+//     meta: {
+//       page,
+//       limit,
+//       total,
+//       totalPage,
+//     },
+//     data: result,
+//   };
+// };
+
+// ! --------------- exports all user service
+
 const getAccountByName = async (
   accountName: string,
   filters: IAccountFilterRequest,
@@ -374,7 +505,7 @@ const getAccountByName = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { searchTerm, startDate, endDate } = filters;
 
-  console.log('Filters:', filters);
+  console.log('limit', limit);
 
   // Building the transaction filter conditions
   const transactionConditions: Prisma.TransactionWhereInput = {};
@@ -393,9 +524,6 @@ const getAccountByName = async (
     // Adjust date range to include the entire day
     if (start && end) {
       end.setHours(23, 59, 59, 999);
-
-      console.log('Parsed Start Date:', start);
-      console.log('Parsed End Date:', end);
 
       transactionConditions.createdAt = {
         gte: start,
@@ -416,7 +544,39 @@ const getAccountByName = async (
     }
   }
 
-  console.log('Transaction Conditions:', transactionConditions);
+  // Check if account exists
+  const accountExists = await prisma.account.findFirst({
+    where: { accountName },
+  });
+
+  if (!accountExists) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Account not found');
+  }
+
+  // Count total transactions that match the conditions
+  const creditCountPromise = prisma.transaction.count({
+    where: {
+      creditAccount: {
+        accountName,
+      },
+      ...transactionConditions,
+    },
+  });
+
+  const debitCountPromise = prisma.transaction.count({
+    where: {
+      debitAccount: {
+        accountName,
+      },
+      ...transactionConditions,
+    },
+  });
+
+  const [creditCount, debitCount] = await Promise.all([creditCountPromise, debitCountPromise]);
+
+  const total = creditCount + debitCount;
+
+  const totalPage = Math.ceil(total / limit);
 
   const result = await prisma.account.findFirst({
     where: {
@@ -446,8 +606,11 @@ const getAccountByName = async (
           trId: true,
           transactionId: true,
           createdAt: true,
+          transactionDate: true,
         },
         where: transactionConditions,
+        take: limit,
+        skip: skip,
       },
       transactionDebit: {
         select: {
@@ -456,33 +619,15 @@ const getAccountByName = async (
           trId: true,
           transactionId: true,
           createdAt: true,
+          transactionDate: true,
         },
         where: transactionConditions,
+        take: limit,
+        skip: skip,
       },
     },
-    skip,
-    take: limit,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'asc' },
   });
-
-  console.log('Prisma Query Result:', result);
-
-  // Manually count transactions in transactionCredit
-  const creditTransactions = result?.transactionCredit ?? [];
-  const creditCount = creditTransactions.length;
-
-  // Manually count transactions in transactionDebit
-  const debitTransactions = result?.transactionDebit ?? [];
-  const debitCount = debitTransactions.length;
-
-  // Combine counts
-  const total = creditCount + debitCount;
-
-  const totalPage = Math.ceil(total / limit);
-
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Account not found');
-  }
 
   return {
     meta: {
@@ -495,7 +640,6 @@ const getAccountByName = async (
   };
 };
 
-// ! --------------- exports all user service
 export const AccountService = {
   createAccount,
   getAccounts,

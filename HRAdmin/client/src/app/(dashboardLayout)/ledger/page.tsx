@@ -2,7 +2,7 @@ import LedgerSection from "@/components/ledger/LedgerSection";
 
 const LedgerPage = () => {
   return (
-    <div>
+    <div >
       <LedgerSection />
     </div>
   );
