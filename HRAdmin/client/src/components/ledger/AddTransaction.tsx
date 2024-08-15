@@ -9,7 +9,7 @@ import {
   Whisper,
 } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import {
   useAddAccountMutation,
@@ -18,6 +18,7 @@ import {
 import { useAddTransactionMutation } from "@/redux/api/features/transactionApi";
 
 const AddTransactionSection = () => {
+
   const { data: allAccounts } = useGetAccountQuery({});
 
   const [addAccount] = useAddAccountMutation();
@@ -65,6 +66,7 @@ const AddTransactionSection = () => {
     console.log("addTransaction", objTransaction);
 
     await addTransaction(objTransaction);
+
   };
 
   //   useEffect(() => {
@@ -82,7 +84,7 @@ const AddTransactionSection = () => {
         <h1 className="text-lg font-semibold mb-5">Add Transaction:</h1>
       </div>
       <div>
-        <form onSubmit={handleSubmit(handleCreateItemList)}>
+        <form  onSubmit={handleSubmit(handleCreateItemList)}>
           {/* 1st section */}
           <div className="flex justify-between gap-3 mb-5 w-[100%]">
             {/* Date */}{" "}
