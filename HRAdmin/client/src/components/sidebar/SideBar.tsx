@@ -118,6 +118,9 @@ const SideBar = () => {
                 <Nav.Item eventKey="3-2" as={Link} href="/leave/history">
                   Leave History
                 </Nav.Item>
+                <Nav.Item eventKey="7-1" as={Link} href="/salary">
+                  Salary
+                </Nav.Item>
               </Nav.Menu>
 
               <Nav.Menu
@@ -163,33 +166,6 @@ const SideBar = () => {
                 <Nav.Item eventKey="6-2" as={Link} href="/transport/documents">
                   Vehicle Documents List
                 </Nav.Item>
-              </Nav.Menu>
-              <Nav.Menu
-                eventKey="7"
-                trigger="hover"
-                title="Printing & Stationary"
-                icon={<Icon as={FaPrint} />}
-                placement="rightStart"
-              >
-                <Nav.Item eventKey="7-1" as={Link} href="/stationary/stock">
-                  List of Stationary
-                </Nav.Item>
-                <Nav.Item eventKey="7-2" as={Link} href="/stationary/assign">
-                  Request for Stationary
-                </Nav.Item>
-              </Nav.Menu>
-
-              <Nav.Menu
-                eventKey="8"
-                trigger="hover"
-                title="Conveyance"
-                icon={<Icon as={SiBetfair} />}
-                placement="rightStart"
-              >
-                <Nav.Item eventKey="8-1" as={Link} href="/conveyance/list">
-                  List of Conveyance
-                </Nav.Item>
-                {/* <Nav.Item eventKey="8-2">Conveyance History</Nav.Item> */}
               </Nav.Menu>
 
               <Nav.Menu

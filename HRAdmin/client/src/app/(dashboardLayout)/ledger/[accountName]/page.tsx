@@ -1,5 +1,6 @@
 "use client";
 
+import { formatNumber } from "@/components/ledger/FormatNumber";
 import { useGetAccountByNameQuery } from "@/redux/api/features/accountApi";
 import { useDebounced } from "@/redux/hooks";
 import { headerCss } from "@/utils/TableCSS";
@@ -98,7 +99,8 @@ const SingleAccountDetails = ({ params }: any) => {
   const transactions = [
     ...(transactionCredit ?? []).map((transaction: any) => ({
       date: moment(transaction.transactionDate).format("YYYY-MM-DD hh:mm:ss A"), // Replace with actual transaction date
-      particular: transaction.debitAccount.accountName, // Replace with actual particular
+      particular: transaction.debitAccount.accountName,
+      closingBalance: transaction.creditAccountClosingBalance,
       trID: transaction.trId,
       transactionId: transaction.transactionId,
       debit: "-",
@@ -107,6 +109,7 @@ const SingleAccountDetails = ({ params }: any) => {
     ...(transactionDebit ?? []).map((transaction: any) => ({
       date: moment(transaction.transactionDate).format("YYYY-MM-DD hh:mm:ss A"), // Replace with actual transaction date
       particular: transaction.creditAccount.accountName, // Replace with actual particular
+      closingBalance: transaction.debitAccountClosingBalance,
       trID: transaction.trId,
       transactionId: transaction.transactionId,
       debit: transaction.transactionAmount,
@@ -236,6 +239,7 @@ const SingleAccountDetails = ({ params }: any) => {
       "Transaction Id",
       "Debit",
       "Credit",
+      "Balance",
     ];
 
     const tableRows = checkedBoxData.map((item: any) => [
@@ -245,6 +249,7 @@ const SingleAccountDetails = ({ params }: any) => {
       item?.transactionId,
       item?.debit,
       item?.credit,
+      item?.closingBalance,
     ]);
 
     // Calculate the total sum of the amount
@@ -323,7 +328,7 @@ const SingleAccountDetails = ({ params }: any) => {
               <h1 className="text-xl bg-blue-50 shadow-sm p-2 rounded-md">
                 Account Details Page
               </h1>
-              <Panel bordered className="shadow-sm my-2">
+              <Panel bordered className="shadow-sm my-2 bg-slate-50">
                 <Grid fluid>
                   <Row className="show-grid">
                     <Col xs={24} sm={12} md={6}>
@@ -442,7 +447,11 @@ const SingleAccountDetails = ({ params }: any) => {
               <h1 className="text-xl bg-blue-50 shadow-sm p-2 rounded-md">
                 Transactions
               </h1>
-              <Panel bordered style={{ marginTop: "20px" }}>
+              <Panel
+                bordered
+                style={{ marginTop: "20px" }}
+                className="bg-slate-50 shadow-sm"
+              >
                 <Table
                   bordered={true}
                   cellBordered={true}
@@ -540,18 +549,32 @@ const SingleAccountDetails = ({ params }: any) => {
                       dataKey="debit"
                       verticalAlign="middle"
                       style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-                    ></Cell>
+                    >
+                      {(rowData) => formatNumber(rowData.debit)}
+                    </Cell>
                   </Column>
 
                   {/* Status*/}
                   <Column flexGrow={1}>
                     <HeaderCell style={headerCss}>Credit</HeaderCell>
                     <Cell
-                      dataKey="chequeDate"
+                      dataKey="credit"
                       verticalAlign="middle"
                       style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
                     >
-                      {(rowData) => ` ${rowData.credit}`}
+                      {(rowData) => formatNumber(rowData.credit)}
+                    </Cell>
+                  </Column>
+
+                  {/* Status*/}
+                  <Column flexGrow={1}>
+                    <HeaderCell style={headerCss}>Balance</HeaderCell>
+                    <Cell
+                      dataKey=""
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    >
+                      {(rowData) => formatNumber(rowData.closingBalance)}
                     </Cell>
                   </Column>
                 </Table>

@@ -11,46 +11,6 @@ import { ITransactionCreateRequest, ITransactionFilterRequest } from './transact
 import { TransactionRelationalFields, TransactionRelationalFieldsMapper, TransactionSearchableFields } from './transaction.constants';
 import { generateTransactionId } from './trIdAutoIncrement';
 
-// modules
-// !----------------------------------Create New Courier---------------------------------------->>>
-// const createTransaction = async (data: ITransactionCreateRequest): Promise<Transaction> => {
-//   // Check if account exist
-//   const isAccountExist = await prisma.account.findUnique({
-//     where: {
-//       accountId: data.accountId,
-//     },
-//   });
-
-//   if (!isAccountExist) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
-//   }
-
-//   // const trAutoIncrement = isAccountExist.accountName + Math.floor(Math.random() * 1000) + 1;
-
-//   const trAutoIncrement = generateTransactionId(isAccountExist.accountName);
-
-//   //create transaction record
-//   const dataObj = {
-//     transactionDate: data.transactionDate,
-//     transactionType: data.transactionType,
-//     transactionAmount: data.transactionAmount,
-//     transactionDescription: data.transactionDescription,
-//     trId: trAutoIncrement,
-//     accountId: data.accountId,
-//   };
-
-//   // Create food expenses record
-//   const result = await prisma.transaction.create({
-//     data: dataObj,
-//   });
-
-//   if (!result) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Transaction');
-//   }
-
-//   return result;
-// };
-
 const createTransaction = async (data: ITransactionCreateRequest): Promise<any> => {
   // Check if account exists
   const isDebitAccountExist = await prisma.account.findUnique({
@@ -81,6 +41,9 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
   // Generate transaction ID
   const trAutoIncrement = generateTransactionId(isDebitAccountExist.accountName);
 
+  const debitAccountClosingBalance = isDebitAccountExist.closingBalance + data.transactionAmount;
+  const creditAccountClosingBalance = isCreditAccountExist.closingBalance - data.transactionAmount;
+
   // Create transaction record
   const dataObj = {
     transactionDate: data.transactionDate,
@@ -88,6 +51,8 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
     transactionAmount: data.transactionAmount,
     transactionDescription: data.transactionDescription,
     trId: trAutoIncrement,
+    debitAccountClosingBalance: debitAccountClosingBalance,
+    creditAccountClosingBalance: creditAccountClosingBalance,
     debitAccountId: data.debitAccountId,
     creditAccountId: data.creditAccountId,
   };
@@ -217,7 +182,6 @@ const getTransaction = async (filters: ITransactionFilterRequest, options: IPagi
       }),
     } as Prisma.TransactionWhereInput);
   }
-  
 
   // Add date range condition if both startDate and endDate are provided
 

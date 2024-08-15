@@ -5,6 +5,8 @@ model Transaction {
   transactionAmount      Int
   transactionDescription String
   trId                   String   @unique
+  debitAccountClosingBalance Int @default(0)
+  creditAccountClosingBalance Int @default(0)
   debitAccountId              String  @default("")
   creditAccountId             String   @default("")
   debitAccount          Account  @relation("DebitAccount", fields: [debitAccountId], references: [accountId])

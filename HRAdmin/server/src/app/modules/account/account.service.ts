@@ -118,8 +118,6 @@ const getAccounts = async (filters: IAccountFilterRequest, options: IPaginationO
   };
 };
 
-// ! single Account info -------------------------------------------------------->>>
-
 // const getAccountByName = async (
 //   accountName: string,
 //   filters: IAccountFilterRequest,
@@ -586,10 +584,12 @@ const getAccountByName = async (
       transactionId: true,
       createdAt: true,
       transactionDate: true,
+      debitAccountClosingBalance: true,
+      creditAccountClosingBalance: true,
     },
     take: limit,
     skip: skip,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'asc' },
   });
 
   const debitTransactions = await prisma.transaction.findMany({
@@ -606,10 +606,12 @@ const getAccountByName = async (
       transactionId: true,
       createdAt: true,
       transactionDate: true,
+      debitAccountClosingBalance: true,
+      creditAccountClosingBalance: true,
     },
     take: limit,
     skip: skip,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'asc' },
   });
 
   // Combine account details with transactions
