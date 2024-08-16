@@ -14,37 +14,10 @@ import { IRequisitionCreateRequest, IRequisitionFilterRequest } from './salary.i
 
 // !----------------------------------Create New Salary---------------------------------------->>>
 const createSalary = async (data: IRequisitionCreateRequest): Promise<Requisition> => {
-  const isAccountExist = await prisma.account.findUnique({
-    where: {
-      accountId: data.accountId,
-    },
-  });
 
-  if (!isAccountExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
-  }
+  
 
-  //create requisition record
-  const dataObj = {
-    requisitionDate: data.requisitionDate,
-    accountId: isAccountExist.accountId,
-    details: data.details,
-    bankName: data.bankName,
-    chequeNo: data.chequeNo,
-    chequeDate: data.chequeDate,
-    amount: data.amount,
-    amountType: data.amountType,
-    status: RequisitionStatus.Pending,
-  };
 
-  // Create food expenses record
-  const result = await prisma.requisition.create({
-    data: dataObj,
-  });
-
-  if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Requisition');
-  }
 
   return result;
 };
