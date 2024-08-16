@@ -1,5 +1,3 @@
-
-
 export type IRequisitionFilterRequest = {
   searchTerm?: string | undefined;
   startDate?: string | null;
@@ -13,4 +11,3 @@ export type ISalaryCreateRequest = {
   advanceSalaryDeduction: number;
   mealAndMobileBillDeduction: number;
 };
-

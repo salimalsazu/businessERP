@@ -10,6 +10,8 @@ model Profile {
   salary             Int?
   address            String?
   nationalId         String?
+  totalSalary       Int?  @default(0)
+  tdsOnSalary      Int?  @default(0)
   birthCertificateNo String?
   dateOfBirth        DateTime  @default(now())
   bankAccountNo      String?
