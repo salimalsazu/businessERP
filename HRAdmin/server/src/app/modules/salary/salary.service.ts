@@ -1,21 +1,44 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Foods, Prisma, Requisition, RequisitionStatus } from '@prisma/client';
+import { Prisma, Requisition, Salary } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-import { IRequisitionCreateRequest, IRequisitionFilterRequest } from './salary.interface';
-
+import { IRequisitionFilterRequest, ISalaryCreateRequest } from './salary.interface';
 
 // modules
 
 // !----------------------------------Create New Salary---------------------------------------->>>
-const createSalary = async (data: IRequisitionCreateRequest): Promise<Requisition> => {
+const createSalary = async (data: ISalaryCreateRequest): Promise<Salary> => {
+  const employeeFound = await prisma.user.findUnique({
+    where: {
+      userId: data.userId,
+    },
+  });
+
+  if (!employeeFound) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Employee Not Found');
+  }
+  console.log('employee', employeeFound);
+
+  const findProfileForEmployee = await prisma.profile.findUnique({
+    where: {
+      profileId: employeeFound.profileId as string,
+    },
+  });
+
+  if (!findProfileForEmployee) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Profile Not Found');
+  }
+
+  console.log('profile', findProfileForEmployee);
+
 
   
+
 
 
 

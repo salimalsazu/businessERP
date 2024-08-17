@@ -6,111 +6,6 @@
     "auditLog": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\.49ebfaeef0855386e7f58c9173c796434be2d1af-audit.json",
     "files": [
         {
-            "date": 1720381771026,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-08-07-01-info.log",
-            "hash": "c979767ace2e5a12b2afe1890d29a7df4feaa15fdfb83bbf58bc4976a7976f43"
-        },
-        {
-            "date": 1720453542109,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-08-07-21-info.log",
-            "hash": "74fa9e733c4d5c154df73e4243cec1de3a8a6b832b8be55ed089f77f599bb74b"
-        },
-        {
-            "date": 1720457481283,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-08-07-22-info.log",
-            "hash": "7591e036690ef87cc8ec3d5cd2286acf99f4cc88aaf06389143717113a315eeb"
-        },
-        {
-            "date": 1720460874315,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-08-07-23-info.log",
-            "hash": "be194b02ef1cfeb6fc70ac6d31d242937134e00e77442f93525e20fe28cc4291"
-        },
-        {
-            "date": 1720461622156,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-09-07-00-info.log",
-            "hash": "f54e365a4e855c497a45257e6ec4937b6c40b3ab1cb6106d025545fa8225e56c"
-        },
-        {
-            "date": 1720465256547,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-09-07-01-info.log",
-            "hash": "383fa6f6eb921fa03d24ab75dbb74cf21ce1eecda6e1243e21fa750e3d0605c9"
-        },
-        {
-            "date": 1720538639250,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-09-07-21-info.log",
-            "hash": "947550cde96da1f9bd5f4668cf270617d7c1f0d6b31d17fe1abf2fa6934255e8"
-        },
-        {
-            "date": 1720552777080,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-10-07-01-info.log",
-            "hash": "652b6c9b25da35ee73451d68fffcd2b0ff06df1250fd80880e00105e49527311"
-        },
-        {
-            "date": 1720630759330,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-10-07-22-info.log",
-            "hash": "2992ce73a195ce164086562e4235be608717ded5af5857ea478280c6314797ff"
-        },
-        {
-            "date": 1720631127053,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-10-07-23-info.log",
-            "hash": "770192cbb9c9ea8b90c7af4ad03e8799070286cea4caaa2985edae64320bf287"
-        },
-        {
-            "date": 1720639965793,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-07-01-info.log",
-            "hash": "8d3d4155fd6ae39e05a44b1aa50ffa8f6942c27acbdc22a1c01452f5025d62a4"
-        },
-        {
-            "date": 1720712669699,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-07-21-info.log",
-            "hash": "912c7ecf5568c7666a735fcd1057546a18690cee9cc2dffcf3de936a4d3681c1"
-        },
-        {
-            "date": 1720718677147,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-07-23-info.log",
-            "hash": "c682705610862f29d350c43ffa75321bde6b7c84671d6653362a5c988d4129df"
-        },
-        {
-            "date": 1720728602894,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-12-07-02-info.log",
-            "hash": "6a302790ed2924dc249685072a67d58017a5a28bdf45a08bf88fec813daffcdf"
-        },
-        {
-            "date": 1720889340138,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-13-07-22-info.log",
-            "hash": "22c4dd3d6a6cfd5c94a2634ade6545bcedec7a90ee9880f709111af99c5780ef"
-        },
-        {
-            "date": 1720891209547,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-13-07-23-info.log",
-            "hash": "c04b3e735e6af9aee8a365c4973ab690a742ed2dac58f6913b4199de793a08ed"
-        },
-        {
-            "date": 1720896017643,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-14-07-00-info.log",
-            "hash": "5d0eb8290d457b433849839fbd75ebd8a213a85bfb80ae84cc5f2d7e1fca9419"
-        },
-        {
-            "date": 1720947560619,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-14-07-14-info.log",
-            "hash": "5f71ab0ff85bd30f596d8114a08f02dd89807437aff846570d6943c38577af75"
-        },
-        {
-            "date": 1720947848353,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-14-07-15-info.log",
-            "hash": "f96838240cf1e869b09c61192226f9907448f86ddafb331c4587ecf5c47b71f8"
-        },
-        {
-            "date": 1721234315621,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-17-07-22-info.log",
-            "hash": "e4f3e068ea1f4bbcdefe791576ae61f4a89872bbca038c3f4b7fd50e23c8ace9"
-        },
-        {
-            "date": 1721244650403,
-            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-18-07-01-info.log",
-            "hash": "96e9da70e825639ee1fdea087fe5415568ff7bee4e04346fb3113de4d9a9f38d"
-        },
-        {
             "date": 1721923351009,
             "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-25-07-22-info.log",
             "hash": "d0f8d029d616930f11f89852b14ade1f15abd9374d43cc83e2fe33bafd2c0a10"
@@ -169,6 +64,141 @@
             "date": 1722189701549,
             "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-29-07-00-info.log",
             "hash": "f28818d5cd1f866cb4575179f9e0496c63d8d80821d802fb4a7bc75cd8c58883"
+        },
+        {
+            "date": 1723308556307,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-10-08-22-info.log",
+            "hash": "f23600405caa49c4d50e92f4a696d66e141f5e547acc37c55ac5e90f49bc0f42"
+        },
+        {
+            "date": 1723313852191,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-08-00-info.log",
+            "hash": "8ba5eccdc8abe66644f6a0f46049576756bab35ce7c2f5a02fd86a016d9d93fa"
+        },
+        {
+            "date": 1723317244095,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-08-01-info.log",
+            "hash": "4a61517e96dc44039a86a70496d8e688f9f53567b5f410bf01e75e72cb8a219b"
+        },
+        {
+            "date": 1723320000305,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-08-02-info.log",
+            "hash": "d9922b29bb310b6400288e0603598138622d222630689660ca04162c174ff017"
+        },
+        {
+            "date": 1723387124161,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-08-20-info.log",
+            "hash": "2ba68827760ad1446014cbe495a61d31ebc6035364a37373d7f37eb40bb6409c"
+        },
+        {
+            "date": 1723388615998,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-08-21-info.log",
+            "hash": "c32da7383de186608974309739c2490b3790d2531e60669cb549e35def0e3a57"
+        },
+        {
+            "date": 1723392168622,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-08-22-info.log",
+            "hash": "b6d5674c7d7ba6fbfc828b560ee2992edb62bfc5b51f8df1f25a18b409b33d9f"
+        },
+        {
+            "date": 1723395603877,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-11-08-23-info.log",
+            "hash": "5d7d9d98e79a7825113c880eacc6dacafe71e2f35908d3e9055ab5c110cb565a"
+        },
+        {
+            "date": 1723405624490,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-12-08-01-info.log",
+            "hash": "4479484a4adfc7853bbcddbce7cac9ecb8efc4d4124fd6096369baa45b435b1b"
+        },
+        {
+            "date": 1723478000199,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-12-08-21-info.log",
+            "hash": "5d8a2672f73fcce6c6ab16b14fdfe62cbb191734ed3c6ee97817cf67b5f5e25b"
+        },
+        {
+            "date": 1723480098887,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-12-08-22-info.log",
+            "hash": "5e58bed0ee4762a33ce8ba09eea30e799dbcfb91fb03e5ef1e73fec57874384b"
+        },
+        {
+            "date": 1723482589527,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-12-08-23-info.log",
+            "hash": "e057d695095d45045688bd1926df77edd375a453edbbeec00376a86ea1e90694"
+        },
+        {
+            "date": 1723492907337,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-13-08-02-info.log",
+            "hash": "cf815d2a48f8871e9f153165fc5547ec8992d15c3e9f075aada0c4453856fad1"
+        },
+        {
+            "date": 1723565260800,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-13-08-22-info.log",
+            "hash": "b1c41f98a7c6e38c4368ee5aa2da842877e4a90f003a1a1f8503aec90e85b0a1"
+        },
+        {
+            "date": 1723572730687,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-14-08-00-info.log",
+            "hash": "e959e8313cc3180381da00057b1ba75c117b6d27b1b9392b3fc40cf05343459a"
+        },
+        {
+            "date": 1723576870217,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-14-08-01-info.log",
+            "hash": "706e44cdb864378ec56d15c8d8235daff411beeca1dc427cb43028d8b7a3d21d"
+        },
+        {
+            "date": 1723579431049,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-14-08-02-info.log",
+            "hash": "d2eea82aae7c960e3b658636cbdaacacb9a923ca9ddfc7cbf61995cfb206f6a6"
+        },
+        {
+            "date": 1723653405006,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-14-08-22-info.log",
+            "hash": "2b8d37c10a48e9ce254e3c73be17d46f6776df3220a1916a123d34348714dae3"
+        },
+        {
+            "date": 1723665528168,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-15-08-01-info.log",
+            "hash": "61d4b5cdea3033bdb17a6a50922f97d64c641e91784469b70ea7686a9fcfb508"
+        },
+        {
+            "date": 1723737949369,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-15-08-22-info.log",
+            "hash": "4aee6ddc36abe18961411d3b7c70f9d750ac6a7ff590761f6c519fd750f3b99b"
+        },
+        {
+            "date": 1723752603187,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-16-08-02-info.log",
+            "hash": "d1021fabd6bc2b7b6491c2c14e89beb1e287bb486ffb958f2429fc2458683087"
+        },
+        {
+            "date": 1723820802502,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-16-08-21-info.log",
+            "hash": "bd9cf23eb867d706d0cbaa9fe2d356c1cfa007ddd773da4b5e196a807302bee8"
+        },
+        {
+            "date": 1723828038512,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-16-08-23-info.log",
+            "hash": "b1d5ec4db62de7ff26e00231b79f184a4d042ba6e7b7c2edca7bad95fb0a29ab"
+        },
+        {
+            "date": 1723831243219,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-17-08-00-info.log",
+            "hash": "dc5c7150c9f23573e1b5177d14c8945139ab4a7d15e7d48af80541a401fb885f"
+        },
+        {
+            "date": 1723835758788,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-17-08-01-info.log",
+            "hash": "dc8dfc2a329cc2a3cf1a2b9250a14096528ff9d9715e7fd4ec6e930f63e65103"
+        },
+        {
+            "date": 1723840148431,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-17-08-02-info.log",
+            "hash": "791e9dc1b58e6e1d2519b271d8cb34461e7e2063e27127c1d2891737067c4f7d"
+        },
+        {
+            "date": 1723909877415,
+            "name": "C:\\salim\\businessERP\\HRAdmin\\server\\logs\\winston\\info\\HR-2024-17-08-21-info.log",
+            "hash": "207e883bf508b1cbfa3788238d7c487e3a9f86261f7c9299f8bc1c6a242b6948"
         }
     ],
     "hashType": "sha256"

@@ -14,6 +14,7 @@ import { MobileBalanceRoutes } from '../modules/mobileBalanceRequest/mobileBalan
 import { RequisitionRoutes } from '../modules/requisition/requisition.routes';
 import { AccountRoutes } from '../modules/account/account.routes';
 import { TransactionRoutes } from '../modules/transaction/transaction.routes';
+import { SalaryRoutes } from '../modules/salary/salary.routes';
 
 const router = express.Router();
 
@@ -31,12 +32,8 @@ const moduleRoutes = [
     route: FoodRoutes,
   },
   {
-    path: '/item',
-    route: StationaryItemRoutes,
-  },
-  {
-    path: '/stationaryList',
-    route: StationaryListRoutes,
+    path: '/salary',
+    route: SalaryRoutes,
   },
   {
     path: '/assetList',
