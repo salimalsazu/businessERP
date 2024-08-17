@@ -16,6 +16,8 @@ model Salary {
   netPayableSalary           Int
   tdsOnSalary                Int
   netSalary                  Int
+  createdAt                  DateTime    @default(now())
+  updatedAt                  DateTime    @updatedAt @default(now())
 }
 
 enum SalaryMonth {

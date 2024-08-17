@@ -20,6 +20,10 @@ router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), SalaryController.ge
 
 // ! Update Requisition ----------------------------------->>>
 
-router.patch('/:salaryId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), SalaryController.updateSalary);
+router.patch(
+  '/:salaryId',
+  // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
+  SalaryController.updateSalary
+);
 
 export const SalaryRoutes = router;

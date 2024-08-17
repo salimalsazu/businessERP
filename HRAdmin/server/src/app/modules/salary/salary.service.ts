@@ -1,65 +1,94 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Prisma, Requisition, Salary } from '@prisma/client';
+import { Prisma, Requisition, Salary, SalaryMonth } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-import { IRequisitionFilterRequest, ISalaryCreateRequest } from './salary.interface';
+import { IRequisitionFilterRequest, ISalaryCreateRequest, ISalaryFilterRequest } from './salary.interface';
+import { SalaryRelationalFields, SalaryRelationalFieldsMapper, SalarySearchableFields } from './salary.constants';
 
 // modules
 
 // !----------------------------------Create New Salary---------------------------------------->>>
 const createSalary = async (data: ISalaryCreateRequest): Promise<Salary> => {
-  const employeeFound = await prisma.user.findUnique({
-    where: {
-      userId: data.userId,
-    },
+  // Fetch employee details
+  const employee = await prisma.user.findUnique({
+    where: { userId: data.userId },
   });
 
-  if (!employeeFound) {
+  if (!employee) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Employee Not Found');
   }
-  console.log('employee', employeeFound);
 
-  const findProfileForEmployee = await prisma.profile.findUnique({
-    where: {
-      profileId: employeeFound.profileId as string,
-    },
+  // Fetch profile details
+  const profile = await prisma.profile.findUnique({
+    where: { profileId: employee.profileId as string },
   });
 
-  if (!findProfileForEmployee) {
+  if (!profile) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Profile Not Found');
   }
 
-  console.log('profile', findProfileForEmployee);
+  // Safely handle possible null values
+  const totalSalary = profile.totalSalary ?? 0;
+  const tdsOnSalary = profile.tdsOnSalary ?? 0;
 
+  // Calculate salary components
+  const basicSalary = totalSalary / 2;
+  const houseRent = basicSalary * 0.5;
+  const medicalAllowance = basicSalary * 0.2;
+  const conveyance = basicSalary * 0.2;
+  const otherAllowance = basicSalary * 0.1;
+  const netPayableSalary = totalSalary - data.absentDeduction - data.advanceSalaryDeduction - data.mealAndMobileBillDeduction;
+  const netSalary = netPayableSalary - tdsOnSalary;
 
-  
+  // Construct salary object
+  const salaryObj: Prisma.SalaryUncheckedCreateInput = {
+    salaryMonth: data.salaryMonth as SalaryMonth, // Adjust this type accordingly
+    salaryYear: data.salaryYear,
+    userId: data.userId,
+    basicSalary,
+    houseRent,
+    medicalAllowance,
+    conveyance,
+    otherAllowance,
+    totalSalary,
+    absentDeduction: data.absentDeduction,
+    advanceSalaryDeduction: data.advanceSalaryDeduction,
+    mealAndMobileBillDeduction: data.mealAndMobileBillDeduction,
+    netPayableSalary,
+    tdsOnSalary,
+    netSalary,
+  };
 
+  // Create salary record
+  const result = await prisma.salary.create({ data: salaryObj });
 
-
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Salary Creation Failed');
+  }
 
   return result;
 };
 
 // !----------------------------------get all Salary---------------------------------------->>>
-const getSalary = async (filters: IRequisitionFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Requisition[]>> => {
+const getSalary = async (filters: ISalaryFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<Salary[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, startDate, endDate, ...filterData } = filters;
+  const { searchTerm, ...filterData } = filters;
 
   // Define an array to hold filter conditions
-  const andConditions: Prisma.RequisitionWhereInput[] = [];
+  const andConditions: Prisma.SalaryWhereInput[] = [];
 
   // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: RequisitionSearchableFields.map((field: any) => ({
+      OR: SalarySearchableFields.map((field: any) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -70,22 +99,22 @@ const getSalary = async (filters: IRequisitionFilterRequest, options: IPaginatio
 
   // Add date range condition if both startDate and endDate are provided
 
-  if (startDate && endDate) {
-    andConditions.push({
-      requisitionDate: {
-        gte: startDate, // Greater than or equal to startDate
-        lte: endDate, // Less than or equal to endDate
-      },
-    });
-  }
+  // if (startDate && endDate) {
+  //   andConditions.push({
+  //     requisitionDate: {
+  //       gte: startDate, // Greater than or equal to startDate
+  //       lte: endDate, // Less than or equal to endDate
+  //     },
+  //   });
+  // }
 
   // Add filterData conditions if filterData is provided
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map(key => {
-        if (RequisitionRelationalFields.includes(key)) {
+        if (SalaryRelationalFields.includes(key)) {
           return {
-            [RequisitionRelationalFieldsMapper[key]]: {
+            [SalaryRelationalFieldsMapper[key]]: {
               requisitionDate: (filterData as any)[key],
             },
           };
@@ -101,13 +130,24 @@ const getSalary = async (filters: IRequisitionFilterRequest, options: IPaginatio
   }
 
   // Create a whereConditions object with AND conditions
-  const whereConditions: Prisma.RequisitionWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.SalaryWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Retrieve Courier with filtering and pagination
-  const result = await prisma.requisition.findMany({
+  const result = await prisma.salary.findMany({
     where: whereConditions,
     include: {
-      account: true,
+      user: {
+        select: {
+          profile: {
+            select: {
+              firstName: true,
+              lastName: true,
+              joiningDate: true,
+              jobTitle: true,
+            },
+          },
+        },
+      },
     },
     skip,
     take: limit,
@@ -115,7 +155,7 @@ const getSalary = async (filters: IRequisitionFilterRequest, options: IPaginatio
   });
 
   // Count total matching orders for pagination
-  const total = await prisma.requisition.count({
+  const total = await prisma.salary.count({
     where: whereConditions,
   });
 
@@ -133,20 +173,20 @@ const getSalary = async (filters: IRequisitionFilterRequest, options: IPaginatio
   };
 };
 
-const updateSalary = async (requisitionId: string, payload: any): Promise<any> => {
-  const findRequisition = await prisma.requisition.findUnique({
+const updateSalary = async (salaryId: string, payload: any): Promise<any> => {
+  const findSalary = await prisma.salary.findUnique({
     where: {
-      requisitionId,
+      salaryId,
     },
   });
 
-  if (!findRequisition) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Requisition Not Found');
+  if (!findSalary) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Salary Not Found');
   }
 
-  const result = await prisma.requisition.update({
+  const result = await prisma.salary.update({
     where: {
-      requisitionId: findRequisition.requisitionId,
+      salaryId: findSalary.salaryId,
     },
     data: payload,
   });

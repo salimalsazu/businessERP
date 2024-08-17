@@ -6,7 +6,6 @@ import sendResponse from '../../../shared/sendResponse';
 import { SalaryFilterableFields } from './salary.constants';
 import { SalaryService } from './salary.service';
 
-
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createSalary = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
@@ -39,9 +38,9 @@ const getSalary = catchAsync(async (req: Request, res: Response) => {
 
 // !----------------------------------Update Courier---------------------------------------->>>
 const updateSalary = catchAsync(async (req: Request, res: Response) => {
-  const { requisitionId } = req.params;
+  const { salaryId } = req.params;
   const payload = req.body;
-  const result = await SalaryService.updateSalary(requisitionId, payload);
+  const result = await SalaryService.updateSalary(salaryId, payload);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
