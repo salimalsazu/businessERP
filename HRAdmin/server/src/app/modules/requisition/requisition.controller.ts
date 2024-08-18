@@ -9,6 +9,7 @@ import { RequisitionFilterableFields } from './requisition.constants';
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createNewRequisition = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
+  console.log('data', data);
   const result = await RequisitionService.createRequisition(data);
 
   sendResponse(res, {

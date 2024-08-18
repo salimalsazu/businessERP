@@ -14,6 +14,9 @@ import { RequisitionRelationalFields, RequisitionRelationalFieldsMapper, Requisi
 
 // !----------------------------------Create New Courier---------------------------------------->>>
 const createRequisition = async (data: IRequisitionCreateRequest): Promise<Requisition> => {
+
+  console.log('dataService', data);
+  
   const isAccountExist = await prisma.account.findUnique({
     where: {
       accountId: data.accountId,

@@ -10,13 +10,15 @@ const router = express.Router();
 // ! Create New  Requisition ------------------------------->>>
 router.post(
   '/',
-  validateRequest(RequisitionValidation.createRequisition),
-  auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
+  // validateRequest(RequisitionValidation.createRequisition),
+  // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
   RequisitionController.createNewRequisition
 );
 
 // ! Get all Requisition ----------------------------------->>>
-router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), RequisitionController.getRequisition);
+router.get('/',
+  // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
+  RequisitionController.getRequisition);
 
 // ! Update Requisition ----------------------------------->>>
 

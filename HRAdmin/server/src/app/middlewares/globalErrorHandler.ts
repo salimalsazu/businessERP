@@ -14,6 +14,8 @@ import { IGenericErrorMessage } from '../../interfaces/error';
 import { errorLogger } from '../../shared/logger';
 
 const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Response, next: NextFunction) => {
+  console.log('req', req.body);
+
   config.env === 'development' ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error }) : errorLogger.log(`🐱‍🏍 globalErrorHandler ~~`, error);
 
   let statusCode = 500;

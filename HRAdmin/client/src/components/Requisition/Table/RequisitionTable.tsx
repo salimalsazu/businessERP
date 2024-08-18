@@ -64,6 +64,8 @@ const RequisitionListTable = () => {
     isFetching,
   } = useGetRequisitionQuery({ ...query });
 
+  console.log("allRequisitionList123", allRequisitionList);
+
   const checkedBoxData = allRequisitionList?.data?.filter((obj: any) =>
     checkedKeys.includes(obj.requisitionId)
   );

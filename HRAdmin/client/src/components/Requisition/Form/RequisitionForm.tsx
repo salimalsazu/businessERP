@@ -21,6 +21,8 @@ import {
 const AddRequisitionForm = () => {
   const { data: allAccounts } = useGetAccountQuery({});
 
+  console.log("allAccounts", allAccounts);
+
   const [addAccount] = useAddAccountMutation();
 
   const handleAddAccount = async (data: any) => {
@@ -64,7 +66,7 @@ const AddRequisitionForm = () => {
     };
     console.log("addRequisition", objRequisition);
 
-    await addRequisition(objRequisition);
+    await addRequisition({ data: objRequisition });
   };
 
   useEffect(() => {
