@@ -21,7 +21,6 @@ import {
 const AddRequisitionForm = () => {
   const { data: allAccounts } = useGetAccountQuery({});
 
-  console.log("allAccounts", allAccounts);
 
   const [addAccount] = useAddAccountMutation();
 
@@ -64,7 +63,6 @@ const AddRequisitionForm = () => {
       amount: Number(data.amount),
       amountType: data.amountType,
     };
-    console.log("addRequisition", objRequisition);
 
     await addRequisition({ data: objRequisition });
   };

@@ -2,7 +2,7 @@ import { baseApi } from "@/redux/api/baseApi";
 // import { tagTypes } from "@/redux/tag-types";
 const REQUISITION_API = "/requisition";
 
-const mobileBill = baseApi.injectEndpoints({
+export const mobileBill = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getRequisition: builder.query({
       query: (arg: Record<string, any>) => ({
@@ -19,21 +19,20 @@ const mobileBill = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-
       // invalidatesTags: [tagTypes.requisition],
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        console.log("arg", JSON.stringify(arg));
+        console.log("arg", JSON.stringify(arg.data));
+
         console.log("dispatch", dispatch);
+
         console.log("queryFulfilled", queryFulfilled);
 
         const addRequisition = dispatch(
-          baseApi.util.updateQueryData<any>(
+          baseApi.util.updateQueryData(
+            //@ts-ignore
             "getRequisition",
-            undefined,
-            (draft: any) => {
-              console.log("draft.....", draft);
-              draft?.data?.push(arg);
-            }
+            arg.data,
+            (draft: any) => [...draft, arg.data]
           )
         );
 
@@ -43,6 +42,7 @@ const mobileBill = baseApi.injectEndpoints({
           await queryFulfilled;
           console.log("queryFulfilled2", queryFulfilled);
         } catch (error) {
+          console.log("error", error);
           addRequisition.undo();
         }
       },
