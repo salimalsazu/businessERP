@@ -1,5 +1,6 @@
 import { baseApi } from "@/redux/api/baseApi";
-// import { tagTypes } from "@/redux/tag-types";
+import { tagTypes } from "@/redux/tag-types";
+import { set } from "react-hook-form";
 const REQUISITION_API = "/requisition";
 
 export const mobileBill = baseApi.injectEndpoints({
@@ -10,41 +11,20 @@ export const mobileBill = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      // providesTags: [tagTypes.requisition],
+      providesTags: [tagTypes.requisition],
     }),
     // create Item
     addRequisition: builder.mutation({
       query: ({ data }) => ({
         url: `${REQUISITION_API}`,
         method: "POST",
-        body: data,
+        data: data,
       }),
       // invalidatesTags: [tagTypes.requisition],
-      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        console.log("arg", JSON.stringify(arg.data));
-
-        console.log("dispatch", dispatch);
-
-        console.log("queryFulfilled", queryFulfilled);
-
-        const addRequisition = dispatch(
-          baseApi.util.updateQueryData(
-            //@ts-ignore
-            "getRequisition",
-            arg.data,
-            (draft: any) => [...draft, arg.data]
-          )
-        );
-
-        console.log("addRequisition", addRequisition);
-
-        try {
-          await queryFulfilled;
-          console.log("queryFulfilled2", queryFulfilled);
-        } catch (error) {
-          console.log("error", error);
-          addRequisition.undo();
-        }
+      async onQueryStarted(arg, { dispatch }) {
+        setTimeout(() => {
+          dispatch(baseApi.util.invalidateTags([tagTypes.requisition]));
+        }, 2000);
       },
     }),
 

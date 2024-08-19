@@ -21,11 +21,11 @@ const DashboardLayout = ({ children }: any) => {
     router.push("/");
   };
 
-  // useEffect(() => {
-  //   if (!userLoggedIn) {
-  //     router.push("/");
-  //   }
-  // }, [router, userLoggedIn]);
+  useEffect(() => {
+    if (!userLoggedIn) {
+      router.push("/");
+    }
+  }, [router, userLoggedIn]);
 
   return (
     <div className="flex">
