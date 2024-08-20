@@ -1,34 +1,32 @@
-# Dockerfile
-
 # Use an official Node.js runtime as a parent image
 FROM node:20.11.1-alpine3.19
 
-# set the working directory
+# Set the working directory
 WORKDIR /app
 
-# copy dependencies file
+# Copy dependency definitions
 COPY package.json yarn.lock ./
 
-# COPY prisma directory
+# Copy Prisma directory
 COPY prisma ./prisma/
 
-# COPY ENV variable
+# Copy environment variables
 COPY .env ./
 
-# COPY tsconfig.json file
+# Copy TypeScript config
 COPY tsconfig.json ./
 
 # Install dependencies
 RUN yarn install
 
-
-
-# Copy everything 
+# Copy the entire project
 COPY . .
 
-EXPOSE 9000
+# Expose port 7000
+EXPOSE 7000
 
-
+# Build the project
 RUN yarn build
-# run the project
-CMD yarn migrate
+
+# Run Prisma migrations
+CMD yarn startmigrate
