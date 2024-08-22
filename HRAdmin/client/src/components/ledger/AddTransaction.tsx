@@ -18,7 +18,6 @@ import {
 import { useAddTransactionMutation } from "@/redux/api/features/transactionApi";
 
 const AddTransactionSection = () => {
-
   const { data: allAccounts } = useGetAccountQuery({});
 
   const [addAccount] = useAddAccountMutation();
@@ -49,7 +48,7 @@ const AddTransactionSection = () => {
     reset,
   } = useForm<ITransactionList>();
 
-  const [addTransaction, { isLoading, isSuccess, isError }] =
+  const [addTransaction, { isLoading, isSuccess, isError, data: messageData }] =
     useAddTransactionMutation();
 
   const handleCreateItemList: SubmitHandler<ITransactionList> = async (
@@ -66,17 +65,16 @@ const AddTransactionSection = () => {
     console.log("addTransaction", objTransaction);
 
     await addTransaction(objTransaction);
-
   };
 
-  //   useEffect(() => {
-  //     if (isSuccess && !isError) {
-  //       toast.success("Transaction added successfully");
-  //     }
-  //     if (isError && !isSuccess) {
-  //       toast.error("Failed to add transaction");
-  //     }
-  //   });
+  useEffect(() => {
+    if (isSuccess && !isError) {
+      toast.success(messageData?.message);
+    }
+    if (isError && !isSuccess) {
+      toast.error("Failed to add transaction");
+    }
+  });
 
   return (
     <div className="m-5">
@@ -84,7 +82,7 @@ const AddTransactionSection = () => {
         <h1 className="text-lg font-semibold mb-5">Add Transaction:</h1>
       </div>
       <div>
-        <form  onSubmit={handleSubmit(handleCreateItemList)}>
+        <form onSubmit={handleSubmit(handleCreateItemList)}>
           {/* 1st section */}
           <div className="flex justify-between gap-3 mb-5 w-[100%]">
             {/* Date */}{" "}
