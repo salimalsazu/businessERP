@@ -100,6 +100,7 @@ const SingleAccountDetails = ({ params }: any) => {
     ...(transactionCredit ?? []).map((transaction: any) => ({
       date: moment(transaction.transactionDate).format("YYYY-MM-DD hh:mm:ss A"), // Replace with actual transaction date
       particular: transaction.debitAccount.accountName,
+      details: transaction.transactionDescription,
       closingBalance: transaction.creditAccountClosingBalance,
       trID: transaction.trId,
       transactionId: transaction.transactionId,
@@ -109,6 +110,7 @@ const SingleAccountDetails = ({ params }: any) => {
     ...(transactionDebit ?? []).map((transaction: any) => ({
       date: moment(transaction.transactionDate).format("YYYY-MM-DD hh:mm:ss A"), // Replace with actual transaction date
       particular: transaction.creditAccount.accountName, // Replace with actual particular
+      details: transaction.transactionDescription,
       closingBalance: transaction.debitAccountClosingBalance,
       trID: transaction.trId,
       transactionId: transaction.transactionId,
@@ -116,6 +118,8 @@ const SingleAccountDetails = ({ params }: any) => {
       credit: "-",
     })),
   ];
+
+  console.log("transactions", transactions);
 
   //Format Closing Balance
   const formattedClosingBalance = new Intl.NumberFormat("en-US", {
@@ -510,15 +514,26 @@ const SingleAccountDetails = ({ params }: any) => {
                     ></Cell>
                   </Column>
 
-                  {/* Details*/}
                   <Column flexGrow={4}>
-                    <HeaderCell style={headerCss}>Particular</HeaderCell>
+                    <HeaderCell style={headerCss}>
+                      Particular & Details
+                    </HeaderCell>
                     <Cell
-                      dataKey="particular"
+                      // dataKey="particular"
                       verticalAlign="middle"
                       style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
                     >
-                      {(rowData) => ` ${rowData.particular}`}
+                      {(rowData) => (
+                        <>
+                          <span style={{ color: "blue" }}>
+                            {rowData.particular}
+                          </span>
+                          <br />
+                          <span style={{ color: "green" }}>
+                            {rowData.details}
+                          </span>
+                        </>
+                      )}
                     </Cell>
                   </Column>
 
