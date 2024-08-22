@@ -63,14 +63,32 @@ const getRequisition = async (filters: IRequisitionFilterRequest, options: IPagi
   const andConditions: Prisma.RequisitionWhereInput[] = [];
 
   // Add search term condition if provided
+  // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: RequisitionSearchableFields.map((field: any) => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
+      OR: [
+        ...RequisitionSearchableFields.map((field: any) => ({
+          [field]: {
+            contains: searchTerm,
+            mode: 'insensitive',
+          },
+        })),
+        // Adding specific search conditions for chequeNo and accountName
+        {
+          chequeNo: {
+            contains: searchTerm,
+            mode: 'insensitive',
+          },
         },
-      })),
+        {
+          account: {
+            accountName: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          },
+        },
+      ],
     });
   }
 
