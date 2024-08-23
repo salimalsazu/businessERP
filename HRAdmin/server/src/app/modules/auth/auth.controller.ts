@@ -24,8 +24,6 @@ const createNewUser = catchAsync(async (req: Request, res: Response) => {
 const userLogin = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.userLogin(req.body);
 
-  console.log(result, 'result');
-
   const { accessToken, refreshToken } = result;
   // set refresh token into cookie
 

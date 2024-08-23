@@ -13,7 +13,6 @@ const StatusEditModal = ({ open, handleClose, rowData }: any) => {
     useUpdateRequisitionMutation();
 
   const handleSelect = async (value: string) => {
-    console.log(value, rowData);
     await updateRequisitionStatus({
       requisitionId: rowData.requisitionId,
       payload: { status: value },

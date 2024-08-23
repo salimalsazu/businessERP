@@ -12,8 +12,6 @@ const createAssetAssign = catchAsync(async (req: Request, res: Response) => {
   //@ts-ignore
   const result = await AssetAssignService.createAssetAssign(req.body);
 
-  console.log('result', result);
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

@@ -35,6 +35,11 @@ export const mobileBill = baseApi.injectEndpoints({
         data: payload,
       }),
       // invalidatesTags: [tagTypes.requisition],
+      async onQueryStarted(arg, { dispatch }) {
+        setTimeout(() => {
+          dispatch(baseApi.util.invalidateTags([tagTypes.requisition]));
+        }, 2000);
+      },
     }),
   }),
 });

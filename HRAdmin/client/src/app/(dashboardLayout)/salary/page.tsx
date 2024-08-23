@@ -1,4 +1,4 @@
-import ConveyanceListTable from "@/components/conveyance/list/ConveyanceListTable";
+import SalarySectionTable from "@/components/salary/SalaryTableSection";
 
 
 const ConveyancePage = () => {
@@ -8,7 +8,7 @@ const ConveyancePage = () => {
       
       </div> */}
       <div className="">
-        <ConveyanceListTable />
+        <SalarySectionTable />
       </div>
     </div>
   );

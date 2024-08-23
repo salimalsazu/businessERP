@@ -525,11 +525,13 @@ const SingleAccountDetails = ({ params }: any) => {
                     >
                       {(rowData) => (
                         <>
-                          <span style={{ color: "blue" }}>
+                          <span style={{  fontSize: "15px" ,fontWeight: "bold" }}>
                             {rowData.particular}
                           </span>
                           <br />
-                          <span style={{ color: "green" }}>
+                          <span
+                            style={{  fontWeight: "normal" }}
+                          >
                             {rowData.details}
                           </span>
                         </>
