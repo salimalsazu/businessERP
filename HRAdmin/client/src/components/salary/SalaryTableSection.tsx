@@ -16,6 +16,7 @@ import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddSalaryForm from "./AddSalary";
+import { useGetSalaryQuery } from "@/redux/api/features/salaryApi";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -31,6 +32,8 @@ const SalarySectionTable = () => {
   const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const { data: salaryData, isLoading } = useGetSalaryQuery({ ...query });
 
   const handleSortColumn = (sortColumn: any, sortType: any) => {
     setLoading(true);
@@ -94,37 +97,6 @@ const SalarySectionTable = () => {
       }
     }
   };
-
-  const salaryData = [
-    {
-      salaryId: "4ebf37c9-23a0-4707-a855-c30a540c076b",
-      salaryMonth: "January",
-      salaryYear: "2024",
-      userId: "fea9072f-f795-4873-a317-0fadbe754fae",
-      basicSalary: 21000,
-      houseRent: 10500,
-      medicalAllowance: 4200,
-      conveyance: 4200,
-      otherAllowance: 2100,
-      totalSalary: 42000,
-      absentDeduction: 0,
-      advanceSalaryDeduction: 3000,
-      mealAndMobileBillDeduction: 650,
-      netPayableSalary: 38350,
-      tdsOnSalary: 420,
-      netSalary: 37930,
-      createdAt: "2024-08-17T23:01:31.044Z",
-      updatedAt: "2024-08-17T23:01:31.044Z",
-      user: {
-        profile: {
-          firstName: "Tafseer Al",
-          lastName: "Yaad",
-          joiningDate: null,
-          jobTitle: null,
-        },
-      },
-    },
-  ];
 
   //Drawer
 
@@ -241,11 +213,11 @@ const SalarySectionTable = () => {
           rowHeight={100}
           headerHeight={100}
           autoHeight
-          data={salaryData}
+          data={salaryData?.data}
           onSortColumn={handleSortColumn}
           sortColumn={sortColumn}
           sortType={sortType}
-          loading={loading}
+          loading={isLoading}
         >
           {/* Salary Month */}
           <Column flexGrow={1} sortable>

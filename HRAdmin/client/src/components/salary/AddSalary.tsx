@@ -1,13 +1,22 @@
 "use client";
 
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, Drawer, Input, Tooltip, Whisper } from "rsuite";
+import { Button, Drawer, Input, SelectPicker, Tooltip, Whisper } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
+import { Label } from "recharts";
+import { useAddSalaryMutation } from "@/redux/api/features/salaryApi";
+import { getHeight } from "rsuite/esm/DOMHelper";
 // import { useAddSalaryMutation } from "@/redux/api/features/salaryApi"; // Assume you have this mutation
 
 const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
+  //@ts-ignore
+  const { data: employeeData } = useGetAllUsersQuery("");
+
+  const [addSalary, { isLoading, isSuccess, data }] = useAddSalaryMutation();
+
   interface ICreateSalary {
     salaryMonth: string;
     salaryYear: string;
@@ -16,8 +25,6 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
     advanceSalaryDeduction: number;
     mealAndMobileBillDeduction: number;
   }
-
-//   const [addSalary, { isLoading, isSuccess }] = useAddSalaryMutation();
 
   const {
     handleSubmit,
@@ -37,21 +44,21 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
       advanceSalaryDeduction: Number(data.advanceSalaryDeduction),
       mealAndMobileBillDeduction: Number(data.mealAndMobileBillDeduction),
     };
-    console.log("addSalary", salaryData);
 
-    // await addSalary(salaryData);
+    console.log("salaryData", salaryData);
+    await addSalary({ data: salaryData });
   };
 
-//   useEffect(() => {
-//     if (isSuccess) {
-//       reset();
-//       setOpenDrawer(false);
-//       toast.success("Salary Created Successfully");
-//     }
-//   }, [isSuccess, reset, setOpenDrawer]);
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+      setOpenDrawer(false);
+      toast.success(data?.message);
+    }
+  }, [isSuccess, reset, setOpenDrawer]);
 
   return (
-    <div>
+    <div style={{ height: "100vh" }}>
       <Drawer
         backdrop={false}
         open={openDrawer}
@@ -60,13 +67,16 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
         <Drawer.Header>
           <Drawer.Title>Add Salary</Drawer.Title>
         </Drawer.Header>
-        <Drawer.Body>
+        <Drawer.Body style={{ overflow: "visible" }}>
           <form onSubmit={handleSubmit(handleCreateSalary)}>
             <div className="flex flex-col items-center gap-3 mb-5 w-full">
-              <div className="flex flex-col gap-3 w-full">
+              <div className="flex flex-col gap-3 w-full h-full">
                 <div>
                   <Whisper speaker={<Tooltip>Salary Month</Tooltip>}>
-                    <label htmlFor="salaryMonth" className="text-sm font-medium">
+                    <label
+                      htmlFor="salaryMonth"
+                      className="text-sm font-medium"
+                    >
                       Salary Month
                       <InfoOutlineIcon />
                     </label>
@@ -78,13 +88,30 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
                   rules={{ required: "Salary Month is required" }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
-                      <Input
-                        className="z-20 w-full"
+                      <SelectPicker
                         {...field}
-                        size="lg"
-                        type="text"
-                        placeholder="Salary Month"
+                        data={[
+                          "January",
+                          "February",
+                          "March",
+                          "April",
+                          "May",
+                          "June",
+                          "July",
+                          "August",
+                          "September",
+                          "October",
+                          "November",
+                          "December",
+                        ].map((month) => ({
+                          label: month,
+                          value: month,
+                        }))}
+                        placeholder="Select Salary Month"
                         style={{ width: "100%" }}
+                        size="lg"
+                        // searchable={false} // Optional: Disable search if not needed
+                        block
                       />
                     </div>
                   )}
@@ -106,13 +133,35 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
                   rules={{ required: "Salary Year is required" }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
-                      <Input
-                        className="z-20 w-full"
+                      <SelectPicker
                         {...field}
-                        size="lg"
-                        type="text"
-                        placeholder="Salary Year"
+                        data={[
+                          "2024",
+                          "2025",
+                          "2026",
+                          "2027",
+                          "2028",
+                          "2029",
+                          "2030",
+                          "2031",
+                          "2032",
+                          "2033",
+                          "2034",
+                          "2035",
+                          "2036",
+                          "2037",
+                          "2038",
+                          "2039",
+                          "2040",
+                        ].map((year) => ({
+                          label: year,
+                          value: year,
+                        }))}
+                        placeholder="Select Salary Year"
                         style={{ width: "100%" }}
+                        size="lg"
+                        // searchable={false} // Optional: Disable search if not needed
+                        block
                       />
                     </div>
                   )}
@@ -121,9 +170,9 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
 
               <div className="flex flex-col gap-3 w-full">
                 <div>
-                  <Whisper speaker={<Tooltip>User ID</Tooltip>}>
+                  <Whisper speaker={<Tooltip>Employee Name</Tooltip>}>
                     <label htmlFor="userId" className="text-sm font-medium">
-                      User ID
+                      Employee Name
                       <InfoOutlineIcon />
                     </label>
                   </Whisper>
@@ -131,15 +180,18 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
                 <Controller
                   name="userId"
                   control={control}
-                  rules={{ required: "User ID is required" }}
+                  rules={{ required: "Name is required" }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
-                      <Input
+                      <SelectPicker
                         className="z-20 w-full"
                         {...field}
                         size="lg"
-                        type="text"
-                        placeholder="User ID"
+                        data={employeeData.data?.data?.map((user: any) => ({
+                          label: `${user?.profile?.firstName} ${user?.profile?.lastName}`,
+                          value: user?.userId,
+                        }))}
+                        placeholder="Employee name"
                         style={{ width: "100%" }}
                       />
                     </div>
@@ -181,7 +233,9 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
 
               <div className="flex flex-col gap-3 w-full">
                 <div>
-                  <Whisper speaker={<Tooltip>Advance Salary Deduction</Tooltip>}>
+                  <Whisper
+                    speaker={<Tooltip>Advance Salary Deduction</Tooltip>}
+                  >
                     <label
                       htmlFor="advanceSalaryDeduction"
                       className="text-sm font-medium"
@@ -248,7 +302,7 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
               </div>
             </div>
             <div className="flex justify-end mt-5">
-              {/* <Button
+              <Button
                 type="submit"
                 loading={isLoading}
                 size="lg"
@@ -257,7 +311,7 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
                 {(isLoading && "Creating") ||
                   (isSuccess && "Created") ||
                   "Create Salary"}
-              </Button> */}
+              </Button>
             </div>
           </form>
         </Drawer.Body>

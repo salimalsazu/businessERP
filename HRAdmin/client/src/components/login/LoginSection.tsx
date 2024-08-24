@@ -57,7 +57,7 @@ const LoginSection = () => {
         <div className="flex flex-col gap-[24px] mb-5 w-[100%]">
           {/* email */}
           <div className="flex flex-col gap-3 w-full">
-            <div>
+            <div className="flex">
               <Whisper
                 speaker={
                   <Tooltip>
