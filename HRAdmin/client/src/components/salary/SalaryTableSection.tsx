@@ -221,7 +221,7 @@ const SalarySectionTable = () => {
           loading={isLoading}
         >
           {/* Salary Month */}
-          <Column flexGrow={2}>
+          <Column flexGrow={2} sortable>
             <HeaderCell style={headerCss}>Month</HeaderCell>
             <Cell dataKey="salaryMonth" />
           </Column>
@@ -311,7 +311,7 @@ const SalarySectionTable = () => {
           </Column>
 
           {/* Net Salary */}
-          <Column flexGrow={1}>
+          <Column flexGrow={1} sortable>
             <HeaderCell style={headerCss}>Net Salary</HeaderCell>
             <Cell dataKey="netSalary" />
           </Column>

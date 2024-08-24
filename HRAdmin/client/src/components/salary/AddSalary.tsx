@@ -55,7 +55,7 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
       setOpenDrawer(false);
       toast.success(data?.message);
     }
-  }, [isSuccess, reset, setOpenDrawer]);
+  }, [data?.message, isSuccess, reset, setOpenDrawer]);
 
   return (
     <div style={{ height: "100vh" }}>
