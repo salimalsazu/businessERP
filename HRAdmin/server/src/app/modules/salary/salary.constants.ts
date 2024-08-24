@@ -1,4 +1,4 @@
-export const SalaryFilterableFields: string[] = ['searchTerm', 'startDate', 'endDate'];
+export const SalaryFilterableFields: string[] = ['searchTerm', 'salaryMonth', 'salaryYear'];
 export const SalarySearchableFields: string[] = ['title', 'chequeNo'];
 
 export const SalaryRelationalFields: string[] = ['styleNo'];

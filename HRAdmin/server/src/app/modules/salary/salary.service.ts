@@ -80,7 +80,9 @@ const getSalary = async (filters: ISalaryFilterRequest, options: IPaginationOpti
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, salaryMonth, salaryYear, ...filterData } = filters;
+
+  console.log('salaryYear', salaryYear);
 
   // Define an array to hold filter conditions
   const andConditions: Prisma.SalaryWhereInput[] = [];
@@ -97,16 +99,21 @@ const getSalary = async (filters: ISalaryFilterRequest, options: IPaginationOpti
     });
   }
 
-  // Add date range condition if both startDate and endDate are provided
+  //Salary Month
 
-  // if (startDate && endDate) {
-  //   andConditions.push({
-  //     requisitionDate: {
-  //       gte: startDate, // Greater than or equal to startDate
-  //       lte: endDate, // Less than or equal to endDate
-  //     },
-  //   });
-  // }
+  if (salaryMonth) {
+    andConditions.push({
+      salaryMonth: salaryMonth,
+    });
+  }
+
+  //Salary Year
+
+  if (salaryYear) {
+    andConditions.push({
+      salaryYear: salaryYear,
+    });
+  }
 
   // Add filterData conditions if filterData is provided
   if (Object.keys(filterData).length > 0) {
