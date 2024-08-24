@@ -6,114 +6,24 @@
     "auditLog": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\.8e2a1a06879fc3f8da60bf04aa8bb1b809a8df43-audit.json",
     "files": [
         {
-            "date": 1721899744565,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-25-07-15-error.log",
-            "hash": "6108afc10dbbb5070209359b73e98dc75504f23f1b385971eb90df07f4492f5c"
+            "date": 1724309623800,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-22-08-12-error.log",
+            "hash": "8ff19185869b96fd5ffec4a46bf39cf8940d4459554f3d6fb869b8cfc7cfa748"
         },
         {
-            "date": 1721905126502,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-25-07-16-error.log",
-            "hash": "39e3c750b5a8d0c1035b09afa5ff18de5027340c402f4c41b2b089ad631e9f33"
+            "date": 1724326480898,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-22-08-17-error.log",
+            "hash": "28a23e5f027ef2079ae9babc1a36114bf11db09efb660cd0880a63e1229fbea4"
         },
         {
-            "date": 1721905203882,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-25-07-17-error.log",
-            "hash": "e49a07301946b834942f6acfd2e65c6eee5818ee7c905c422f4de0f0eb88f4d4"
+            "date": 1724328005092,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-22-08-18-error.log",
+            "hash": "0357feb9668678b9492fd74d5ffbd6c1c2db2b688b61d7f982c0954454f46063"
         },
         {
-            "date": 1722059009119,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-27-07-11-error.log",
-            "hash": "41e13616ecb65407a621dc85fb18ef2c6dc29755fae512eb5debe58a1011d832"
-        },
-        {
-            "date": 1722066572665,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-27-07-13-error.log",
-            "hash": "c1bb4a9b62633eee08837ea764bd105caf2cbebe8c3c35ee733db36f38ad69b8"
-        },
-        {
-            "date": 1722163296648,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-28-07-16-error.log",
-            "hash": "7c03f9350c715a57a33c6c92bce579481dbee5245ee4bd8d2086a43ed51629de"
-        },
-        {
-            "date": 1722168556856,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-28-07-18-error.log",
-            "hash": "dfd0f39fa07a1e0030982a847405a8b66ab4e06a216ce8954e40c7fe54860032"
-        },
-        {
-            "date": 1722239189251,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-29-07-13-error.log",
-            "hash": "692fe9976fbb5b2b147950e0e5d39463eab7ec221ec608662f8755aa7965ba53"
-        },
-        {
-            "date": 1722246348550,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-29-07-15-error.log",
-            "hash": "743ac9e1c7b8ea87022c64ff3142157de7975bd652db6b60864330a4b3974134"
-        },
-        {
-            "date": 1722269847608,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-29-07-22-error.log",
-            "hash": "91069fc5e1e9283497215f1272f09e0672c7fa4de22f9066f43c5c06b71013b1"
-        },
-        {
-            "date": 1722324423267,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-30-07-13-error.log",
-            "hash": "71f1174a2f7ea08ac6a86389fae056e8ef2e68df149cde2c90a26a106d475971"
-        },
-        {
-            "date": 1722330657000,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-30-07-15-error.log",
-            "hash": "918e2d2163dd24ddadd403fa1e8eb75cc069209d303486987eb0b7df05f499cf"
-        },
-        {
-            "date": 1722337644504,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-30-07-17-error.log",
-            "hash": "af597fee9bcf6827440e56f327b7769c6871133d34c11de87c0264e814209d3e"
-        },
-        {
-            "date": 1722348139314,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-30-07-20-error.log",
-            "hash": "6cb88a450956767133c71b4961be92384b53286f0a19a0a7b13fe4022e98e9a0"
-        },
-        {
-            "date": 1722403795772,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-31-07-11-error.log",
-            "hash": "df15eb78c9df947bf3c8fb65b391c22d1fa313c286dafe1efc6113a5a0371463"
-        },
-        {
-            "date": 1722420324398,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-31-07-16-error.log",
-            "hash": "e1d05ebcc0280ea6c8893d0302f5988926c91b99a676e99ad8f77a56908c154b"
-        },
-        {
-            "date": 1722513163056,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-01-08-17-error.log",
-            "hash": "feccb7128bf44f2593550f82c3cb5ec8972cea8bc6377af1e511117c30c7f802"
-        },
-        {
-            "date": 1722701794336,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-03-08-22-error.log",
-            "hash": "64473f09bf376ad830f2a97ae2802227c49643ea27e176ba669fd7103a92e27c"
-        },
-        {
-            "date": 1722785299746,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-04-08-21-error.log",
-            "hash": "9d831169aca354baee79073cfd134357bf519e9cf9046cbeacb88fa6ba39a423"
-        },
-        {
-            "date": 1722790516776,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-04-08-22-error.log",
-            "hash": "9f2e2cd1a1e536d8154a7b96a580a8b47659c9cb88b4c3ec6d61f3b45af7fb89"
-        },
-        {
-            "date": 1722958750255,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-06-08-21-error.log",
-            "hash": "bc476cbc07bf0d62646be6b08391ef8a41cc519a8023d8093a3c378e51d65198"
-        },
-        {
-            "date": 1723276015329,
-            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-10-08-13-error.log",
-            "hash": "0966859b1de6c1cef5e34ef8b2ad80b4f986c61091b45cf3514123b9c16892b2"
+            "date": 1724479890184,
+            "name": "C:\\salim\\erp\\businessERP\\HRAdmin\\server\\logs\\winston\\errors\\HR-2024-24-08-12-error.log",
+            "hash": "7a1f945a11866613b4f4775016408ea6b0728f46856ac8e209ac5bbafdf77bff"
         }
     ],
     "hashType": "sha256"
