@@ -17,6 +17,7 @@ import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddSalaryForm from "./AddSalary";
 import { useGetSalaryQuery } from "@/redux/api/features/salaryApi";
+import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -220,19 +221,19 @@ const SalarySectionTable = () => {
           loading={isLoading}
         >
           {/* Salary Month */}
-          <Column flexGrow={1}>
+          <Column flexGrow={2}>
             <HeaderCell style={headerCss}>Month</HeaderCell>
             <Cell dataKey="salaryMonth" />
           </Column>
 
           {/* Salary Year */}
-          <Column flexGrow={1}>
+          <Column flexGrow={0}>
             <HeaderCell style={headerCss}>Year</HeaderCell>
             <Cell dataKey="salaryYear" />
           </Column>
 
           {/* Employee Name */}
-          <Column flexGrow={1}>
+          <Column flexGrow={2}>
             <HeaderCell style={headerCss}>Employee Name</HeaderCell>
             <Cell>
               {(rowData: any) =>
@@ -313,14 +314,6 @@ const SalarySectionTable = () => {
           <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Net Salary</HeaderCell>
             <Cell dataKey="netSalary" />
-          </Column>
-
-          {/* Created At */}
-          <Column flexGrow={1}>
-            <HeaderCell style={headerCss}>Created At</HeaderCell>
-            <Cell>
-              {(rowData: any) => new Date(rowData.createdAt).toLocaleString()}
-            </Cell>
           </Column>
         </Table>
       </div>
