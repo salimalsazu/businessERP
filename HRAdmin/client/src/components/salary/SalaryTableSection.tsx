@@ -220,13 +220,13 @@ const SalarySectionTable = () => {
           loading={isLoading}
         >
           {/* Salary Month */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Month</HeaderCell>
             <Cell dataKey="salaryMonth" />
           </Column>
 
           {/* Salary Year */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Year</HeaderCell>
             <Cell dataKey="salaryYear" />
           </Column>
@@ -242,55 +242,55 @@ const SalarySectionTable = () => {
           </Column>
 
           {/* Basic Salary */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Basic Salary</HeaderCell>
             <Cell dataKey="basicSalary" />
           </Column>
 
           {/* House Rent */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>House Rent</HeaderCell>
             <Cell dataKey="houseRent" />
           </Column>
 
           {/* Medical Allowance */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Medical Allowance</HeaderCell>
             <Cell dataKey="medicalAllowance" />
           </Column>
 
           {/* Conveyance */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Conveyance</HeaderCell>
             <Cell dataKey="conveyance" />
           </Column>
 
           {/* Other Allowance */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Other Allowance</HeaderCell>
             <Cell dataKey="otherAllowance" />
           </Column>
 
           {/* Total Salary */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Total Salary</HeaderCell>
             <Cell dataKey="totalSalary" />
           </Column>
 
           {/* Absent Deduction */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Absent Deduction</HeaderCell>
             <Cell dataKey="absentDeduction" />
           </Column>
 
           {/* Advance Salary Deduction */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Advance Salary Deduction</HeaderCell>
             <Cell dataKey="advanceSalaryDeduction" />
           </Column>
 
           {/* Meal and Mobile Bill Deduction */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>
               Meal & Mobile Bill Deduction
             </HeaderCell>
@@ -298,19 +298,19 @@ const SalarySectionTable = () => {
           </Column>
 
           {/* Net Payable Salary */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Net Payable Salary</HeaderCell>
             <Cell dataKey="netPayableSalary" />
           </Column>
 
           {/* TDS on Salary */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>TDS on Salary</HeaderCell>
             <Cell dataKey="tdsOnSalary" />
           </Column>
 
           {/* Net Salary */}
-          <Column flexGrow={1} sortable>
+          <Column flexGrow={1}>
             <HeaderCell style={headerCss}>Net Salary</HeaderCell>
             <Cell dataKey="netSalary" />
           </Column>
