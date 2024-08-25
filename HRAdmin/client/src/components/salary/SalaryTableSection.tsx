@@ -20,6 +20,7 @@ import AddSalaryForm from "./AddSalary";
 import { useGetSalaryQuery } from "@/redux/api/features/salaryApi";
 import { salaryMonthValue, salaryYearValue } from "./SalaryUtils";
 import EditIcon from "@rsuite/icons/Edit";
+import EditSalaryModal from "./EditSalaryModal";
 const { Column, HeaderCell, Cell } = Table;
 
 const SalarySectionTable = () => {
@@ -78,6 +79,11 @@ const SalarySectionTable = () => {
   //Drawer
 
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+
+  const handleCloseModal = () => {
+    setOpenEditModal(false);
+  };
 
   return (
     <div>
@@ -311,7 +317,13 @@ const SalarySectionTable = () => {
             <HeaderCell style={headerCss}>Edit</HeaderCell>
             <Cell>
               {(rowData: any) => (
-                <Button appearance="link" className="!text-lg !font-extrabold">
+                <Button
+                  onClick={() => {
+                    setOpenEditModal(true);
+                  }}
+                  appearance="link"
+                  className="!text-lg !font-extrabold"
+                >
                   <EditIcon />
                 </Button>
               )}
@@ -319,9 +331,12 @@ const SalarySectionTable = () => {
           </Column>
         </Table>
       </div>
-
       <div>
         <AddSalaryForm openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
+      </div>
+
+      <div>
+        <EditSalaryModal open={openEditModal} handleClose={handleCloseModal} />
       </div>
     </div>
   );

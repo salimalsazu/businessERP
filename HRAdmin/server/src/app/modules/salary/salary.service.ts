@@ -215,12 +215,14 @@ const updateSalary = async (salaryId: string, payload: any): Promise<any> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Salary Not Found');
   }
 
+
   const result = await prisma.salary.update({
     where: {
       salaryId: findSalary.salaryId,
     },
     data: payload,
   });
+
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Update Failed');
