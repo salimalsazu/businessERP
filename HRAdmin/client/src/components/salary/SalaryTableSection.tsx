@@ -19,7 +19,7 @@ import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddSalaryForm from "./AddSalary";
 import { useGetSalaryQuery } from "@/redux/api/features/salaryApi";
 import { salaryMonthValue, salaryYearValue } from "./SalaryUtils";
-
+import EditIcon from "@rsuite/icons/Edit";
 const { Column, HeaderCell, Cell } = Table;
 
 const SalarySectionTable = () => {
@@ -305,6 +305,17 @@ const SalarySectionTable = () => {
           <Column flexGrow={1} sortable>
             <HeaderCell style={headerCss}>Net Salary</HeaderCell>
             <Cell dataKey="netSalary" />
+          </Column>
+          {/* Net Salary */}
+          <Column flexGrow={1}>
+            <HeaderCell style={headerCss}>Edit</HeaderCell>
+            <Cell>
+              {(rowData: any) => (
+                <Button appearance="link" className="!text-lg !font-extrabold">
+                  <EditIcon />
+                </Button>
+              )}
+            </Cell>
           </Column>
         </Table>
       </div>
