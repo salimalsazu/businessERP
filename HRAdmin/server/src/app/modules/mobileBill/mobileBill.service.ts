@@ -11,63 +11,6 @@ import prisma from '../../../shared/prisma';
 import { IMobileBillFilterRequest, IMobileBillRequest } from './mobileBill.interface';
 import { MobileBillRelationalFields, MobileBillRelationalFieldsMapper, MobileBillSearchableFields } from './mobileBill.constants';
 
-// modules
-
-// !----------------------------------Create New Asset Assign---------------------------------------->>>
-// const addMobileBill = async (data: IMobileBillRequest): Promise<MobileBill> => {
-//   console.log('data', data);
-
-//   if (!data.userId) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'User Id is required');
-//   }
-
-//   const isUserExist = await prisma.user.findUnique({
-//     where: {
-//       userId: data.userId,
-//     },
-//     include: {
-//       profile: {
-//         select: {
-//           mobileNo: true,
-//           mobileBillingLimit: true,
-//         },
-//       },
-//     },
-//   });
-
-//   if (!isUserExist) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'User Not Found');
-//   }
-
-//   const isMobileNoExist: any = isUserExist.profile?.mobileNo;
-
-//   const isMobileLimitExist: any = isUserExist?.profile?.mobileBillingLimit;
-
-//   const billingMonth = new Date(data.billDate).toLocaleString('en-US', { month: 'long', year: 'numeric' });
-
-//   const userDeduction = Math.min(0, isMobileLimitExist - data.billAmount);
-
-//   const userUsage = (data.billAmount / isMobileLimitExist) * 100;
-
-//   const dataObj = {
-//     billDate: data.billDate,
-//     billingMonth: billingMonth.toString(),
-//     mobileNo: isMobileNoExist,
-//     billAmount: data.billAmount,
-//     billLimit: isMobileLimitExist,
-//     deduction: userDeduction,
-//     usage: userUsage,
-//     userId: isUserExist.userId,
-//   };
-
-//   console.log('dataObj', dataObj);
-
-//   const result = await prisma.mobileBill.create({
-//     data: dataObj,
-//   });
-
-//   return result;
-// };
 
 const addMobileBill = async (data: IMobileBillRequest[]): Promise<Prisma.BatchPayload> => {
   console.log('data', data);

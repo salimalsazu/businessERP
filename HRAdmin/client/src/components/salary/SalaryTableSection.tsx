@@ -9,6 +9,7 @@ import {
   Table,
   Whisper,
   Popover,
+  SelectPicker,
 } from "rsuite";
 import { useState } from "react";
 import DocPassIcon from "@rsuite/icons/DocPass";
@@ -17,22 +18,22 @@ import { headerCss } from "@/utils/TableCSS";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import AddSalaryForm from "./AddSalary";
 import { useGetSalaryQuery } from "@/redux/api/features/salaryApi";
-import moment from "moment";
+import { salaryMonthValue, salaryYearValue } from "./SalaryUtils";
 
 const { Column, HeaderCell, Cell } = Table;
 
 const SalarySectionTable = () => {
   const query: Record<string, any> = {};
 
+  const [searchTerm, setSearchTerm] = useState<string>();
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
-
-  // Modal
-  const [open, setOpen] = useState(false);
-  const [backdrop, setBackdrop] = useState("static");
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [salaryMonth, setSalaryMonth] = useState<string>();
+  const [salaryYear, setSalaryYear] = useState<string>();
+  query["searchTerm"] = searchTerm;
+  query["salaryMonth"] = salaryMonth;
+  query["salaryYear"] = salaryYear;
 
   const { data: salaryData, isLoading } = useGetSalaryQuery({ ...query });
 
@@ -64,39 +65,14 @@ const SalarySectionTable = () => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: "",
-    endDate: "",
-  });
+  //Filter with MOnth
+  const handleFilterMonth = (value: string) => {
+    setSalaryMonth(value);
+  };
 
-  query["startDate"] = selectedDate.startDate;
-  query["endDate"] = selectedDate.endDate;
-
-  const handleFilterDate = (date: Date[] | null) => {
-    if (!date?.length) {
-      setSelectedDate({
-        startDate: "",
-        endDate: "",
-      });
-    }
-
-    if (date) {
-      const startDate = new Date(date[0]);
-      const endDate = new Date(date[1]);
-
-      startDate.setHours(0, 0, 0, 0);
-      endDate.setHours(23, 59, 59, 999);
-
-      const formattedStartDate = startDate?.toISOString();
-      const formattedEndDate = endDate?.toISOString();
-
-      if (startDate !== null && endDate !== null) {
-        setSelectedDate({
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
-        });
-      }
-    }
+  //Filter with Year
+  const handleFilterYear = (value: string) => {
+    setSalaryYear(value);
   };
 
   //Drawer
@@ -131,6 +107,7 @@ const SalarySectionTable = () => {
               <input
                 type="text"
                 id="searchTerm"
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="border border-gray-300 text-gray-900 placeholder:text-[#919EAB] w-full pl-10 py-2 rounded-lg focus:outline-none"
                 placeholder="Search with Name"
                 required
@@ -138,21 +115,35 @@ const SalarySectionTable = () => {
             </div>
           </div>
           <div>
-            <DateRangePicker
+            <SelectPicker
               placement="auto"
-              onChange={(value: Date[] | null): void => {
-                handleFilterDate(value);
+              onChange={(value: any | null): void => {
+                handleFilterMonth(value);
               }}
-              onClean={() =>
-                handleFilterDate({
-                  //@ts-ignore
-                  startDate: "",
-                  endDate: "",
-                })
-              }
+              data={salaryMonthValue?.map((month: any) => ({
+                label: month,
+                value: month,
+              }))}
               size="lg"
+              searchable={false}
               style={{ width: 300 }}
-              placeholder="Filter By Date"
+              placeholder="Filter By Month"
+            />
+          </div>
+          <div>
+            <SelectPicker
+              placement="auto"
+              onChange={(value: any | null): void => {
+                handleFilterYear(value);
+              }}
+              data={salaryYearValue?.map((year: any) => ({
+                label: year,
+                value: year,
+              }))}
+              size="lg"
+              searchable={false}
+              style={{ width: 300 }}
+              placeholder="Filter By Year"
             />
           </div>
         </div>

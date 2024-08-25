@@ -82,21 +82,45 @@ const getSalary = async (filters: ISalaryFilterRequest, options: IPaginationOpti
   // Destructure filter properties
   const { searchTerm, salaryMonth, salaryYear, ...filterData } = filters;
 
-  console.log('salaryYear', salaryYear);
-
   // Define an array to hold filter conditions
   const andConditions: Prisma.SalaryWhereInput[] = [];
 
   // Add search term condition if provided
   if (searchTerm) {
     andConditions.push({
-      OR: SalarySearchableFields.map((field: any) => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
-        },
-      })),
-    });
+      OR: SalarySearchableFields.map((field: string) => {
+        if (field === 'firstName') {
+          return {
+            user: {
+              profile: {
+                firstName: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          } as Prisma.SalaryWhereInput;
+        } else if (field === 'lastName') {
+          return {
+            user: {
+              profile: {
+                lastName: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          } as Prisma.SalaryWhereInput;
+        } else {
+          return {
+            [field]: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          } as Prisma.SalaryWhereInput;
+        }
+      }),
+    } as Prisma.SalaryWhereInput);
   }
 
   //Salary Month
