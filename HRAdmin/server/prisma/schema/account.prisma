@@ -1,11 +1,36 @@
 model Account {
-  accountId          String         @id @default(cuid())
-  accountName        String
-  openingBalance     Int            @default(0)
-  closingBalance     Int            @default(0)
-  requisition        Requisition[]
-  createdAt          DateTime       @default(now()) @db.Timestamptz(0)
-  updatedAt          DateTime       @updatedAt @db.Timestamptz(0)
-  transactionDebit   Transaction[]  @relation("DebitAccount")
-  transactionCredit  Transaction[]  @relation("CreditAccount")
+  accountId         String        @id @default(cuid())
+  accountName       String
+  subGroupId        String?
+  openingBalance    Int           @default(0)
+  closingBalance    Int           @default(0)
+  requisition       Requisition[]
+  createdAt         DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt         DateTime      @updatedAt @db.Timestamptz(0)
+  transactionDebit  Transaction[] @relation("DebitAccount")
+  transactionCredit Transaction[] @relation("CreditAccount")
 }
+
+model SubGroup {
+  subGroupId          String   @id @default(cuid())
+  subGroupName        String
+  subGroupDescription String
+  groupId             String
+  createdAt           DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(0)
+}
+
+model Group {
+  groupId   String           @id @default(cuid())
+  groupName String
+  tbType    TrailBalanceType
+  createdAt DateTime         @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime         @updatedAt @db.Timestamptz(0)
+}
+
+enum TrailBalanceType {
+  DEBIT
+  CREDIT
+}
+
+

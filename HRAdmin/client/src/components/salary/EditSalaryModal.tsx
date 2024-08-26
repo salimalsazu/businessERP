@@ -52,7 +52,7 @@ const EditSalaryModal = ({ handleClose, open, editData }: any) => {
   ) => {
     const salaryUpdate = {
       salaryMonth: data.salaryMonth,
-      salaryYear: data.salaryMonth,
+      salaryYear: data.salaryYear,
       userId: data.userId,
       absentDeduction: Number(data.absentDeduction),
       advanceSalaryDeduction: Number(data.advanceSalaryDeduction),
