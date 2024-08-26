@@ -20,8 +20,15 @@ import { FileType } from "rsuite/esm/Uploader";
 import { useCreateAssetItemListMutation } from "@/redux/api/features/assetItemApi";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { salaryMonthValue, salaryYearValue } from "./SalaryUtils";
+import { useUpdateSalaryMutation } from "@/redux/api/features/salaryApi";
+import { useGetAllUsersQuery } from "@/redux/api/features/userApi";
+import { isError } from "util";
 
-const EditSalaryModal = ({ handleClose, open }: any) => {
+const EditSalaryModal = ({ handleClose, open, editData }: any) => {
+  //@ts-ignore
+  const { data: employeeData } = useGetAllUsersQuery("");
+
   interface ISalaryList {
     salaryMonth: string;
     salaryYear: string;
@@ -31,8 +38,8 @@ const EditSalaryModal = ({ handleClose, open }: any) => {
     mealAndMobileBillDeduction: number;
   }
 
-  const [creatingAsset, { isLoading, isSuccess }] =
-    useCreateAssetItemListMutation();
+  const [editSalary, { isLoading, isSuccess, isError, data }] =
+    useUpdateSalaryMutation();
 
   const {
     handleSubmit,
@@ -40,7 +47,7 @@ const EditSalaryModal = ({ handleClose, open }: any) => {
     formState: { errors },
   } = useForm<ISalaryList>();
 
-  const handleCreateStationaryList: SubmitHandler<ISalaryList> = async (
+  const handleEditSalary: SubmitHandler<ISalaryList> = async (
     data: ISalaryList
   ) => {
     const salaryUpdate = {
@@ -52,28 +59,22 @@ const EditSalaryModal = ({ handleClose, open }: any) => {
       mealAndMobileBillDeduction: Number(data.mealAndMobileBillDeduction),
     };
 
-    // console.log(assetList);
+    console.log("salaryUpdate", salaryUpdate);
+
+    await editSalary({
+      salaryId: editData?.salaryId,
+      payload: salaryUpdate,
+    });
   };
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("asset created successfully");
+      toast.success(data?.message);
     }
-  }, [isSuccess, handleClose]);
-
-  const assetCategory = [
-    "Eugenia",
-    "Bryan",
-    "Linda",
-    "Nancy",
-    "Lloyd",
-    "Alice",
-    "Julia",
-    "Albert",
-  ].map((item) => ({
-    label: item,
-    value: item,
-  }));
+    if (!isSuccess && isError && data) {
+      toast.error(data?.message);
+    }
+  }, [isSuccess, handleClose, isError, data]);
 
   return (
     <Modal
@@ -88,297 +89,220 @@ const EditSalaryModal = ({ handleClose, open }: any) => {
       </Modal.Header>
 
       <Modal.Body>
-        <form onSubmit={handleSubmit(handleCreateStationaryList)}>
-          {/* 1st section */}
-          <div className="flex justify-between  gap-[24px] mb-5">
-            {/* Pucrchase Date */}{" "}
-            <div className="flex flex-col gap-3 w-full ">
+        <form onSubmit={handleSubmit(handleEditSalary)}>
+          <div className="flex flex-col items-center gap-3 mb-5 w-full">
+            <div className="flex flex-col gap-3 w-full h-full">
               <div>
-                <Whisper speaker={<Tooltip>Purchase Date</Tooltip>}>
-                  <label htmlFor="purchaseDate" className="text-sm font-medium">
-                    Purchase Date <InfoOutlineIcon />
-                  </label>
-                </Whisper>
-              </div>
-
-              <Controller
-                name="purchaseDate"
-                control={control}
-                rules={{ required: "Purchase Date is required" }}
-                render={({ field }) => (
-                  <div className="rs-form-control-wrapper">
-                    <DatePicker
-                      id="purchaseDate"
-                      value={field.value ? new Date(field.value) : null}
-                      onChange={(value: Date | null): void => {
-                        if (value) {
-                          const isoString = value.toISOString();
-                          field.onChange(isoString);
-                        } else {
-                          field.onChange(null);
-                        }
-                      }}
-                      style={{
-                        width: "100%",
-                      }}
-                      size="lg"
-                      placeholder=" Purchase Date"
-                      editable={false}
-                      placement="auto"
-                    />
-                    {/* <Form.ErrorMessage
-                            show={!!errors?.buyerEtd && !!errors?.buyerEtd?.message}
-                            placement="topEnd"
-                          >
-                            {errors?.buyerEtd?.message}
-                          </Form.ErrorMessage> */}
-                  </div>
-                )}
-              />
-            </div>
-            <div className="flex flex-col gap-3 w-full ">
-              <div>
-                <Whisper
-                  speaker={
-                    <Tooltip>
-                      <span className="text-[11px]">Asset Name</span>
-                    </Tooltip>
-                  }
-                >
-                  <label htmlFor="assetName" className="text-sm font-medium">
-                    Asset Name <InfoOutlineIcon />
-                  </label>
-                </Whisper>
-              </div>
-
-              <Controller
-                name="assetName"
-                control={control}
-                rules={{
-                  required: "Asset Name is required",
-                }}
-                render={({ field }: any) => (
-                  <div className="rs-form-control-wrapper ">
-                    <Input
-                      {...field}
-                      inputMode="text"
-                      size="lg"
-                      id="assetName"
-                      placeholder="Asset Name"
-                      style={{ width: "100%" }}
-                    />
-                    {/* <Form.ErrorMessage
-                       show={
-                         (!!errors?.totalPack && !!errors?.totalPack?.message) ||
-                         false
-                       }
-                       placement="topEnd"
-                     >
-                       {errors?.totalPack?.message}
-                     </Form.ErrorMessage> */}
-                  </div>
-                )}
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-between  gap-[24px] mb-5">
-            <div className="flex flex-col gap-3 w-full ">
-              <div>
-                <Whisper
-                  speaker={
-                    <Tooltip>
-                      <span className="text-[11px]">Model Name</span>
-                    </Tooltip>
-                  }
-                >
-                  <label htmlFor="assetModel" className="text-sm font-medium">
-                    Model Name <InfoOutlineIcon />
-                  </label>
-                </Whisper>
-              </div>
-
-              <Controller
-                name="assetModel"
-                control={control}
-                rules={{
-                  required: "Model Name is required",
-                }}
-                render={({ field }: any) => (
-                  <div className="rs-form-control-wrapper ">
-                    <Input
-                      {...field}
-                      inputMode="text"
-                      size="lg"
-                      id="assetModel"
-                      placeholder="Model Name"
-                      style={{ width: "100%" }}
-                    />
-                    {/* <Form.ErrorMessage
-                       show={
-                         (!!errors?.totalPack && !!errors?.totalPack?.message) ||
-                         false
-                       }
-                       placement="topEnd"
-                     >
-                       {errors?.totalPack?.message}
-                     </Form.ErrorMessage> */}
-                  </div>
-                )}
-              />
-            </div>
-
-            <div className="flex flex-col gap-3 w-full ">
-              <div>
-                <Whisper speaker={<Tooltip>Asset Category</Tooltip>}>
-                  <label htmlFor="assetName" className="text-sm font-medium">
-                    Asset Category
+                <Whisper speaker={<Tooltip>Salary Month</Tooltip>}>
+                  <label htmlFor="salaryMonth" className="text-sm font-medium">
+                    Salary Month
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="assetCategory"
+                name="salaryMonth"
                 control={control}
-                defaultValue={""}
-                rules={{ required: "Asset Category required" }}
+                defaultValue={editData?.salaryMonth}
+                rules={{ required: "Salary Month is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <InputPicker
-                      creatable
-                      size={"lg"}
-                      data={assetCategory}
-                      onCreate={(value, item) => {
-                        console.log(value, item);
-                      }}
-                      onChange={(value: string | null) => field.onChange(value)}
+                    <SelectPicker
+                      {...field}
+                      data={salaryMonthValue.map((month) => ({
+                        label: month,
+                        value: month,
+                      }))}
+                      placeholder="Select Salary Month"
                       style={{ width: "100%" }}
+                      size="lg"
+                      // searchable={false} // Optional: Disable search if not needed
+                      block
                     />
-                    {/* <Form.ErrorMessage
-                          show={
-                            (!!errors?.styleNo && !!errors?.styleNo?.message) ||
-                            false
-                          }
-                          placement="topEnd"
-                        >
-                          {errors?.styleNo?.message}
-                        </Form.ErrorMessage> */}
                   </div>
                 )}
-              />{" "}
+              />
             </div>
-          </div>
 
-          <div className="flex justify-between gap-[24px] mb-5">
-            <div className="flex flex-col gap-3 w-full ">
+            <div className="flex flex-col gap-3 w-full">
               <div>
-                <Whisper speaker={<Tooltip>Asset Location</Tooltip>}>
-                  <label
-                    htmlFor="stationaryItemId"
-                    className="text-sm font-medium"
-                  >
-                    Asset Location
+                <Whisper speaker={<Tooltip>Salary Year</Tooltip>}>
+                  <label htmlFor="salaryYear" className="text-sm font-medium">
+                    Salary Year
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="assetLocation"
+                name="salaryYear"
                 control={control}
-                defaultValue={""}
-                rules={{ required: "Asset Location required" }}
+                defaultValue={editData?.salaryYear}
+                rules={{ required: "Salary Year is required" }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
-                    <InputPicker
-                      creatable
-                      size={"lg"}
-                      data={assetCategory}
-                      onCreate={(value, item) => {
-                        console.log(value, item);
-                      }}
-                      onChange={(value: string | null) => field.onChange(value)}
+                    <SelectPicker
+                      {...field}
+                      data={salaryYearValue.map((year) => ({
+                        label: year,
+                        value: year,
+                      }))}
+                      placeholder="Select Salary Year"
                       style={{ width: "100%" }}
-                      placeholder="Asset Location"
+                      size="lg"
+                      // searchable={false} // Optional: Disable search if not needed
+                      block
                     />
-                    {/* <Form.ErrorMessage
-                          show={
-                            (!!errors?.styleNo && !!errors?.styleNo?.message) ||
-                            false
-                          }
-                          placement="topEnd"
-                        >
-                          {errors?.styleNo?.message}
-                        </Form.ErrorMessage> */}
                   </div>
                 )}
-              />{" "}
+              />
             </div>
 
-            <div className="flex flex-col gap-3 w-full ">
+            <div className="flex flex-col gap-3 w-full">
               <div>
-                <Whisper
-                  speaker={
-                    <Tooltip>
-                      <span className="text-[11px]">
-                        Quantity greater than 0
-                      </span>
-                    </Tooltip>
-                  }
-                >
-                  <label
-                    htmlFor="assetQuantity"
-                    className="text-sm font-medium"
-                  >
-                    Asset Quantity <InfoOutlineIcon />
+                <Whisper speaker={<Tooltip>Employee Name</Tooltip>}>
+                  <label htmlFor="userId" className="text-sm font-medium">
+                    Employee Name
+                    <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
-
               <Controller
-                name="assetQuantity"
+                name="userId"
                 control={control}
-                rules={{
-                  required: "Quantity is required",
-                  min: {
-                    value: 1,
-                    message: "Quantity must be greater than 0",
-                  },
-                }}
-                render={({ field }: any) => (
-                  <div className="rs-form-control-wrapper ">
-                    <InputNumber
+                defaultValue={editData?.userId}
+                rules={{ required: "Name is required" }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <SelectPicker
+                      className="z-20 w-full"
                       {...field}
-                      inputMode="numeric"
-                      min={1}
                       size="lg"
-                      id="assetQuantity"
+                      data={employeeData.data?.data?.map((user: any) => ({
+                        label: `${user?.profile?.firstName} ${user?.profile?.lastName}`,
+                        value: user?.userId,
+                      }))}
+                      placeholder="Employee name"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col gap-3 w-full">
+              <div>
+                <Whisper speaker={<Tooltip>Absent Deduction</Tooltip>}>
+                  <label
+                    htmlFor="absentDeduction"
+                    className="text-sm font-medium"
+                  >
+                    Absent Deduction
+                    <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="absentDeduction"
+                defaultValue={editData?.absentDeduction}
+                control={control}
+                rules={{ required: "Absent Deduction is required" }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <Input
+                      className="z-20 w-full"
+                      {...field}
+                      size="lg"
                       type="number"
-                      placeholder="Asset Quantity"
+                      placeholder="Absent Deduction"
+                      min={0}
                       style={{ width: "100%" }}
                     />
-                    {/* <Form.ErrorMessage
-                       show={
-                         (!!errors?.totalPack && !!errors?.totalPack?.message) ||
-                         false
-                       }
-                       placement="topEnd"
-                     >
-                       {errors?.totalPack?.message}
-                     </Form.ErrorMessage> */}
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col gap-3 w-full">
+              <div>
+                <Whisper speaker={<Tooltip>Advance Salary Deduction</Tooltip>}>
+                  <label
+                    htmlFor="advanceSalaryDeduction"
+                    className="text-sm font-medium"
+                  >
+                    Advance Salary Deduction
+                    <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="advanceSalaryDeduction"
+                defaultValue={editData?.advanceSalaryDeduction}
+                control={control}
+                rules={{ required: "Advance Salary Deduction is required" }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <Input
+                      className="z-20 w-full"
+                      {...field}
+                      size="lg"
+                      type="number"
+                      placeholder="Advance Salary Deduction"
+                      min={0}
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col gap-3 w-full">
+              <div>
+                <Whisper
+                  speaker={<Tooltip>Meal and Mobile Bill Deduction</Tooltip>}
+                >
+                  <label
+                    htmlFor="mealAndMobileBillDeduction"
+                    className="text-sm font-medium"
+                  >
+                    Meal and Mobile Bill Deduction
+                    <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+
+              <Controller
+                name="mealAndMobileBillDeduction"
+                defaultValue={editData?.mealAndMobileBillDeduction}
+                control={control}
+                rules={{
+                  required: "Meal and Mobile Bill Deduction is required",
+                }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <Input
+                      className="z-20 w-full"
+                      {...field}
+                      size="lg"
+                      type="number"
+                      placeholder="Meal and Mobile Bill Deduction"
+                      min={0}
+                      style={{ width: "100%" }}
+                    />
                   </div>
                 )}
               />
             </div>
           </div>
-
           <div className="flex justify-end mt-5">
             <Button
               type="submit"
               loading={isLoading}
-              // size="lg"
-              className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center   flex px-3 py-2 text-sm rounded-md `}
+              size="lg"
+              className={`!bg-primary !hover:bg-secondary  focus:text-white hover:text-white/80 !text-white  items-center flex px-3 py-2 text-sm rounded-md`}
             >
-              Save
+              {(isLoading && "Updating") ||
+                (isSuccess && "Updated") ||
+                "Update Salary"}
             </Button>
           </div>
         </form>

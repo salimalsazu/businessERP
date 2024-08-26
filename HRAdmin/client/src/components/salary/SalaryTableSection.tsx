@@ -80,6 +80,7 @@ const SalarySectionTable = () => {
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [editData, setEditData] = useState<any>();
 
   const handleCloseModal = () => {
     setOpenEditModal(false);
@@ -320,6 +321,7 @@ const SalarySectionTable = () => {
                 <Button
                   onClick={() => {
                     setOpenEditModal(true);
+                    setEditData(rowData);
                   }}
                   appearance="link"
                   className="!text-lg !font-extrabold"
@@ -336,7 +338,11 @@ const SalarySectionTable = () => {
       </div>
 
       <div>
-        <EditSalaryModal open={openEditModal} handleClose={handleCloseModal} />
+        <EditSalaryModal
+          open={openEditModal}
+          handleClose={handleCloseModal}
+          editData={editData}
+        />
       </div>
     </div>
   );

@@ -28,8 +28,8 @@ export const salaryList = baseApi.injectEndpoints({
     }),
 
     updateSalary: builder.mutation({
-      query: ({ requisitionId, payload }) => ({
-        url: `${SALARY_API}/${requisitionId}`,
+      query: ({ salaryId, payload }) => ({
+        url: `${SALARY_API}/${salaryId}`,
         method: "PATCH",
         data: payload,
       }),

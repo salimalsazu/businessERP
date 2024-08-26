@@ -215,20 +215,61 @@ const updateSalary = async (salaryId: string, payload: any): Promise<any> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Salary Not Found');
   }
 
-
-  const result = await prisma.salary.update({
+  const findEmployee = await prisma.user.findUnique({
     where: {
-      salaryId: findSalary.salaryId,
+      userId: findSalary.userId,
     },
-    data: payload,
   });
 
-
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Update Failed');
+  if (!findEmployee) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Employee Not Found');
   }
 
-  return result;
+  if (findEmployee.profileId) {
+    const findProfile = await prisma.profile.findUnique({
+      where: {
+        profileId: findEmployee.profileId,
+      },
+    });
+
+    if (!findProfile) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Profile Not Found');
+    }
+
+    // Use payload value if present; otherwise, use value from findSalary
+    const absentDeduction = payload.absentDeduction ?? findSalary.absentDeduction;
+    const advanceSalaryDeduction = payload.advanceSalaryDeduction ?? findSalary.advanceSalaryDeduction;
+    const mealAndMobileBillDeduction = payload.mealAndMobileBillDeduction ?? findSalary.mealAndMobileBillDeduction;
+
+    // Calculate netPayableSalary and netSalary
+    const netPayableSalary = findSalary.totalSalary - absentDeduction - advanceSalaryDeduction - mealAndMobileBillDeduction;
+    const netSalary = netPayableSalary - (payload.tdsOnSalary ?? findSalary.tdsOnSalary);
+
+    // Prepare updated data object
+    const objData = {
+      salaryMonth: payload?.salaryMonth ?? findSalary.salaryMonth,
+      salaryYear: payload?.salaryYear ?? findSalary.salaryYear,
+      userId: payload?.userId ?? findSalary.userId,
+      absentDeduction,
+      advanceSalaryDeduction,
+      mealAndMobileBillDeduction,
+      netSalary,
+    };
+
+    // Update the salary in the database
+    const result = await prisma.salary.update({
+      where: {
+        salaryId: findSalary.salaryId,
+      },
+      data: objData, // Use objData to update the salary
+    });
+
+    if (!result) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Update Failed');
+    }
+
+    return result;
+  }
 };
 
 export const SalaryService = {

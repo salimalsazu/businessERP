@@ -44,8 +44,6 @@ const AddSalaryForm = ({ openDrawer, setOpenDrawer }: any) => {
       advanceSalaryDeduction: Number(data.advanceSalaryDeduction),
       mealAndMobileBillDeduction: Number(data.mealAndMobileBillDeduction),
     };
-
-    console.log("salaryData", salaryData);
     await addSalary({ data: salaryData });
   };
 
