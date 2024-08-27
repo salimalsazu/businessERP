@@ -3,7 +3,6 @@ model Account {
   accountName       String
   subGroupId        String?
   subGroup          SubGroup?     @relation(fields: [subGroupId], references: [subGroupId])
-  openingBalance    Int           @default(0)
   closingBalance    Int           @default(0)
   requisition       Requisition[]
   createdAt         DateTime      @default(now()) @db.Timestamptz(0)

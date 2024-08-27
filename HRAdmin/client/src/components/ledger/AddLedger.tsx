@@ -2,15 +2,18 @@
 
 import { useAddAccountMutation } from "@/redux/api/features/accountApi";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, Drawer, Input, Tooltip, Whisper } from "rsuite";
+import { Button, Drawer, Input, InputPicker, Tooltip, Whisper } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useGetSubGroupQuery } from "@/redux/api/features/subGroup";
 
 const AddLedgerSection = ({ openDrawer, setOpenDrawer }: any) => {
+  const { data: subGroupData } = useGetSubGroupQuery({});
+
   interface ICreateLedger {
     accountName: string;
-    openingBalance: number;
+    subGroupId: string;
     closingBalance: number;
   }
 
@@ -28,10 +31,9 @@ const AddLedgerSection = ({ openDrawer, setOpenDrawer }: any) => {
   ) => {
     const objAccount = {
       accountName: data.accountName,
-      openingBalance: Number(data.openingBalance),
+      subGroupId: data.subGroupId,
       closingBalance: Number(data.closingBalance),
     };
-    console.log("addTransaction", objAccount);
 
     await addAccount(objAccount);
   };
@@ -98,31 +100,32 @@ const AddLedgerSection = ({ openDrawer, setOpenDrawer }: any) => {
                 />{" "}
               </div>
 
-              <div className="flex flex-col gap-3 w-full">
+              <div className="flex flex-col gap-3 w-full ">
                 <div>
-                  <Whisper speaker={<Tooltip>Opening Balance</Tooltip>}>
-                    <label htmlFor="title" className="text-sm font-medium">
-                      Opening Balance
+                  <Whisper speaker={<Tooltip>Sub Group</Tooltip>}>
+                    <label htmlFor="assetName" className="text-sm font-medium">
+                      Sub Group
                       <InfoOutlineIcon />
                     </label>
                   </Whisper>
                 </div>
                 <Controller
-                  name="openingBalance"
+                  name="subGroupId"
                   control={control}
-                  rules={{ required: "Opening Balance is required" }}
+                  // defaultValue={""}
+                  rules={{ required: "Sub Group is required" }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper">
-                      <Input
-                        className="z-20 w-full"
-                        {...field}
-                        min={0}
-                        size="lg"
-                        type="number"
-                        placeholder="Opening Balance"
-                        style={{
-                          width: "100%",
-                        }}
+                      <InputPicker
+                        size={"lg"}
+                        data={subGroupData?.data?.data?.map((item: any) => ({
+                          label: item.subGroupName,
+                          value: item.subGroupId,
+                        }))}
+                        onChange={(value: string | null) =>
+                          field.onChange(value)
+                        }
+                        style={{ width: "100%" }}
                       />
                       {/* <Form.ErrorMessage
                           show={

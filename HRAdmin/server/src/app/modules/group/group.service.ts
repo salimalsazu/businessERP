@@ -180,7 +180,12 @@ const getTrialBalance = async (
         select: {
           subGroupName: true,
           subGroupDescription: true,
-          account: true,
+          account: {
+            select: {
+              accountName: true,
+              closingBalance: true,
+            },
+          },
         },
       },
     },
@@ -201,7 +206,12 @@ const getTrialBalance = async (
         select: {
           subGroupName: true,
           subGroupDescription: true,
-          account: true,
+          account: {
+            select: {
+              accountName: true,
+              closingBalance: true,
+            },
+          },
         },
       },
     },
@@ -210,9 +220,24 @@ const getTrialBalance = async (
     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
   });
 
-  // Calculate total debit and credit values
-  const totalDebit = findDebitGroup.reduce((sum, group) => sum + (group.amount || 0), 0);
-  const totalCredit = findCreditGroup.reduce((sum, group) => sum + (group.amount || 0), 0);
+  // Calculate total debit and credit values based on closing balances
+  const totalDebit = findDebitGroup.reduce((sum, group) => {
+    return (
+      sum +
+      group.subGroup.reduce((subSum, subGroup) => {
+        return subSum + subGroup.account.reduce((accSum, account) => accSum + (account.closingBalance || 0), 0);
+      }, 0)
+    );
+  }, 0);
+
+  const totalCredit = findCreditGroup.reduce((sum, group) => {
+    return (
+      sum +
+      group.subGroup.reduce((subSum, subGroup) => {
+        return subSum + subGroup.account.reduce((accSum, account) => accSum + (account.closingBalance || 0), 0);
+      }, 0)
+    );
+  }, 0);
 
   // Count total matching groups for pagination
   const totalDebitCount = await prisma.group.count({
@@ -249,6 +274,7 @@ const getTrialBalance = async (
       total: totalDebitCount + totalCreditCount,
       totalPage: Math.max(totalPageDebit, totalPageCredit),
     },
+    // @ts-ignore
     data: result,
   };
 };

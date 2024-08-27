@@ -28,7 +28,6 @@ const createAccount = async (data: IAccountCreate): Promise<Account> => {
   const result = await prisma.account.create({
     data: {
       accountName: data.accountName,
-      openingBalance: data.openingBalance,
       closingBalance: data.closingBalance,
       subGroupId: data.subGroupId,
     },

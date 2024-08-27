@@ -29,6 +29,7 @@ import "rsuite/dist/rsuite.min.css";
 const { Column, HeaderCell, Cell } = Table;
 
 const SingleAccountDetails = ({ params }: any) => {
+
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
@@ -57,6 +58,8 @@ const SingleAccountDetails = ({ params }: any) => {
     accountName: params.accountName,
     ...query,
   });
+
+  console.log("data", data);
 
   const [totalDebit, setTotalDebit] = useState<number>(0);
   const [totalCredit, setTotalCredit] = useState<number>(0);
@@ -346,12 +349,6 @@ const SingleAccountDetails = ({ params }: any) => {
                         <strong>Account Name:</strong>
                       </p>
                       <h2 className="text-lg font-semibold">{accountName}</h2>
-                    </Col>
-                    <Col xs={24} sm={12} md={6}>
-                      <p>
-                        <strong>Opening Balance:</strong>
-                      </p>
-                      <p>{openingBalance}</p>
                     </Col>
                     <Col xs={24} sm={12} md={6}>
                       <p>
