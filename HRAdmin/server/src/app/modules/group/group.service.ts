@@ -174,8 +174,15 @@ const getTrialBalance = async (
       ...whereConditions,
       tbType: TrailBalanceType.DEBIT,
     },
-    include: {
-      subGroup: true,
+    select: {
+      groupName: true,
+      subGroup: {
+        select: {
+          subGroupName: true,
+          subGroupDescription: true,
+          account: true,
+        },
+      },
     },
     skip,
     take: limit,
@@ -188,8 +195,15 @@ const getTrialBalance = async (
       ...whereConditions,
       tbType: TrailBalanceType.CREDIT,
     },
-    include: {
-      subGroup: true,
+    select: {
+      groupName: true,
+      subGroup: {
+        select: {
+          subGroupName: true,
+          subGroupDescription: true,
+          account: true,
+        },
+      },
     },
     skip,
     take: limit,
