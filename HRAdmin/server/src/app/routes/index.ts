@@ -15,6 +15,8 @@ import { RequisitionRoutes } from '../modules/requisition/requisition.routes';
 import { AccountRoutes } from '../modules/account/account.routes';
 import { TransactionRoutes } from '../modules/transaction/transaction.routes';
 import { SalaryRoutes } from '../modules/salary/salary.routes';
+import { GroupRoutes } from '../modules/group/group.routes';
+import { SubGroupRoutes } from '../modules/subGroup/subGroup.routes';
 
 const router = express.Router();
 
@@ -74,6 +76,14 @@ const moduleRoutes = [
   {
     path: '/transaction',
     route: TransactionRoutes,
+  },
+  {
+    path: '/group',
+    route: GroupRoutes,
+  },
+  {
+    path: '/subGroup',
+    route: SubGroupRoutes,
   },
 ];
 

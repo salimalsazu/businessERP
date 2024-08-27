@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TrailBalanceType, UserRoles } from '@prisma/client';
 
-export type IGroupFilterRequest = {
+export type ISubGroupFilterRequest = {
   searchTerm?: string | undefined;
 };
 
-export type IGroupCreate = {
-  groupName: string;
-  tbType: TrailBalanceType;
+export type ISubGroupCreate = {
+  subGroupName: string;
+  subGroupDescription: string;
+  groupId: string;
 };
-

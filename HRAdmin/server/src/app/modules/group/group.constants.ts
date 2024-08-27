@@ -1,10 +1,10 @@
-export const accountFilterableFields: string[] = ['searchTerm', 'startDate', 'endDate'];
+export const groupFilterableFields: string[] = ['searchTerm', 'startDate', 'endDate'];
 
-export const accountSearchableFields: string[] = ['accountName', 'trId', 'startDate', 'endDate'];
+export const groupSearchableFields: string[] = ['accountName', 'trId', 'startDate', 'endDate'];
 
-export const accountRelationalFields: string[] = ['academicFacultyId', 'academicDepartmentId', 'academicSemesterId'];
+export const groupRelationalFields: string[] = ['academicFacultyId', 'academicDepartmentId', 'academicSemesterId'];
 
-export const accountRelationalFieldsMapper: { [key: string]: string } = {
+export const groupRelationalFieldsMapper: { [key: string]: string } = {
   academicFacultyId: 'academicFaculty',
   academicDepartmentId: 'academicDepartment',
   academicSemesterId: 'academicSemester',

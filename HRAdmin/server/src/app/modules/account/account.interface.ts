@@ -12,6 +12,7 @@ export type IAccountCreate = {
   accountName: string;
   openingBalance: number;
   closingBalance: number;
+  subGroupId: string;
 };
 
 export type IUpdateUserRequest = {

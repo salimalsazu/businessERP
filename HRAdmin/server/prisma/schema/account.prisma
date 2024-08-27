@@ -2,6 +2,7 @@ model Account {
   accountId         String        @id @default(cuid())
   accountName       String
   subGroupId        String?
+  subGroup          SubGroup?     @relation(fields: [subGroupId], references: [subGroupId])
   openingBalance    Int           @default(0)
   closingBalance    Int           @default(0)
   requisition       Requisition[]
@@ -12,12 +13,14 @@ model Account {
 }
 
 model SubGroup {
-  subGroupId          String   @id @default(cuid())
+  subGroupId          String    @id @default(cuid())
   subGroupName        String
   subGroupDescription String
   groupId             String
-  createdAt           DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime @updatedAt @db.Timestamptz(0)
+  group               Group     @relation(fields: [groupId], references: [groupId])
+  createdAt           DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(0)
+  account             Account[]
 }
 
 model Group {
@@ -26,11 +29,10 @@ model Group {
   tbType    TrailBalanceType
   createdAt DateTime         @default(now()) @db.Timestamptz(0)
   updatedAt DateTime         @updatedAt @db.Timestamptz(0)
+  subGroup  SubGroup[]
 }
 
 enum TrailBalanceType {
   DEBIT
   CREDIT
 }
-
-

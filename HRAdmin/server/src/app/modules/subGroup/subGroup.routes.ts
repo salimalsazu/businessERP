@@ -1,8 +1,8 @@
 import express from 'express';
 import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
-import { GroupValidation } from './group.validations';
-import { GroupController } from './group.controller';
+import { SubGroupValidation } from './subGroup.validations';
+import { SubGroupController } from './subGroup.controller';
 
 const router = express.Router();
 
@@ -11,17 +11,15 @@ const router = express.Router();
 router.post(
   '/',
   // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  validateRequest(GroupValidation.addGroup),
-  GroupController.createGroup
+  validateRequest(SubGroupValidation.addSubGroup),
+  SubGroupController.createSubGroup
 );
 
 // !  get all Users ------------------------------>>>
 router.get(
   '/',
   // auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-  GroupController.getAllGroups
+  SubGroupController.getAllSubGroups
 );
 
-router.get('/trialBalance', GroupController.getTrialBalance);
-
-export const GroupRoutes = router;
+export const SubGroupRoutes = router;

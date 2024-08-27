@@ -11,6 +11,16 @@ import { IAccountCreate, IAccountFilterRequest } from './account.interface';
 import { accountRelationalFields, accountRelationalFieldsMapper, accountSearchableFields } from './account.constants';
 
 const createAccount = async (data: IAccountCreate): Promise<Account> => {
+  const findSubGroup = await prisma.subGroup.findUnique({
+    where: {
+      subGroupId: data.subGroupId,
+    },
+  });
+
+  if (!findSubGroup) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Sub Group not found');
+  }
+
   if (!data.accountName) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account Name is required');
   }
@@ -20,6 +30,7 @@ const createAccount = async (data: IAccountCreate): Promise<Account> => {
       accountName: data.accountName,
       openingBalance: data.openingBalance,
       closingBalance: data.closingBalance,
+      subGroupId: data.subGroupId,
     },
   });
 
