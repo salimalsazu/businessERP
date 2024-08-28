@@ -100,16 +100,27 @@ const SideBar = () => {
               >
                 Requisition
               </Nav.Item>
-              <Nav.Item
-                eventKey="3"
-                icon={<Icon as={CgDetailsMore} />}
-                as={Link}
-                href="/ledger"
-              >
-                Ledger
-              </Nav.Item>
+
               <Nav.Menu
-                eventKey="3"
+                eventKey="4"
+                trigger="hover"
+                title="Accounts & Finance"
+                icon={<Icon as={IoMan} />}
+                placement="rightStart"
+              >
+                <Nav.Item as={Link} href="/ledger">
+                  Ledger
+                </Nav.Item>
+                <Nav.Item as={Link} href="/sub-group">
+                  Sub Group
+                </Nav.Item>
+                <Nav.Item as={Link} href="/trial-balance">
+                  Trial balance
+                </Nav.Item>
+              </Nav.Menu>
+
+              <Nav.Menu
+                eventKey="5"
                 trigger="hover"
                 title="Attendance"
                 icon={<Icon as={IoMan} />}
@@ -124,7 +135,7 @@ const SideBar = () => {
               </Nav.Menu>
 
               <Nav.Menu
-                eventKey="4"
+                eventKey="6"
                 trigger="hover"
                 title="Mobile Bill"
                 icon={<Icon as={CiMobile1} />}
@@ -139,7 +150,7 @@ const SideBar = () => {
               </Nav.Menu>
 
               <Nav.Menu
-                eventKey="5"
+                eventKey="7"
                 trigger="hover"
                 title="Food"
                 icon={<Icon as={IoFastFood} />}
@@ -154,7 +165,7 @@ const SideBar = () => {
                 </Nav.Item>
               </Nav.Menu>
               <Nav.Menu
-                eventKey="6"
+                eventKey="8"
                 trigger="hover"
                 title="Transport"
                 icon={<Icon as={FaCar} />}
@@ -184,7 +195,7 @@ const SideBar = () => {
               </Nav.Menu>
 
               <Nav.Item
-                eventKey="3"
+                eventKey="10"
                 icon={<Icon as={CgDetailsMore} />}
                 as={Link}
                 href="/user"
