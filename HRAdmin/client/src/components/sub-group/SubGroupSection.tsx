@@ -6,6 +6,8 @@ import { useDebounced } from "@/redux/hooks";
 import Column from "rsuite/esm/Table/TableColumn";
 import { Cell, HeaderCell } from "rsuite-table";
 import { useGetGroupQuery } from "@/redux/api/features/groupApi";
+import AddGroupDrawer from "./AddGroupDrawer";
+import AddSubGroupDrawer from "./AddSubGroupDrawer";
 
 const SubGroupSectionTable = () => {
   const query: Record<string, any> = {};
@@ -33,46 +35,6 @@ const SubGroupSectionTable = () => {
   } = useGetGroupQuery({ ...query });
 
   console.log("data", allGroupData?.data?.data);
-
-  const data = [
-    { id: 1, group: "Asset", subGroup: "Current Asset", account: "Petty Cash" },
-    {
-      id: 1.1,
-      group: "Asset",
-      subGroup: "Current Asset",
-      account: "Bank Account",
-    },
-    {
-      id: 1.1,
-      group: "Asset",
-      subGroup: "Current Asset",
-      account: "Account Receivable",
-    },
-    {
-      id: 2,
-      group: "Asset",
-      subGroup: "Fixed Asset",
-      account: "Office Equipment",
-    },
-    {
-      id: 2.1,
-      group: "Asset",
-      subGroup: "Fixed Asset",
-      account: "Catering and Cutleries",
-    },
-    {
-      id: 4,
-      group: "Liabilities",
-      subGroup: "Current Liabilities",
-      account: "Accounts Payable",
-    },
-    {
-      id: 5,
-      group: "Liabilities",
-      subGroup: "Non-Current Liabilities",
-      account: "CD Account",
-    },
-  ];
 
   const rows: any = [];
   // Keep track of the last group and subgroup to handle rowspan correctly
@@ -147,6 +109,15 @@ const SubGroupSectionTable = () => {
     }
   });
 
+  //Add Group Drawer
+  const [backdropDrawer, setBackdropDrawer] = React.useState("static");
+  const [openGroupDrawer, setOpenGroupDrawer] = React.useState(false);
+
+  //Add Sub Group Drawer
+  const [backdropDrawerSubGroup, setBackdropDrawerSubGroup] =
+    React.useState("static");
+  const [openSubGroupDrawer, setOpenSubGroupDrawer] = React.useState(false);
+
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between gap-2 ">
@@ -189,6 +160,7 @@ const SubGroupSectionTable = () => {
             <Button
               className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
               type="button"
+              onClick={() => setOpenGroupDrawer(true)}
             >
               <span>
                 <svg
@@ -213,6 +185,7 @@ const SubGroupSectionTable = () => {
             <Button
               className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
               type="button"
+              onClick={() => setOpenSubGroupDrawer(true)}
             >
               <span>
                 <svg
@@ -250,7 +223,13 @@ const SubGroupSectionTable = () => {
               </th>
             </tr>
           </thead>
-          {isLoading ? (
+          {!allGroupData?.data?.data?.length ? (
+            <tr>
+              <td colSpan={3} className="text-center py-4">
+                No data found
+              </td>
+            </tr>
+          ) : isLoading ? (
             <tr>
               <td colSpan={3} className="text-center py-4">
                 <Loader speed="slow" content="Loading..." />
@@ -260,6 +239,22 @@ const SubGroupSectionTable = () => {
             rows
           )}
         </table>
+      </div>
+
+      <div>
+        <AddGroupDrawer
+          setOpenGroupDrawer={setOpenGroupDrawer}
+          openGroupDrawer={openGroupDrawer}
+          backdropDrawer={backdropDrawer}
+        />
+      </div>
+
+      <div>
+        <AddSubGroupDrawer
+          backdropDrawerSubGroup={backdropDrawerSubGroup}
+          openSubGroupDrawer={openSubGroupDrawer}
+          setOpenSubGroupDrawer={setOpenSubGroupDrawer}
+        />
       </div>
     </div>
   );
