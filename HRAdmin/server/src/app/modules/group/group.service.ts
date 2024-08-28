@@ -40,14 +40,31 @@ const getGroups = async (filters: IGroupFilterRequest, options: IPaginationOptio
   const andConditions: Prisma.GroupWhereInput[] = [];
 
   // Add search term condition if provided
+  // if (searchTerm) {
+  //   andConditions.push({
+  //     OR: groupSearchableFields.map((field: any) => ({
+  //       [field]: {
+  //         contains: searchTerm,
+  //         mode: 'insensitive',
+  //       },
+  //     })),
+  //   });
+  // }
+
   if (searchTerm) {
     andConditions.push({
-      OR: groupSearchableFields.map((field: any) => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
+      subGroup: {
+        some: {
+          account: {
+            some: {
+              accountName: {
+                contains: searchTerm,
+                mode: 'insensitive',
+              },
+            },
+          },
         },
-      })),
+      },
     });
   }
 
@@ -82,8 +99,11 @@ const getGroups = async (filters: IGroupFilterRequest, options: IPaginationOptio
       subGroup: {
         select: {
           subGroupName: true,
-          subGroupDescription: true,
-          account: true,
+          account: {
+            select: {
+              accountName: true,
+            },
+          },
         },
       },
     },

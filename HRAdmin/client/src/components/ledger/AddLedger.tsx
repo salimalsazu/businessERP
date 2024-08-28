@@ -6,7 +6,7 @@ import { Button, Drawer, Input, InputPicker, Tooltip, Whisper } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useGetSubGroupQuery } from "@/redux/api/features/subGroup";
+import { useGetSubGroupQuery } from "@/redux/api/features/subGroupApi";
 
 const AddLedgerSection = ({ openDrawer, setOpenDrawer }: any) => {
   const { data: subGroupData } = useGetSubGroupQuery({});

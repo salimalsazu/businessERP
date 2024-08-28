@@ -12,6 +12,8 @@ export enum tagTypes {
   account = "account",
   transaction = "transaction",
   salary = "salary",
+  group = "group",
+  subGroup = "subGroup",
 }
 
 export const tagTypesList = [
@@ -28,4 +30,6 @@ export const tagTypesList = [
   tagTypes.account,
   tagTypes.transaction,
   tagTypes.salary,
+  tagTypes.group,
+  tagTypes.subGroup,
 ];

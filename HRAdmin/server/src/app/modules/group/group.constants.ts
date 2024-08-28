@@ -1,6 +1,6 @@
 export const groupFilterableFields: string[] = ['searchTerm', 'startDate', 'endDate'];
 
-export const groupSearchableFields: string[] = ['accountName', 'trId', 'startDate', 'endDate'];
+export const groupSearchableFields: string[] = ['accountName'];
 
 export const groupRelationalFields: string[] = ['academicFacultyId', 'academicDepartmentId', 'academicSemesterId'];
 

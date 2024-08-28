@@ -1,25 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Table } from "rsuite";
+import { Button, Loader, Table } from "rsuite";
 import { useDebounced } from "@/redux/hooks";
 import Column from "rsuite/esm/Table/TableColumn";
 import { Cell, HeaderCell } from "rsuite-table";
+import { useGetGroupQuery } from "@/redux/api/features/groupApi";
 
 const SubGroupSectionTable = () => {
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: "",
-    endDate: "",
-  });
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
 
-  // for queries
-  query["startDate"] = selectedDate.startDate;
-  query["endDate"] = selectedDate.endDate;
   query["limit"] = size;
   query["page"] = page;
 
@@ -31,6 +25,14 @@ const SubGroupSectionTable = () => {
   if (!!debouncedTerm) {
     query["searchTerm"] = debouncedTerm;
   }
+
+  const {
+    data: allGroupData,
+    isLoading,
+    error,
+  } = useGetGroupQuery({ ...query });
+
+  console.log("data", allGroupData?.data?.data);
 
   const data = [
     { id: 1, group: "Asset", subGroup: "Current Asset", account: "Petty Cash" },
@@ -73,49 +75,75 @@ const SubGroupSectionTable = () => {
   ];
 
   const rows: any = [];
-  let lastGroup = "";
-  let lastSubGroup = "";
+  // Keep track of the last group and subgroup to handle rowspan correctly
+  let lastGroup: any = null;
+  let lastSubGroup: any = null;
 
-  data.forEach((item, index) => {
-    if (item.group !== lastGroup) {
-      rows.push(
-        <tr key={`group-${index}`}>
-          <td
-            className="bg-gray-50 font-semibold text-left px-4 py-2"
-            rowSpan={data.filter((d) => d.group === item.group).length}
-          >
-            {item.group}
-          </td>
-          <td
-            className="bg-gray-100 font-semibold text-left px-4 py-2"
-            rowSpan={data.filter((d) => d.subGroup === item.subGroup).length}
-          >
-            {item.subGroup}
-          </td>
-          <td className="px-4 py-2">{item.account}</td>
-        </tr>
-      );
-      lastGroup = item.group;
-      lastSubGroup = item.subGroup;
-    } else if (item.subGroup !== lastSubGroup) {
-      rows.push(
-        <tr key={`subgroup-${index}`}>
-          <td
-            className="bg-gray-100 font-semibold text-left px-4 py-2"
-            rowSpan={data.filter((d) => d.subGroup === item.subGroup).length}
-          >
-            {item.subGroup}
-          </td>
-          <td className="px-4 py-2">{item.account}</td>
-        </tr>
-      );
-      lastSubGroup = item.subGroup;
-    } else {
-      rows.push(
-        <tr key={`account-${index}`}>
-          <td className="px-4 py-2">{item.account}</td>
-        </tr>
-      );
+  // Iterate over all groups
+  allGroupData?.data?.data.forEach((group: any, groupIndex: any) => {
+    // Check if the current group is different from the last one
+    if (group.groupName !== lastGroup) {
+      // Check if the group has subgroups
+      if (group.subGroup && group.subGroup.length > 0) {
+        group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
+          // Check if the current subgroup is different from the last one
+          if (subGroup.subGroupName !== lastSubGroup) {
+            rows.push(
+              <tr key={`group-${groupIndex}-subgroup-${subGroupIndex}`}>
+                {subGroupIndex === 0 && (
+                  <td
+                    className="bg-gray-50 font-semibold text-left px-4 py-2"
+                    rowSpan={group.subGroup.length}
+                  >
+                    {group.groupName}
+                  </td>
+                )}
+                <td
+                  className="bg-gray-100 font-semibold text-left px-4 py-2"
+                  rowSpan={subGroup.account.length}
+                >
+                  {subGroup.subGroupName}
+                </td>
+                <td className="px-4 py-2">{subGroup.account[0].accountName}</td>
+              </tr>
+            );
+
+            // Push additional account rows if there are more than one
+            subGroup.account
+              .slice(1)
+              .forEach((account: any, accountIndex: any) => {
+                rows.push(
+                  <tr
+                    key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}
+                  >
+                    <td className="px-4 py-2">{account.accountName}</td>
+                  </tr>
+                );
+              });
+
+            // Update the last subgroup to the current one
+            lastSubGroup = subGroup.subGroupName;
+          }
+        });
+      } else {
+        // No subgroups, just add the group row
+        rows.push(
+          <tr key={`group-${groupIndex}`}>
+            <td
+              className="bg-gray-50 font-semibold text-left px-4 py-2"
+              rowSpan={1}
+            >
+              {group.groupName}
+            </td>
+            <td colSpan={2} className="px-4 py-2 text-center">
+              No Subgroups
+            </td>
+          </tr>
+        );
+      }
+
+      // Update the last group to the current one
+      lastGroup = group.groupName;
     }
   });
 
@@ -222,7 +250,15 @@ const SubGroupSectionTable = () => {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">{rows}</tbody>
+          {isLoading ? (
+            <tr>
+              <td colSpan={3} className="text-center py-4">
+                <Loader speed="slow" content="Loading..." />
+              </td>
+            </tr>
+          ) : (
+            rows
+          )}
         </table>
       </div>
     </div>
