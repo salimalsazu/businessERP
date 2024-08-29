@@ -42,70 +42,154 @@ const SubGroupSectionTable = () => {
   let lastSubGroup: any = null;
 
   // Iterate over all groups
+  // allGroupData?.data?.data.forEach((group: any, groupIndex: any) => {
+  //   // Check if the current group is different from the last one
+  //   if (group.groupName !== lastGroup) {
+  //     // Check if the group has subgroups
+  //     if (group.subGroup && group.subGroup.length > 0) {
+  //       group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
+  //         // Check if the current subgroup is different from the last one
+  //         if (subGroup.subGroupName !== lastSubGroup) {
+  //           rows.push(
+  //             <tr key={`group-${groupIndex}-subgroup-${subGroupIndex}`}>
+  //               {subGroupIndex === 0 && (
+  //                 <td
+  //                   className="bg-gray-50 font-semibold text-left px-4 py-2"
+  //                   rowSpan={group.subGroup.length}
+  //                 >
+  //                   {group.groupName}
+  //                 </td>
+  //               )}
+  //               <td
+  //                 className="bg-gray-100 font-semibold text-left px-4 py-2"
+  //                 rowSpan={subGroup.account.length}
+  //               >
+  //                 {subGroup.subGroupName}
+  //               </td>
+  //               <td className="px-4 py-2">
+  //                 {subGroup?.account[0]?.accountName}
+  //               </td>
+  //             </tr>
+  //           );
+
+  //           // Push additional account rows if there are more than one
+  //           subGroup.account
+  //             .slice(1)
+  //             .forEach((account: any, accountIndex: any) => {
+  //               rows.push(
+  //                 <tr
+  //                   key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}
+  //                 >
+  //                   <td className="px-4 py-2">{account.accountName}</td>
+  //                 </tr>
+  //               );
+  //             });
+
+  //           // Update the last subgroup to the current one
+  //           lastSubGroup = subGroup.subGroupName;
+  //         }
+  //       });
+  //     } else {
+  //       // No subgroups, just add the group row
+  //       rows.push(
+  //         <tr key={`group-${groupIndex}`}>
+  //           <td
+  //             className="bg-gray-50 font-semibold text-left px-4 py-2"
+  //             rowSpan={1}
+  //           >
+  //             {group.groupName}
+  //           </td>
+  //           <td colSpan={2} className="px-4 py-2 text-center">
+  //             No Subgroups
+  //           </td>
+  //         </tr>
+  //       );
+  //     }
+
+  //     // Update the last group to the current one
+  //     lastGroup = group.groupName;
+  //   }
+  // });
+
   allGroupData?.data?.data.forEach((group: any, groupIndex: any) => {
-    // Check if the current group is different from the last one
-    if (group.groupName !== lastGroup) {
-      // Check if the group has subgroups
-      if (group.subGroup && group.subGroup.length > 0) {
-        group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
-          // Check if the current subgroup is different from the last one
-          if (subGroup.subGroupName !== lastSubGroup) {
-            rows.push(
-              <tr key={`group-${groupIndex}-subgroup-${subGroupIndex}`}>
-                {subGroupIndex === 0 && (
-                  <td
-                    className="bg-gray-50 font-semibold text-left px-4 py-2"
-                    rowSpan={group.subGroup.length}
-                  >
-                    {group.groupName}
-                  </td>
-                )}
-                <td
-                  className="bg-gray-100 font-semibold text-left px-4 py-2"
-                  rowSpan={subGroup.account.length}
-                >
-                  {subGroup.subGroupName}
-                </td>
-                <td className="px-4 py-2">{subGroup.account[0].accountName}</td>
-              </tr>
-            );
+    // Calculate the total number of rows for the group (sum of all accounts in each subgroup)
+    const groupRowCount = group.subGroup.reduce(
+      (count: number, subGroup: any) =>
+        count + Math.max(subGroup.account.length, 1),
+      0
+    );
 
-            // Push additional account rows if there are more than one
-            subGroup.account
-              .slice(1)
-              .forEach((account: any, accountIndex: any) => {
-                rows.push(
-                  <tr
-                    key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}
-                  >
-                    <td className="px-4 py-2">{account.accountName}</td>
-                  </tr>
-                );
-              });
+    // Render the group only once and span all its subgroups and accounts
+    let isGroupRendered = false;
 
-            // Update the last subgroup to the current one
-            lastSubGroup = subGroup.subGroupName;
-          }
+    if (group.subGroup && group.subGroup.length > 0) {
+      group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
+        // Calculate the total number of rows for the subgroup (number of accounts or 1 if empty)
+        const subGroupRowCount = Math.max(subGroup.account.length, 1);
+
+        // Render the group row only once per group
+        if (!isGroupRendered) {
+          rows.push(
+            <tr key={`group-${groupIndex}`}>
+              <td
+                className="bg-gray-50 font-semibold text-left px-4 py-2"
+                rowSpan={groupRowCount} // Span all subgroup rows under this group
+              >
+                {group.groupName}
+              </td>
+              <td
+                className="bg-gray-100 font-semibold text-left px-4 py-2"
+                rowSpan={subGroupRowCount} // Span all account rows under this subgroup
+              >
+                {subGroup.subGroupName}
+              </td>
+              <td className="px-4 py-2">
+                {subGroup.account[0]?.accountName || "No Accounts"}
+              </td>
+            </tr>
+          );
+          isGroupRendered = true;
+        } else {
+          // Render only the subgroup and accounts for other subgroups
+          rows.push(
+            <tr key={`subgroup-${groupIndex}-${subGroupIndex}`}>
+              <td
+                className="bg-gray-100 font-semibold text-left px-4 py-2"
+                rowSpan={subGroupRowCount} // Span all account rows under this subgroup
+              >
+                {subGroup.subGroupName}
+              </td>
+              <td className="px-4 py-2">
+                {subGroup.account[0]?.accountName || "No Accounts"}
+              </td>
+            </tr>
+          );
+        }
+
+        // Render remaining accounts for the subgroup if any
+        subGroup.account.slice(1).forEach((account: any, accountIndex: any) => {
+          rows.push(
+            <tr key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}>
+              <td className="px-4 py-2">{account.accountName}</td>
+            </tr>
+          );
         });
-      } else {
-        // No subgroups, just add the group row
-        rows.push(
-          <tr key={`group-${groupIndex}`}>
-            <td
-              className="bg-gray-50 font-semibold text-left px-4 py-2"
-              rowSpan={1}
-            >
-              {group.groupName}
-            </td>
-            <td colSpan={2} className="px-4 py-2 text-center">
-              No Subgroups
-            </td>
-          </tr>
-        );
-      }
-
-      // Update the last group to the current one
-      lastGroup = group.groupName;
+      });
+    } else {
+      // No subgroups, just add the group row
+      rows.push(
+        <tr key={`group-${groupIndex}`}>
+          <td
+            className="bg-gray-50 font-semibold text-left px-4 py-2"
+            rowSpan={1}
+          >
+            {group.groupName}
+          </td>
+          <td colSpan={2} className="px-4 py-2 text-center">
+            No Subgroups
+          </td>
+        </tr>
+      );
     }
   });
 
@@ -211,34 +295,36 @@ const SubGroupSectionTable = () => {
 
       {/* main section for table */}
       <div className="overflow-x-auto p-4 bg-gray-50 rounded-lg shadow-md">
-        <table className="min-w-full bg-white divide-y divide-gray-200">
-          <thead className="bg-gray-400 text-white">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium">Group</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
-                Sub Group
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
-                Account
-              </th>
-            </tr>
-          </thead>
-          {!allGroupData?.data?.data?.length ? (
-            <tr>
-              <td colSpan={3} className="text-center py-4">
-                No data found
-              </td>
-            </tr>
-          ) : isLoading ? (
-            <tr>
-              <td colSpan={3} className="text-center py-4">
-                <Loader speed="slow" content="Loading..." />
-              </td>
-            </tr>
-          ) : (
-            rows
-          )}
-        </table>
+        {isLoading ? (
+          <div className="flex justify-center items-center">
+            <Loader size="md" content="All Accounts" />
+          </div>
+        ) : (
+          <table className="min-w-full bg-white divide-y divide-gray-200">
+            <thead className="bg-gray-400 text-white">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium">
+                  Group
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium">
+                  Sub Group
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium">
+                  Account
+                </th>
+              </tr>
+            </thead>
+            {!allGroupData?.data?.data?.length ? (
+              <tr>
+                <td colSpan={3} className="text-center py-4">
+                  No data found
+                </td>
+              </tr>
+            ) : (
+              rows
+            )}
+          </table>
+        )}
       </div>
 
       <div>

@@ -21,7 +21,15 @@ const groupApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.account, tagTypes.subGroup, tagTypes.group],
     }),
+    getTrailBalance: builder.query({
+      query: (arg: Record<string, any>) => ({
+        url: `${GROUP_API}/trialBalance`,
+        method: "GET",
+        params: arg,
+      }),
+      providesTags: [tagTypes.account, tagTypes.subGroup, tagTypes.group],
+    }),
   }),
 });
 
-export const { useAddGroupMutation, useGetGroupQuery } = groupApi;
+export const { useAddGroupMutation, useGetGroupQuery, useGetTrailBalanceQuery } = groupApi;
