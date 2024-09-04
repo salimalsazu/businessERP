@@ -133,14 +133,13 @@ const getGroups = async (filters: IGroupFilterRequest, options: IPaginationOptio
 
 const getTrialBalance = async (
   filters: IGroupFilterRequest,
-  options: IPaginationOptions,
-  selectedDate: Date
+  options: IPaginationOptions
 ): Promise<IGenericResponse<{ debit: Group[]; credit: Group[]; totalDebit: number; totalCredit: number }>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   // Destructure filter properties
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, selectedDate, ...filterData } = filters;
 
   // Define an array to hold filter conditions
   const andConditions: Prisma.GroupWhereInput[] = [];

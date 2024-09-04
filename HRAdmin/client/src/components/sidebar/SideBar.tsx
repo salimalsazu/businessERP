@@ -117,6 +117,12 @@ const SideBar = () => {
                 <Nav.Item as={Link} href="/trial-balance">
                   Trial balance
                 </Nav.Item>
+                <Nav.Item as={Link} href="/profit-loss">
+                  Profit & Loss
+                </Nav.Item>
+                <Nav.Item as={Link} href="/balance-sheet">
+                  Balance Sheet
+                </Nav.Item>
               </Nav.Menu>
 
               <Nav.Menu

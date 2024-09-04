@@ -11,7 +11,8 @@ services:
       POSTGRES_DB: erp
     volumes:
       - type: bind
-        source: /root/volumes/erp/db
+        source: C:\data\db
+        # source: /root/volumes/erp/db
         target: /var/lib/postgresql/db
     restart: unless-stopped
 
@@ -28,7 +29,8 @@ services:
       - 7000:7000
     volumes:
       - type: bind
-        source: /root/volumes/erp/data
+        source: C:\data\data
+        # source: /root/volumes/erp/data
         target: /app/uploads
 
   client:
@@ -42,3 +44,15 @@ services:
       - server
     ports:
       - 3000:3000
+
+  backup-service:
+    build:
+      context: ./backup-service
+    container_name: backup-service
+    volumes:
+      - type: bind
+        source: C:/data/backup
+        target: /backup
+    depends_on:
+      - postgres
+    restart: unless-stopped

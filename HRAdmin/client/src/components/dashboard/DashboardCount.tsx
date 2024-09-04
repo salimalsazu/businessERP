@@ -4,6 +4,7 @@ import { useGetAllCountQuery } from "@/redux/api/features/dashboardApi";
 import { Loader } from "rsuite";
 
 const DashboardCount = () => {
+  //@ts-ignore
   const { data: dataCount, isLoading } = useGetAllCountQuery("");
 
   console.log("Count", dataCount);
