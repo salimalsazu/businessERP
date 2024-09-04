@@ -17,6 +17,7 @@ import { TransactionRoutes } from '../modules/transaction/transaction.routes';
 import { SalaryRoutes } from '../modules/salary/salary.routes';
 import { GroupRoutes } from '../modules/group/group.routes';
 import { SubGroupRoutes } from '../modules/subGroup/subGroup.routes';
+import { DashboardRoutes } from '../modules/dashboard/dashboard.router';
 
 const router = express.Router();
 
@@ -84,6 +85,10 @@ const moduleRoutes = [
   {
     path: '/subGroup',
     route: SubGroupRoutes,
+  },
+  {
+    path: '/dashboard',
+    route: DashboardRoutes,
   },
 ];
 
