@@ -34,7 +34,10 @@ const DashboardLayout = ({ children }: any) => {
       </div>
 
       <Container className="!bg-secondary  ">
-        <div className="bg-sidebar h-14 flex justify-end items-center pr-5">
+        <div className="bg-sidebar h-14 flex gap-3 justify-end items-center pr-5">
+          <div className="bg-gray-200 rounded-sm p-1">
+            <h1 className="font-bold text-sm text-blue-600">Version: 0.1.1</h1>
+          </div>
           <div className="flex items-center gap-2">
             <p className="text-gray-600 text-md font-bold">
               {userExist?.firstName} {userExist?.lastName}
