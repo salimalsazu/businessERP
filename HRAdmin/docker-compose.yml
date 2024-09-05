@@ -51,7 +51,8 @@ services:
     container_name: backup-service
     volumes:
       - type: bind
-        source: C:/data/backup
+        # source: C:/data/backup
+        source: /var/backups
         target: /backup
     depends_on:
       - postgres
