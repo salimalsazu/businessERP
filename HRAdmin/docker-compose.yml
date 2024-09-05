@@ -13,7 +13,7 @@ services:
       - type: bind
         # source: C:\data\db
         source: /root/volumes/erp/db
-        target: /var/lib/postgresql/db
+        target: /var/lib/postgresql/data
     restart: unless-stopped
 
   server:
