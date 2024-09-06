@@ -3,6 +3,9 @@ BACKUP_DIR="/backup"
 TIMESTAMP=$(date +\%F-\%T)
 FILENAME="backup-$TIMESTAMP.sql"
 
+# Set PostgreSQL password environment variable
+export PGPASSWORD="salimalsazu"
+
 # Use -h postgres to connect to the Postgres container over the network
 pg_dump -U postgres -h postgres -p 5432 erp > $BACKUP_DIR/$FILENAME 2> /backup/backup_error.log
 
