@@ -3,8 +3,8 @@ BACKUP_DIR="/backup"
 TIMESTAMP=$(date +\%F-\%T)
 FILENAME="backup-$TIMESTAMP.sql"
 
-# Perform the backup and log output
-pg_dump -U postgres erp > $BACKUP_DIR/$FILENAME 2> /backup/backup_error.log
+# Use -h postgres to connect to the Postgres container over the network
+pg_dump -U postgres -h postgres -p 5432 erp > $BACKUP_DIR/$FILENAME 2> /backup/backup_error.log
 
 # Check if pg_dump was successful
 if [ $? -eq 0 ]; then
