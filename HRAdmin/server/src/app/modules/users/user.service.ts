@@ -134,7 +134,7 @@ const updateProfileInfo = async (
   }
 
   // Prepare data for updating Profile
-  const { password, email, userStatus, ...profileUpdateData } = payload;
+  const { ...profileUpdateData } = payload;
 
   await prisma.$transaction(async (prisma) => {
     if (Object.keys(updatedUserData).length > 0) {

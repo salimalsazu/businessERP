@@ -42,7 +42,16 @@ const JobDetailsSection = (userDetails: any) => {
             <span className="font-semibold text-lg">Salary:</span>
             <span>
               {Number(
-                userDetails?.userDetails?.profile?.salary
+                userDetails?.userDetails?.profile?.totalSalary
+              ).toLocaleString()}
+              .00
+            </span>
+          </div>
+          <div className="flex text-2xl font-light gap-1">
+            <span className="font-semibold text-lg">TDS:</span>
+            <span>
+              {Number(
+                userDetails?.userDetails?.profile?.tdsOnSalary
               ).toLocaleString()}
               .00
             </span>
