@@ -1,0 +1,12 @@
+model MobileBill {
+  mobileBillId String   @id @default(uuid())
+  billDate     DateTime @db.Timestamptz(0)
+  billingMonth String
+  billAmount   Int
+usage        Int
+  deduction    Int
+  userId       String
+  user         User     @relation(fields: [userId], references: [userId])
+  createdAt    DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(0)
+}

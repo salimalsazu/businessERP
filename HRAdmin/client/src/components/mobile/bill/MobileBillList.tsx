@@ -269,7 +269,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Mobile No</HeaderCell>
               <Cell
-                dataKey="mobileNo"
+                dataKey="user.profile.mobileNo"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
