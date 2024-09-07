@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {  MobileBill, Prisma } from '@prisma/client';
+import { MobileBill, Prisma } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
@@ -11,10 +11,7 @@ import prisma from '../../../shared/prisma';
 import { IMobileBillFilterRequest, IMobileBillRequest } from './mobileBill.interface';
 import { MobileBillRelationalFields, MobileBillRelationalFieldsMapper, MobileBillSearchableFields } from './mobileBill.constants';
 
-
 const addMobileBill = async (data: IMobileBillRequest[]): Promise<Prisma.BatchPayload> => {
-  console.log('data', data);
-
   data.map(item => {
     if (!item.userId) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'User Id is required');
@@ -57,16 +54,12 @@ const addMobileBill = async (data: IMobileBillRequest[]): Promise<Prisma.BatchPa
     return {
       billDate: item.billDate,
       billingMonth: billingMonth.toString(),
-      mobileNo: user.profile?.mobileNo || '',
       billAmount: item.billAmount,
-      billLimit: user.profile?.mobileBillingLimit ?? 0,
       deduction: Math.min(0, billingLimit - item.billAmount),
       usage: (item.billAmount / (user.profile?.mobileBillingLimit || 1)) * 100, // Avoid division by zero
       userId: user.userId,
     };
   });
-
-  console.log('mobileBillData', mobileBillData);
 
   const result = await prisma.mobileBill.createMany({
     data: mobileBillData,
