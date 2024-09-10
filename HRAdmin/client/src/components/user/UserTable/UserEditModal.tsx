@@ -39,7 +39,8 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
       profileId: userDetails?.profile?.profileId,
       payload: {
         ...data,
-        salary: parseInt(data.salary),
+        totalSalary: parseInt(data.totalSalary),
+        tdsOnSalary: parseInt(data.tdsOnSalary),
       },
     });
   };
@@ -481,14 +482,14 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
             <div className="flex flex-col gap-3 w-full">
               <div>
                 <Whisper speaker={<Tooltip>Salary</Tooltip>}>
-                  <label htmlFor="email" className="text-sm font-medium">
+                  <label htmlFor="totalSalary" className="text-sm font-medium">
                     Salary
                     <InfoOutlineIcon />
                   </label>
                 </Whisper>
               </div>
               <Controller
-                name="salary"
+                name="totalSalary"
                 control={control}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper">
@@ -497,8 +498,35 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
                       {...field}
                       size="lg"
                       type="salary"
-                      defaultValue={userDetails?.profile?.salary}
+                      defaultValue={userDetails?.profile?.totalSalary}
                       placeholder="Salary"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                )}
+              />
+            </div>
+            <div className="flex flex-col gap-3 w-full">
+              <div>
+                <Whisper speaker={<Tooltip>TDS</Tooltip>}>
+                  <label htmlFor="totalSalary" className="text-sm font-medium">
+                    TDS
+                    <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="tdsOnSalary"
+                control={control}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <Input
+                      className="z-20 w-full"
+                      {...field}
+                      size="lg"
+                      type="salary"
+                      defaultValue={userDetails?.profile?.tdsOnSalary}
+                      placeholder="Tax"
                       style={{ width: "100%" }}
                     />
                   </div>
@@ -512,7 +540,7 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
               Status:
             </p>
           </div>
-          <div>
+          {/* <div>
             <div className="flex flex-col gap-3 w-full">
               <div>
                 <Whisper speaker={<Tooltip>Status</Tooltip>}>
@@ -523,7 +551,7 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
                 </Whisper>
               </div>
               <Controller
-                name="salary"
+                name="userStatus"
                 control={control}
                 defaultValue={userDetails?.userStatus}
                 render={({ field }) => (
@@ -549,7 +577,7 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
                 )}
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="flex justify-end my-3">
             <Button

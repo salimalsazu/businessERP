@@ -46,6 +46,8 @@ export type IUpdateProfileReqAndResponse = {
   joiningDate?: Date;
   experience?: string;
   salary?: number;
+  totalSalary?: number;
+  tdsOnSalary?: number;
   address?: string;
   birthCertificateNo?: string;
   dateOfBirth?: Date;
