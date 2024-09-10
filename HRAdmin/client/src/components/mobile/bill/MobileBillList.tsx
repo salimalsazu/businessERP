@@ -20,6 +20,7 @@ import { headerCss } from "@/utils/TableCSS";
 import NewMobileBillModal from "./NewMobileBillModal";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import { useGetMobileBillQuery } from "@/redux/api/features/mobileBillApi";
+import MobileEditModal from "./MonileEditModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -108,6 +109,10 @@ const MobileBillList = () => {
       </Popover>
     );
   };
+
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const handleOpenEdit = () => setOpenEditModal(true);
+  const handleCloseEdit = () => setOpenEditModal(false);
 
   return (
     <div>
@@ -279,7 +284,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Limit</HeaderCell>
               <Cell
-                dataKey="billLimit"
+                dataKey="user.profile.mobileBillingLimit"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -307,32 +312,37 @@ const MobileBillList = () => {
               </Cell>
             </Column>
 
-            {/* Deduction*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Deduction</HeaderCell>
               <Cell
                 dataKey="deduction"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-            {/* {role !== "USER" && (
-                  <Column width={70}>
-                    <HeaderCell style={headerCss}>Action</HeaderCell>
-                    <Cell style={cellCss} verticalAlign="middle" align="center">
-                      {(rowData: any) => (
-                        <IconButton
-                          onClick={() => {
-                            setCourierEditModalOpen(true);
-                            setCourierEditData(rowData);
-                          }}
-                          circle
-                          icon={<RiEdit2Line size={20} />}
-                        />
+              >
+                {(rowData) => {
+                  const [isHovered, setIsHovered] = useState(false);
+
+                  return (
+                    <div
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                      style={{ display: "flex", alignItems: "end", gap: "5px" }}
+                    >
+                      <span>{rowData.deduction}</span>
+                      {isHovered && (
+                        <Button
+                          onClick={handleOpenEdit}
+                          appearance="primary"
+                          size="xs"
+                        >
+                          Edit
+                        </Button>
                       )}
-                    </Cell>
-                  </Column>
-                )} */}
+                    </div>
+                  );
+                }}
+              </Cell>
+            </Column>
           </Table>
         </>
 
@@ -360,6 +370,10 @@ const MobileBillList = () => {
       {/* Modal */}
       <div>
         <NewMobileBillModal open={open} handleClose={handleClose} />
+      </div>
+
+      <div>
+        <MobileEditModal />
       </div>
     </div>
   );
