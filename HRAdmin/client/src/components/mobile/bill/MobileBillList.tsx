@@ -20,6 +20,8 @@ import { headerCss } from "@/utils/TableCSS";
 import NewMobileBillModal from "./NewMobileBillModal";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import { useGetMobileBillQuery } from "@/redux/api/features/mobileBillApi";
+import MobileEditModal from "./MobileUploadBillModal";
+import UploaderFile from "./UploaderFile";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -156,50 +158,55 @@ const MobileBillList = () => {
           </div>
         </div>
 
-        <div className="flex justify-center gap-5">
-          <div>
-            <ButtonToolbar>
-              <Whisper
-                placement="bottomEnd"
-                speaker={renderMenu}
-                trigger={["click"]}
+        <div className="flex justify-center gap-3">
+          <div className="flex justify-center items-center gap-5">
+            <div>
+              <ButtonToolbar>
+                <Whisper
+                  placement="bottomEnd"
+                  speaker={renderMenu}
+                  trigger={["click"]}
+                >
+                  <Button
+                    appearance="default"
+                    className="!bg-secondary  outline outline-1 font-medium text-gray-700 !rounded "
+                    // color="blue"
+                    startIcon={<DocPassIcon className="text-sm" />}
+                    endIcon={<ArrowDownLineIcon className="text-xl" />}
+                  >
+                    Report
+                  </Button>
+                </Whisper>
+              </ButtonToolbar>
+            </div>
+            <div>
+              <Button
+                className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
+                type="button"
+                onClick={handleOpen}
               >
-                <Button
-                  appearance="default"
-                  className="!bg-secondary  outline outline-1 font-medium text-gray-700 !rounded "
-                  // color="blue"
-                  startIcon={<DocPassIcon className="text-sm" />}
-                  endIcon={<ArrowDownLineIcon className="text-xl" />}
-                >
-                  Report
-                </Button>
-              </Whisper>
-            </ButtonToolbar>
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="#fff"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                </span>
+                <span className="text-sm font-semibold">New Mobile Bill</span>
+              </Button>
+            </div>
           </div>
-          <div>
-            <Button
-              className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
-              type="button"
-              onClick={handleOpen}
-            >
-              <span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="#fff"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              </span>
-              <span className="text-sm font-semibold">New Mobile Bill</span>
-            </Button>
+          <div className="w-full">
+            <UploaderFile />
           </div>
         </div>
       </div>
@@ -279,7 +286,7 @@ const MobileBillList = () => {
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Limit</HeaderCell>
               <Cell
-                dataKey="billLimit"
+                dataKey="user.profile.mobileBillingLimit"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               ></Cell>
@@ -307,32 +314,37 @@ const MobileBillList = () => {
               </Cell>
             </Column>
 
-            {/* Deduction*/}
             <Column flexGrow={1}>
               <HeaderCell style={headerCss}>Deduction</HeaderCell>
               <Cell
                 dataKey="deduction"
                 verticalAlign="middle"
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
-              ></Cell>
-            </Column>
-            {/* {role !== "USER" && (
-                  <Column width={70}>
-                    <HeaderCell style={headerCss}>Action</HeaderCell>
-                    <Cell style={cellCss} verticalAlign="middle" align="center">
-                      {(rowData: any) => (
-                        <IconButton
-                          onClick={() => {
-                            setCourierEditModalOpen(true);
-                            setCourierEditData(rowData);
-                          }}
-                          circle
-                          icon={<RiEdit2Line size={20} />}
-                        />
+              >
+                {(rowData) => {
+                  const [isHovered, setIsHovered] = useState(false);
+
+                  return (
+                    <div
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                      style={{ display: "flex", alignItems: "end", gap: "5px" }}
+                    >
+                      <span>{rowData.deduction}</span>
+                      {isHovered && (
+                        <Button
+                          // onClick={handleOpenEdit}
+                          appearance="primary"
+                          size="xs"
+                        >
+                          Edit
+                        </Button>
                       )}
-                    </Cell>
-                  </Column>
-                )} */}
+                    </div>
+                  );
+                }}
+              </Cell>
+            </Column>
           </Table>
         </>
 
@@ -360,6 +372,10 @@ const MobileBillList = () => {
       {/* Modal */}
       <div>
         <NewMobileBillModal open={open} handleClose={handleClose} />
+      </div>
+
+      <div>
+        <MobileEditModal />
       </div>
     </div>
   );
