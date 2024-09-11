@@ -20,7 +20,8 @@ import { headerCss } from "@/utils/TableCSS";
 import NewMobileBillModal from "./NewMobileBillModal";
 import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import { useGetMobileBillQuery } from "@/redux/api/features/mobileBillApi";
-import MobileEditModal from "./MonileEditModal";
+import MobileEditModal from "./MobileUploadBillModal";
+import UploaderFile from "./UploaderFile";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -110,10 +111,6 @@ const MobileBillList = () => {
     );
   };
 
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const handleOpenEdit = () => setOpenEditModal(true);
-  const handleCloseEdit = () => setOpenEditModal(false);
-
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between ">
@@ -161,50 +158,55 @@ const MobileBillList = () => {
           </div>
         </div>
 
-        <div className="flex justify-center gap-5">
-          <div>
-            <ButtonToolbar>
-              <Whisper
-                placement="bottomEnd"
-                speaker={renderMenu}
-                trigger={["click"]}
+        <div className="flex justify-center gap-3">
+          <div className="flex justify-center items-center gap-5">
+            <div>
+              <ButtonToolbar>
+                <Whisper
+                  placement="bottomEnd"
+                  speaker={renderMenu}
+                  trigger={["click"]}
+                >
+                  <Button
+                    appearance="default"
+                    className="!bg-secondary  outline outline-1 font-medium text-gray-700 !rounded "
+                    // color="blue"
+                    startIcon={<DocPassIcon className="text-sm" />}
+                    endIcon={<ArrowDownLineIcon className="text-xl" />}
+                  >
+                    Report
+                  </Button>
+                </Whisper>
+              </ButtonToolbar>
+            </div>
+            <div>
+              <Button
+                className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
+                type="button"
+                onClick={handleOpen}
               >
-                <Button
-                  appearance="default"
-                  className="!bg-secondary  outline outline-1 font-medium text-gray-700 !rounded "
-                  // color="blue"
-                  startIcon={<DocPassIcon className="text-sm" />}
-                  endIcon={<ArrowDownLineIcon className="text-xl" />}
-                >
-                  Report
-                </Button>
-              </Whisper>
-            </ButtonToolbar>
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="#fff"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                </span>
+                <span className="text-sm font-semibold">New Mobile Bill</span>
+              </Button>
+            </div>
           </div>
-          <div>
-            <Button
-              className="flex items-center gap-2 hover:text-white/80 px-4 py-2 rounded-[4px] !text-white !bg-primary !hover:bg-secondary"
-              type="button"
-              onClick={handleOpen}
-            >
-              <span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="#fff"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              </span>
-              <span className="text-sm font-semibold">New Mobile Bill</span>
-            </Button>
+          <div className="w-full">
+            <UploaderFile />
           </div>
         </div>
       </div>
@@ -331,7 +333,7 @@ const MobileBillList = () => {
                       <span>{rowData.deduction}</span>
                       {isHovered && (
                         <Button
-                          onClick={handleOpenEdit}
+                          // onClick={handleOpenEdit}
                           appearance="primary"
                           size="xs"
                         >
