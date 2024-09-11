@@ -33,12 +33,11 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
   ] = useUpdateMyProfileMutation();
 
   const handleEditUser: SubmitHandler<any> = async (data: any) => {
-    console.log("data", data);
-
     await updateUserProfile({
       profileId: userDetails?.profile?.profileId,
       payload: {
         ...data,
+        mobileBillingLimit: parseInt(data.mobileBillingLimit),
         totalSalary: parseInt(data.totalSalary),
         tdsOnSalary: parseInt(data.tdsOnSalary),
       },
@@ -295,6 +294,36 @@ const UserEditModal = ({ size, open, handleClose, userDetails }: any) => {
                       size="lg"
                       type="text"
                       defaultValue={userDetails?.profile?.mobileNo}
+                      placeholder="Mobile No"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                )}
+              />
+            </div>
+            <div className="flex flex-col gap-3 w-full">
+              <div>
+                <Whisper speaker={<Tooltip>Mobile Limit</Tooltip>}>
+                  <label
+                    htmlFor="mobileBillingLimit"
+                    className="text-sm font-medium"
+                  >
+                    Mobile Limit
+                    <InfoOutlineIcon />
+                  </label>
+                </Whisper>
+              </div>
+              <Controller
+                name="mobileBillingLimit"
+                control={control}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper">
+                    <Input
+                      className="z-20 w-full"
+                      {...field}
+                      size="lg"
+                      type="text"
+                      defaultValue={userDetails?.profile?.mobileBillingLimit}
                       placeholder="Mobile No"
                       style={{ width: "100%" }}
                     />

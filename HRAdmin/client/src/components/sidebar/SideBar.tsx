@@ -150,9 +150,9 @@ const SideBar = () => {
                 <Nav.Item eventKey="4-1" as={Link} href="/mobile/bill">
                   Mobile bill Overview
                 </Nav.Item>
-                <Nav.Item eventKey="4-2" as={Link} href="/mobile/request">
+                {/* <Nav.Item eventKey="4-2" as={Link} href="/mobile/request">
                   Request for balance update
-                </Nav.Item>
+                </Nav.Item> */}
               </Nav.Menu>
 
               <Nav.Menu

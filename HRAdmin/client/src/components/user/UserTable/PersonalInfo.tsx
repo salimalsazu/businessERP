@@ -82,6 +82,12 @@ const PersonalInfoSection = (userDetails: any) => {
             <span className="font-semibold">Phone:</span>
             <span>{userDetails?.userDetails?.profile?.mobileNo}</span>
           </div>
+          <div className="flex text-2xl font-light gap-1">
+            <span className="font-semibold">Phone:</span>
+            <span>
+              {userDetails?.userDetails?.profile?.mobileBillingLimit}.00
+            </span>
+          </div>
         </div>
       </div>
     </div>

@@ -53,6 +53,7 @@ export type IUpdateProfileReqAndResponse = {
   dateOfBirth?: Date;
   bankAccountNo?: string;
   mobileNo?: string;
+  mobileBillingLimit?: number;
   email?: string;
   password?: string;
   userStatus?: UserStatus;
