@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Papa from "papaparse"; // For CSV parsing
 import * as XLSX from "xlsx"; // For Excel parsing
-import { Uploader, Button } from "rsuite";
+import { Uploader } from "rsuite";
 import MobileUploadBillModal from "./MobileUploadBillModal";
+import { DataChange } from "./DateChange";
 
 const UploaderFile = () => {
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
   const [openUploadModal, setOpenUploadModal] = useState(false);
+
   console.log("data", data);
 
   const handleFileUpload = (fileList: any) => {
@@ -19,9 +21,13 @@ const UploaderFile = () => {
         const csvData: any = Papa.parse(reader.result as string, {
           header: true,
         });
-        setData(csvData.data);
+
+        // Ensure filtering out objects where billDate is null
+        const filteredData = csvData.data.filter((item: any) => item.billDate);
+
+        setData(filteredData); // Set filtered data without null billDate
         //@ts-ignore
-        setColumns(Object.keys(csvData.data[0]));
+        setColumns(Object.keys(filteredData[0]));
       };
       reader.readAsText(file);
     } else if (file && file.name.endsWith(".xlsx")) {
@@ -32,12 +38,13 @@ const UploaderFile = () => {
         const worksheet: any = XLSX.utils.sheet_to_json(
           workbook.Sheets[sheetName]
         );
-        // Remove the __rowNum__ field from each row
-        const cleanedData = worksheet.map(
-          ({ __rowNum__, ...rest }: any) => rest
-        );
 
-        setData(cleanedData);
+        // Remove the __rowNum__ field and filter out null billDate
+        const cleanedData = worksheet
+          .map(({ __rowNum__, ...rest }: any) => rest)
+          .filter((item: any) => item.billDate);
+
+        setData(cleanedData); // Set cleaned data without null billDate
         //@ts-ignore
         setColumns(Object.keys(cleanedData[0]));
       };
@@ -63,8 +70,19 @@ const UploaderFile = () => {
           action=""
           onChange={handleFileUpload}
           appearance="primary"
-          listType="picture"
-        />
+          draggable
+        >
+          <div
+            style={{
+              height: 80,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span>Click or Drag files to this area to upload</span>
+          </div>
+        </Uploader>
       </div>
 
       <div>

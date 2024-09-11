@@ -205,12 +205,11 @@ const MobileBillList = () => {
               </Button>
             </div>
           </div>
-          <div className="w-full">
-            <UploaderFile />
-          </div>
         </div>
       </div>
-
+      <div className="my-5 mx-1">
+        <UploaderFile />
+      </div>
       {/* main section for table */}
       <div className="bg-white shadow-sm rounded-md p-5 m-2 w-full">
         <>
