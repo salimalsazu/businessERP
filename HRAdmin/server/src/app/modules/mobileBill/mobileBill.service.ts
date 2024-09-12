@@ -20,6 +20,8 @@ const addMobileBill = async (data: IMobileBillRequest[]): Promise<Prisma.BatchPa
 
   const userIds = data.map(item => item.userId);
 
+  console.log('userIds', userIds);
+
   const isUserExist = await prisma.user.findMany({
     where: {
       userId: { in: userIds },
@@ -35,11 +37,14 @@ const addMobileBill = async (data: IMobileBillRequest[]): Promise<Prisma.BatchPa
     },
   });
 
+  console.log('isUserExist', isUserExist);
+
   // Check if all users have a corresponding profile
   if (isUserExist.length !== userIds.length) {
-    throw new Error('User Not Found');
+    throw new Error('Duplicate User Ids');
   }
 
+  //@ts-ignore
   const mobileBillData: Prisma.MobileBillCreateManyInput[] = data.map(item => {
     const user = isUserExist.find(u => u.userId === item.userId);
 
