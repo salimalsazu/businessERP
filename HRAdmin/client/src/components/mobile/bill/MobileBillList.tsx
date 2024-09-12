@@ -22,12 +22,11 @@ import { saveExcel } from "@/components/food/monthwise/ExcepReport";
 import { useGetMobileBillQuery } from "@/redux/api/features/mobileBillApi";
 import MobileEditModal from "./MobileUploadBillModal";
 import UploaderFile from "./UploaderFile";
-
 const { Column, HeaderCell, Cell } = Table;
 
 const MobileBillList = () => {
   const query: Record<string, any> = {};
-
+  const [isHovered, setIsHovered] = useState(false);
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
@@ -70,7 +69,6 @@ const MobileBillList = () => {
 
   // Modal
   const [open, setOpen] = useState(false);
-  const [backdrop, setBackdrop] = useState("static");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -321,8 +319,6 @@ const MobileBillList = () => {
                 style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
               >
                 {(rowData) => {
-                  const [isHovered, setIsHovered] = useState(false);
-
                   return (
                     <div
                       onMouseEnter={() => setIsHovered(true)}
