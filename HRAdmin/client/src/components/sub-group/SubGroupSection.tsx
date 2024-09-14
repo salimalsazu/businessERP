@@ -8,6 +8,7 @@ import { Cell, HeaderCell } from "rsuite-table";
 import { useGetGroupQuery } from "@/redux/api/features/groupApi";
 import AddGroupDrawer from "./AddGroupDrawer";
 import AddSubGroupDrawer from "./AddSubGroupDrawer";
+import TrashIcon from "@rsuite/icons/Trash";
 
 const SubGroupSectionTable = () => {
   const query: Record<string, any> = {};
@@ -41,76 +42,6 @@ const SubGroupSectionTable = () => {
   let lastGroup: any = null;
   let lastSubGroup: any = null;
 
-  // Iterate over all groups
-  // allGroupData?.data?.data.forEach((group: any, groupIndex: any) => {
-  //   // Check if the current group is different from the last one
-  //   if (group.groupName !== lastGroup) {
-  //     // Check if the group has subgroups
-  //     if (group.subGroup && group.subGroup.length > 0) {
-  //       group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
-  //         // Check if the current subgroup is different from the last one
-  //         if (subGroup.subGroupName !== lastSubGroup) {
-  //           rows.push(
-  //             <tr key={`group-${groupIndex}-subgroup-${subGroupIndex}`}>
-  //               {subGroupIndex === 0 && (
-  //                 <td
-  //                   className="bg-gray-50 font-semibold text-left px-4 py-2"
-  //                   rowSpan={group.subGroup.length}
-  //                 >
-  //                   {group.groupName}
-  //                 </td>
-  //               )}
-  //               <td
-  //                 className="bg-gray-100 font-semibold text-left px-4 py-2"
-  //                 rowSpan={subGroup.account.length}
-  //               >
-  //                 {subGroup.subGroupName}
-  //               </td>
-  //               <td className="px-4 py-2">
-  //                 {subGroup?.account[0]?.accountName}
-  //               </td>
-  //             </tr>
-  //           );
-
-  //           // Push additional account rows if there are more than one
-  //           subGroup.account
-  //             .slice(1)
-  //             .forEach((account: any, accountIndex: any) => {
-  //               rows.push(
-  //                 <tr
-  //                   key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}
-  //                 >
-  //                   <td className="px-4 py-2">{account.accountName}</td>
-  //                 </tr>
-  //               );
-  //             });
-
-  //           // Update the last subgroup to the current one
-  //           lastSubGroup = subGroup.subGroupName;
-  //         }
-  //       });
-  //     } else {
-  //       // No subgroups, just add the group row
-  //       rows.push(
-  //         <tr key={`group-${groupIndex}`}>
-  //           <td
-  //             className="bg-gray-50 font-semibold text-left px-4 py-2"
-  //             rowSpan={1}
-  //           >
-  //             {group.groupName}
-  //           </td>
-  //           <td colSpan={2} className="px-4 py-2 text-center">
-  //             No Subgroups
-  //           </td>
-  //         </tr>
-  //       );
-  //     }
-
-  //     // Update the last group to the current one
-  //     lastGroup = group.groupName;
-  //   }
-  // });
-
   allGroupData?.data?.data.forEach((group: any, groupIndex: any) => {
     // Calculate the total number of rows for the group (sum of all accounts in each subgroup)
     const groupRowCount = group.subGroup.reduce(
@@ -120,77 +51,77 @@ const SubGroupSectionTable = () => {
     );
 
     // Render the group only once and span all its subgroups and accounts
-    let isGroupRendered = false;
+    // let isGroupRendered = false;
 
-    if (group.subGroup && group.subGroup.length > 0) {
-      group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
-        // Calculate the total number of rows for the subgroup (number of accounts or 1 if empty)
-        const subGroupRowCount = Math.max(subGroup.account.length, 1);
+    // if (group.subGroup && group.subGroup.length > 0) {
+    //   group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
+    //     // Calculate the total number of rows for the subgroup (number of accounts or 1 if empty)
+    //     const subGroupRowCount = Math.max(subGroup.account.length, 1);
 
-        // Render the group row only once per group
-        if (!isGroupRendered) {
-          rows.push(
-            <tr key={`group-${groupIndex}`}>
-              <td
-                className="bg-gray-50 font-semibold text-left px-4 py-2"
-                rowSpan={groupRowCount} // Span all subgroup rows under this group
-              >
-                {group.groupName}
-              </td>
-              <td
-                className="bg-gray-100 font-semibold text-left px-4 py-2"
-                rowSpan={subGroupRowCount} // Span all account rows under this subgroup
-              >
-                {subGroup.subGroupName}
-              </td>
-              <td className="px-4 py-2">
-                {subGroup.account[0]?.accountName || "No Accounts"}
-              </td>
-            </tr>
-          );
-          isGroupRendered = true;
-        } else {
-          // Render only the subgroup and accounts for other subgroups
-          rows.push(
-            <tr key={`subgroup-${groupIndex}-${subGroupIndex}`}>
-              <td
-                className="bg-gray-100 font-semibold text-left px-4 py-2"
-                rowSpan={subGroupRowCount} // Span all account rows under this subgroup
-              >
-                {subGroup.subGroupName}
-              </td>
-              <td className="px-4 py-2">
-                {subGroup.account[0]?.accountName || "No Accounts"}
-              </td>
-            </tr>
-          );
-        }
+    //     // Render the group row only once per group
+    //     if (!isGroupRendered) {
+    //       rows.push(
+    //         <tr key={`group-${groupIndex}`}>
+    //           <td
+    //             className="bg-gray-50 font-semibold text-left px-4 py-2"
+    //             rowSpan={groupRowCount} // Span all subgroup rows under this group
+    //           >
+    //             {group.groupName}
+    //           </td>
+    //           <td
+    //             className="bg-gray-100 font-semibold text-left px-4 py-2"
+    //             rowSpan={subGroupRowCount} // Span all account rows under this subgroup
+    //           >
+    //             {subGroup.subGroupName}
+    //           </td>
+    //           <td className="px-4 py-2">
+    //             {subGroup.account[0]?.accountName || "No Accounts"}
+    //           </td>
+    //         </tr>
+    //       );
+    //       isGroupRendered = true;
+    //     } else {
+    //       // Render only the subgroup and accounts for other subgroups
+    //       rows.push(
+    //         <tr key={`subgroup-${groupIndex}-${subGroupIndex}`}>
+    //           <td
+    //             className="bg-gray-100 font-semibold text-left px-4 py-2"
+    //             rowSpan={subGroupRowCount} // Span all account rows under this subgroup
+    //           >
+    //             {subGroup.subGroupName}
+    //           </td>
+    //           <td className="px-4 py-2">
+    //             {subGroup.account[0]?.accountName || "No Accounts"}
+    //           </td>
+    //         </tr>
+    //       );
+    //     }
 
-        // Render remaining accounts for the subgroup if any
-        subGroup.account.slice(1).forEach((account: any, accountIndex: any) => {
-          rows.push(
-            <tr key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}>
-              <td className="px-4 py-2">{account.accountName}</td>
-            </tr>
-          );
-        });
-      });
-    } else {
-      // No subgroups, just add the group row
-      rows.push(
-        <tr key={`group-${groupIndex}`}>
-          <td
-            className="bg-gray-50 font-semibold text-left px-4 py-2"
-            rowSpan={1}
-          >
-            {group.groupName}
-          </td>
-          <td colSpan={2} className="px-4 py-2 text-center">
-            No Subgroups
-          </td>
-        </tr>
-      );
-    }
+    //     // Render remaining accounts for the subgroup if any
+    //     subGroup.account.slice(1).forEach((account: any, accountIndex: any) => {
+    //       rows.push(
+    //         <tr key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}>
+    //           <td className="px-4 py-2">{account.accountName}</td>
+    //         </tr>
+    //       );
+    //     });
+    //   });
+    // } else {
+    //   // No subgroups, just add the group row
+    //   rows.push(
+    //     <tr key={`group-${groupIndex}`}>
+    //       <td
+    //         className="bg-gray-50 font-semibold text-left px-4 py-2"
+    //         rowSpan={1}
+    //       >
+    //         {group.groupName}
+    //       </td>
+    //       <td colSpan={2} className="px-4 py-2 text-center">
+    //         No Subgroups
+    //       </td>
+    //     </tr>
+    //   );
+    // }
   });
 
   //Add Group Drawer
@@ -294,7 +225,7 @@ const SubGroupSectionTable = () => {
       </div>
 
       {/* main section for table */}
-      <div className="overflow-x-auto p-4 bg-gray-50 rounded-lg shadow-md">
+      {/* <div className="overflow-x-auto p-4 bg-gray-50 rounded-lg shadow-md">
         {isLoading ? (
           <div className="flex justify-center items-center">
             <Loader size="md" content="All Accounts" />
@@ -325,7 +256,7 @@ const SubGroupSectionTable = () => {
             )}
           </table>
         )}
-      </div>
+      </div> */}
 
       <div>
         <AddGroupDrawer
