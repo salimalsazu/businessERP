@@ -1,18 +1,10 @@
 "use client";
 import { useGetAccountQuery } from "@/redux/api/features/accountApi";
-import { useGetRequisitionQuery } from "@/redux/api/features/requisitionApi";
 import { headerCss } from "@/utils/TableCSS";
 import moment from "moment";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import {
-  Button,
-  Checkbox,
-  InputPicker,
-  Pagination,
-  Table,
-  Whisper,
-} from "rsuite";
+import { Button, InputPicker } from "rsuite";
 import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
 import AddTransactionSection from "./AddTransaction";
@@ -20,7 +12,9 @@ import AddLedgerSection from "./AddLedger";
 
 const LedgerSection = () => {
   const query: Record<string, any> = {};
+  const [size, setSize] = useState<number>(300);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  query["limit"] = size;
 
   // ! fetching data
   const {
@@ -39,7 +33,7 @@ const LedgerSection = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
-    <div >
+    <div>
       <div className=" rounded-sm m-5 p-5">
         <div className="my-5 mx-2 flex flex-col-reverse gap-10">
           <div className="flex items-center gap-5 shadow-sm border p-5">
@@ -100,7 +94,7 @@ const LedgerSection = () => {
         </div>
 
         {/* Add Ledger & Account Form */}
-        <div  >
+        <div>
           <AddLedgerSection
             openDrawer={openDrawer}
             setOpenDrawer={setOpenDrawer}

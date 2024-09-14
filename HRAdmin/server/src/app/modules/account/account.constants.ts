@@ -1,6 +1,6 @@
 export const accountFilterableFields: string[] = ['searchTerm', 'startDate', 'endDate'];
 
-export const accountSearchableFields: string[] = ['accountName', 'trId', 'startDate', 'endDate'];
+export const accountSearchableFields: string[] = ['accountName'];
 
 export const accountRelationalFields: string[] = ['academicFacultyId', 'academicDepartmentId', 'academicSemesterId'];
 
