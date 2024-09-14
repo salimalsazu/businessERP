@@ -22,6 +22,7 @@ const AddTransactionSection = () => {
 
   const [addAccount] = useAddAccountMutation();
 
+  //Function
   const handleAddAccount = async (data: any) => {
     // console.log("data", data);
     await addAccount(data);
