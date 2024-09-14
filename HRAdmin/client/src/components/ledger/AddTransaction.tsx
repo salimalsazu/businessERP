@@ -9,7 +9,7 @@ import {
   Whisper,
 } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   useAddAccountMutation,
@@ -18,7 +18,11 @@ import {
 import { useAddTransactionMutation } from "@/redux/api/features/transactionApi";
 
 const AddTransactionSection = () => {
-  const { data: allAccounts } = useGetAccountQuery({});
+  const query: Record<string, any> = {};
+  const [size, setSize] = useState<number>(1000);
+  query["limit"] = size;
+
+  const { data: allAccounts } = useGetAccountQuery({ ...query });
 
   const [addAccount] = useAddAccountMutation();
 
