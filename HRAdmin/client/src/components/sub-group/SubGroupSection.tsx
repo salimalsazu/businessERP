@@ -175,6 +175,7 @@ const SubGroupSectionTable = () => {
                 <div className="flex item-center gap-3 ">
                   {group.subGroup.map((subGroup: any) => (
                     <Button
+                      key={subGroup.subGroupId}
                       appearance="primary"
                       onClick={() => handleOpenModal("md", subGroup)}
                     >
