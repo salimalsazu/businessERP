@@ -99,9 +99,11 @@ const getGroups = async (filters: IGroupFilterRequest, options: IPaginationOptio
       subGroup: {
         select: {
           subGroupName: true,
+          subGroupId: true,
           account: {
             select: {
               accountName: true,
+              accountId: true,
             },
           },
         },

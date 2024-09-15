@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Loader, Table } from "rsuite";
+import { Button, Loader, Table, Tabs } from "rsuite";
 import { useDebounced } from "@/redux/hooks";
 import Column from "rsuite/esm/Table/TableColumn";
 import { Cell, HeaderCell } from "rsuite-table";
@@ -9,6 +9,7 @@ import { useGetGroupQuery } from "@/redux/api/features/groupApi";
 import AddGroupDrawer from "./AddGroupDrawer";
 import AddSubGroupDrawer from "./AddSubGroupDrawer";
 import TrashIcon from "@rsuite/icons/Trash";
+import AccountModal from "./AccountModal";
 
 const SubGroupSectionTable = () => {
   const query: Record<string, any> = {};
@@ -35,94 +36,7 @@ const SubGroupSectionTable = () => {
     error,
   } = useGetGroupQuery({ ...query });
 
-  console.log("data", allGroupData?.data?.data);
-
-  const rows: any = [];
-  // Keep track of the last group and subgroup to handle rowspan correctly
-  let lastGroup: any = null;
-  let lastSubGroup: any = null;
-
-  allGroupData?.data?.data.forEach((group: any, groupIndex: any) => {
-    // Calculate the total number of rows for the group (sum of all accounts in each subgroup)
-    const groupRowCount = group.subGroup.reduce(
-      (count: number, subGroup: any) =>
-        count + Math.max(subGroup.account.length, 1),
-      0
-    );
-
-    // Render the group only once and span all its subgroups and accounts
-    // let isGroupRendered = false;
-
-    // if (group.subGroup && group.subGroup.length > 0) {
-    //   group.subGroup.forEach((subGroup: any, subGroupIndex: any) => {
-    //     // Calculate the total number of rows for the subgroup (number of accounts or 1 if empty)
-    //     const subGroupRowCount = Math.max(subGroup.account.length, 1);
-
-    //     // Render the group row only once per group
-    //     if (!isGroupRendered) {
-    //       rows.push(
-    //         <tr key={`group-${groupIndex}`}>
-    //           <td
-    //             className="bg-gray-50 font-semibold text-left px-4 py-2"
-    //             rowSpan={groupRowCount} // Span all subgroup rows under this group
-    //           >
-    //             {group.groupName}
-    //           </td>
-    //           <td
-    //             className="bg-gray-100 font-semibold text-left px-4 py-2"
-    //             rowSpan={subGroupRowCount} // Span all account rows under this subgroup
-    //           >
-    //             {subGroup.subGroupName}
-    //           </td>
-    //           <td className="px-4 py-2">
-    //             {subGroup.account[0]?.accountName || "No Accounts"}
-    //           </td>
-    //         </tr>
-    //       );
-    //       isGroupRendered = true;
-    //     } else {
-    //       // Render only the subgroup and accounts for other subgroups
-    //       rows.push(
-    //         <tr key={`subgroup-${groupIndex}-${subGroupIndex}`}>
-    //           <td
-    //             className="bg-gray-100 font-semibold text-left px-4 py-2"
-    //             rowSpan={subGroupRowCount} // Span all account rows under this subgroup
-    //           >
-    //             {subGroup.subGroupName}
-    //           </td>
-    //           <td className="px-4 py-2">
-    //             {subGroup.account[0]?.accountName || "No Accounts"}
-    //           </td>
-    //         </tr>
-    //       );
-    //     }
-
-    //     // Render remaining accounts for the subgroup if any
-    //     subGroup.account.slice(1).forEach((account: any, accountIndex: any) => {
-    //       rows.push(
-    //         <tr key={`account-${groupIndex}-${subGroupIndex}-${accountIndex}`}>
-    //           <td className="px-4 py-2">{account.accountName}</td>
-    //         </tr>
-    //       );
-    //     });
-    //   });
-    // } else {
-    //   // No subgroups, just add the group row
-    //   rows.push(
-    //     <tr key={`group-${groupIndex}`}>
-    //       <td
-    //         className="bg-gray-50 font-semibold text-left px-4 py-2"
-    //         rowSpan={1}
-    //       >
-    //         {group.groupName}
-    //       </td>
-    //       <td colSpan={2} className="px-4 py-2 text-center">
-    //         No Subgroups
-    //       </td>
-    //     </tr>
-    //   );
-    // }
-  });
+  console.log("allGroupData", allGroupData);
 
   //Add Group Drawer
   const [backdropDrawer, setBackdropDrawer] = React.useState("static");
@@ -133,11 +47,25 @@ const SubGroupSectionTable = () => {
     React.useState("static");
   const [openSubGroupDrawer, setOpenSubGroupDrawer] = React.useState(false);
 
+  //Modal
+
+  const [openModal, setOpenModal] = useState(false);
+  const [sizeModal, setSizeModal] = useState();
+
+  const [accountData, setAccountData] = useState<any>([]);
+
+  const handleOpenModal = (value: any, subGroup: any) => {
+    setSizeModal(value);
+    setOpenModal(true);
+    setAccountData(subGroup.account);
+  };
+  const handleCloseModal = () => setOpenModal(false);
+
   return (
     <div>
       <div className="my-5 mx-2 flex justify-between gap-2 ">
         <div className="flex items-center gap-5">
-          <div className="w-[300px]">
+          {/* <div className="w-[300px]">
             <label htmlFor="voice-search" className="sr-only">
               Search
             </label>
@@ -167,7 +95,7 @@ const SubGroupSectionTable = () => {
                 required
               />
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex items-center gap-2">
@@ -224,40 +152,49 @@ const SubGroupSectionTable = () => {
         </div>
       </div>
 
-      {/* main section for table */}
-      {/* <div className="overflow-x-auto p-4 bg-gray-50 rounded-lg shadow-md">
-        {isLoading ? (
-          <div className="flex justify-center items-center">
-            <Loader size="md" content="All Accounts" />
+      <div className="mx-3">
+        {isLoading && (
+          <div className="flex justify-center items-center h-screen">
+            <Loader size="md" content="Loading All Accounts" />
           </div>
-        ) : (
-          <table className="min-w-full bg-white divide-y divide-gray-200">
-            <thead className="bg-gray-400 text-white">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Group
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Sub Group
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Account
-                </th>
-              </tr>
-            </thead>
-            {!allGroupData?.data?.data?.length ? (
-              <tr>
-                <td colSpan={3} className="text-center py-4">
-                  No data found
-                </td>
-              </tr>
-            ) : (
-              rows
-            )}
-          </table>
         )}
-      </div> */}
 
+        {!isLoading && !error && allGroupData?.data?.data?.length > 0 && (
+          <Tabs
+            defaultActiveKey={allGroupData.data.data[0].groupId}
+            appearance="subtle"
+            className="text-2xl flex gap-2"
+          >
+            {allGroupData.data.data.map((group: any) => (
+              <Tabs.Tab
+                key={group.groupId}
+                eventKey={group.groupId}
+                title={group.groupName}
+              >
+                {/* You can decide what to do inside the tab later */}
+                <div className="flex item-center gap-3 ">
+                  {group.subGroup.map((subGroup: any) => (
+                    <Button
+                      appearance="primary"
+                      onClick={() => handleOpenModal("md", subGroup)}
+                    >
+                      {subGroup.subGroupName}
+                    </Button>
+                  ))}
+                </div>
+              </Tabs.Tab>
+            ))}
+          </Tabs>
+        )}
+      </div>
+      <div>
+        <AccountModal
+          size={sizeModal}
+          open={openModal}
+          handleClose={handleCloseModal}
+          data={accountData}
+        />
+      </div>
       <div>
         <AddGroupDrawer
           setOpenGroupDrawer={setOpenGroupDrawer}

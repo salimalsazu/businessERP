@@ -644,8 +644,29 @@ const getAccountByName = async (
   };
 };
 
+const deleteAccount = async (accountId: string): Promise<Account> => {
+  const account = await prisma.account.findUnique({
+    where: {
+      accountId,
+    },
+  });
+
+  if (!account) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Account not found');
+  }
+
+  const result = await prisma.account.delete({
+    where: {
+      accountId,
+    },
+  });
+
+  return result;
+};
+
 export const AccountService = {
   createAccount,
   getAccounts,
   getAccountByName,
+  deleteAccount,
 };

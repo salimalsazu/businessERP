@@ -3,6 +3,7 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { AccountController } from './account.controller';
 import { AccountValidation } from './account.validations';
+import { UserRoles } from '@prisma/client';
 
 const router = express.Router();
 
@@ -29,15 +30,8 @@ router.get(
   AccountController.getAccountByName
 );
 
+router.delete('/:accountId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), AccountController.deleteAccountController);
 
 
-
-// !  Update  Profile data ------------------------------>>>
-// router.patch(
-//   '/update-profile/:profileId',
-//   auth(UserRoles.ADMIN, UserRoles.SUPERADMIN),
-//   validateRequest(UserValidation.updateUser),
-//   UserController.updateProfileInfo
-// );
 
 export const AccountRoutes = router;
