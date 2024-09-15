@@ -1,10 +1,9 @@
-import { Modal, Table, Whisper, Tooltip } from "rsuite";
+import { Modal, Table, IconButton, Whisper, Tooltip } from "rsuite";
+const { Column, HeaderCell, Cell } = Table;
 import TrashIcon from "@rsuite/icons/Trash";
 import { useDeleteAccountMutation } from "@/redux/api/features/accountApi";
 import { toast } from "sonner";
-import { useEffect, useCallback } from "react";
-
-const { Column, HeaderCell, Cell } = Table;
+import { useEffect } from "react";
 
 const AccountModal = ({ size, open, handleClose, data }: any) => {
   const [
@@ -12,28 +11,21 @@ const AccountModal = ({ size, open, handleClose, data }: any) => {
     { data: messageData, error, isLoading, isSuccess, isError },
   ] = useDeleteAccountMutation();
 
-  // Ensure handleClose is stable by wrapping it in useCallback
-  const closeModal = useCallback(() => {
-    handleClose();
-  }, [handleClose]);
-
   const handleDeleteAccount = async (accountId: string) => {
     await deleteAccount(accountId);
   };
 
-  // UseEffect with proper dependencies
   useEffect(() => {
     if (isSuccess && !isError) {
       toast.success(messageData?.message);
-      closeModal(); // Use the memoized closeModal function
     } else if (isError && !isSuccess) {
       toast.error("Failed to delete account");
     }
-  }, [isSuccess, isError, messageData, closeModal]); // Ensure all necessary dependencies are included
+  }, [messageData, error]);
 
   return (
     <div>
-      <Modal size={size} open={open} onClose={closeModal}>
+      <Modal size={size} open={open} onClose={handleClose}>
         <Modal.Header>
           <Modal.Title>Account List</Modal.Title>
         </Modal.Header>
@@ -57,22 +49,16 @@ const AccountModal = ({ size, open, handleClose, data }: any) => {
             <Column width={100} align="center">
               <HeaderCell>Action</HeaderCell>
               <Cell>
-                {(rowData, rowIndex) => (
+                {(rowData) => (
                   <Whisper
                     placement="top"
                     trigger="hover"
                     speaker={<Tooltip>Delete</Tooltip>}
                   >
-                    {isLoading &&
-                    rowData.accountId === messageData?.accountId ? (
-                      <span>Deleting...</span>
-                    ) : (
-                      <TrashIcon
-                        key={rowIndex} // Added key for uniqueness
-                        style={{ cursor: "pointer", color: "red" }}
-                        onClick={() => handleDeleteAccount(rowData.accountId)}
-                      />
-                    )}
+                    <TrashIcon
+                      style={{ cursor: "pointer", color: "red" }}
+                      onClick={() => handleDeleteAccount(rowData.accountId)}
+                    />
                   </Whisper>
                 )}
               </Cell>
