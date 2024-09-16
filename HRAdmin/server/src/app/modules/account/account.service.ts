@@ -9,6 +9,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 import { IAccountCreate, IAccountFilterRequest } from './account.interface';
 import { accountRelationalFields, accountRelationalFieldsMapper, accountSearchableFields } from './account.constants';
+import { logger } from '../../../shared/logger';
 
 const createAccount = async (data: IAccountCreate): Promise<Account> => {
   const findSubGroup = await prisma.subGroup.findUnique({
@@ -32,6 +33,7 @@ const createAccount = async (data: IAccountCreate): Promise<Account> => {
       subGroupId: data.subGroupId,
     },
   });
+  logger.info(`Account created: ${result.accountName}`);
 
   return result;
 };
@@ -108,6 +110,8 @@ const getAccounts = async (filters: IAccountFilterRequest, options: IPaginationO
     take: limit,
     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
   });
+
+  logger.info(`Fetched Ledger`);
 
   // Count total matching orders for pagination
   const total = await prisma.account.count({
@@ -633,6 +637,8 @@ const getAccountByName = async (
     transactionDebit: debitTransactions,
   };
 
+  logger.info(`Fetched account: ${accountName}`);
+
   return {
     meta: {
       page,
@@ -660,6 +666,8 @@ const deleteAccount = async (accountId: string): Promise<Account> => {
       accountId,
     },
   });
+
+  logger.info(`Account deleted: ${account.accountName}`);
 
   return result;
 };
