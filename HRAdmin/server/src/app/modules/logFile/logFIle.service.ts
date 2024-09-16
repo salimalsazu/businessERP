@@ -1,87 +1,60 @@
 import fs from 'fs';
 import path from 'path';
 
-const parseLogContent = (content: any) => {
-  // Split the content by newline and filter out any empty lines
+const parseLogContent = (content: string) => {
   return content
     .trim()
-    .split('\r\n')
-    .map((line: any) => {
-      return { message: line }; // Customize the object structure as needed
+    .split('\n') // Splitting by newlines for each log entry
+    .map((line: string) => {
+      return { message: line.trim() }; // Each line becomes a separate log message object
     });
 };
 
-// const getLatestLogFile = (logType: any) => {
-//   return new Promise((resolve, reject) => {
-//     const logDir = path.join(process.cwd(), 'logs', 'winston', logType);
-
-//     fs.readdir(logDir, (err, files) => {
-//       if (err) {
-//         return reject(new Error('Unable to read log files.'));
-//       }
-
-//       if (files.length === 0) {
-//         return reject(new Error('No log files found.'));
-//       }
-
-//       const sortedFiles = files.sort((a, b) => {
-//         return fs.statSync(path.join(logDir, b)).mtimeMs - fs.statSync(path.join(logDir, a)).mtimeMs;
-//       });
-
-//       const latestLogFile = path.join(logDir, sortedFiles[0]);
-
-//       fs.readFile(latestLogFile, 'utf8', (err, data) => {
-//         if (err) {
-//           return reject(new Error('Unable to read the log file.'));
-//         }
-
-//         const logEntries = parseLogContent(data);
-//         resolve(logEntries);
-//       });
-//     });
-//   });
-// };
-
-const getLatestLogFile = (logType: any) => {
-  return new Promise((resolve, reject) => {
+const getLatestLogFile = async (logType: string): Promise<any[]> => {
+  try {
     const logDir = path.join(process.cwd(), 'logs', 'winston', logType);
 
-    fs.readdir(logDir, (err, files) => {
-      if (err) {
-        return reject(new Error('Unable to read log files.'));
-      }
+    // Read all files in the directory
+    const files = await fs.promises.readdir(logDir);
 
-      if (files.length === 0) {
-        return reject(new Error('No log files found.'));
-      }
+    if (!files.length) {
+      throw new Error('No log files found.');
+    }
 
-      // Filter files that start with 'HR'
-      const hrFiles = files.filter(file => file.startsWith('HR'));
+    // Filter files that start with 'HR'
+    const hrFiles = files.filter(file => file.startsWith('HR'));
 
-      if (hrFiles.length === 0) {
-        return reject(new Error('No HR log files found.'));
-      }
+    if (!hrFiles.length) {
+      throw new Error('No HR log files found.');
+    }
 
-      // Sort the files by modification time (optional, if order matters)
-      const sortedFiles = hrFiles.sort((a, b) => {
-        return fs.statSync(path.join(logDir, b)).mtimeMs - fs.statSync(path.join(logDir, a)).mtimeMs;
-      });
-
-      const logEntries: any = [];
-
-      sortedFiles.forEach(file => {
-        const filePath = path.join(logDir, file);
-
-        // Read each file and parse the content
-        const data = fs.readFileSync(filePath, 'utf8');
-        const fileLogEntries = parseLogContent(data);
-
-        logEntries.push(...fileLogEntries);
-      });
-
-      resolve(logEntries);
+    // Sort files by modification time
+    const sortedFiles = hrFiles.sort((a, b) => {
+      const statA = fs.statSync(path.join(logDir, a)).mtimeMs;
+      const statB = fs.statSync(path.join(logDir, b)).mtimeMs;
+      return statB - statA;
     });
-  });
+
+    const logEntries: any[] = [];
+
+    // Iterate through sorted files and read them
+    for (const file of sortedFiles) {
+      const filePath = path.join(logDir, file);
+
+      // Read each file asynchronously
+      const data = await fs.promises.readFile(filePath, 'utf8');
+
+      // Parse log content
+      const fileLogEntries = parseLogContent(data);
+      logEntries.push(...fileLogEntries); // Merge log entries
+    }
+
+    return logEntries;
+  } catch (error) {
+    // Catching and throwing error to be handled by caller
+    //@ts-ignore
+    throw new Error(`Error fetching logs: ${error.message}`);
+  }
 };
 
 export const logFileService = {
