@@ -21,7 +21,7 @@ const AccountModal = ({ size, open, handleClose, data }: any) => {
     } else if (isError && !isSuccess) {
       toast.error("Failed to delete account");
     }
-  }, [messageData, error]);
+  }, [messageData, error, isError, isSuccess]);
 
   return (
     <div>
