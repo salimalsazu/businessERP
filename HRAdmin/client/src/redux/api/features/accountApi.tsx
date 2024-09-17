@@ -11,7 +11,7 @@ const accountApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.account],
+      invalidatesTags: [tagTypes.account, tagTypes.subGroup, tagTypes.group],
     }),
     getAccount: builder.query({
       query: (arg: Record<string, any>) => ({
@@ -19,7 +19,7 @@ const accountApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      providesTags: [tagTypes.account],
+      providesTags: [tagTypes.account, tagTypes.subGroup, tagTypes.group],
     }),
     getAccountByName: builder.query({
       query: (arg: { accountName: string; [key: string]: any } | null) => {
@@ -35,6 +35,13 @@ const accountApi = baseApi.injectEndpoints({
       },
       providesTags: [tagTypes.account],
     }),
+    deleteAccount: builder.mutation({
+      query: (accountId: string) => ({
+        url: `/account/${accountId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.account, tagTypes.subGroup, tagTypes.group],
+    }),
   }),
 });
 
@@ -42,4 +49,5 @@ export const {
   useAddAccountMutation,
   useGetAccountQuery,
   useGetAccountByNameQuery,
+  useDeleteAccountMutation,
 } = accountApi;

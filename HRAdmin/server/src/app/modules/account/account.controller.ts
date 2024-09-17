@@ -47,8 +47,20 @@ const getAccountByName = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteAccountController = catchAsync(async (req: Request, res: Response) => {
+  const accountId = req.params.accountId;
+  const result = await AccountService.deleteAccount(accountId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Account deleted successfully',
+    data: result,
+  });
+});
+
 export const AccountController = {
   createAccount,
   getAllAccount,
   getAccountByName,
+  deleteAccountController,
 };

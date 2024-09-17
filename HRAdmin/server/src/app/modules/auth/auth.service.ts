@@ -8,6 +8,8 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 import { ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from './auth.interface';
 import { UserStatus } from '@prisma/client';
+import { logger } from '../../../shared/logger';
+import { log } from 'winston';
 
 const createNewUser = async (req: Request) => {
   const data = req.body as IUserCreate;
@@ -74,6 +76,8 @@ const createNewUser = async (req: Request) => {
       throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
     }
 
+    logger.info(`User created successfully with ID: ${createdUser.userId}`);
+
     return createdUser;
   });
 
@@ -82,7 +86,6 @@ const createNewUser = async (req: Request) => {
 //login
 const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => {
   const { email, password } = loginData;
-
 
   if (!email) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email is required !!');
@@ -147,6 +150,9 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
+
+  logger.info(`User logged in successfully with: ${email}`);
+
   const refreshToken = jwtHelpers.createToken(
     {
       userId: isUserExist.userId,

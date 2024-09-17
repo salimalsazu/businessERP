@@ -29,7 +29,6 @@ import "rsuite/dist/rsuite.min.css";
 const { Column, HeaderCell, Cell } = Table;
 
 const SingleAccountDetails = ({ params }: any) => {
-
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
@@ -38,7 +37,7 @@ const SingleAccountDetails = ({ params }: any) => {
     endDate: "",
   });
   const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(5);
+  const [size, setSize] = useState<number>(10);
 
   // for queries
   query["startDate"] = selectedDate.startDate;
@@ -522,13 +521,13 @@ const SingleAccountDetails = ({ params }: any) => {
                     >
                       {(rowData) => (
                         <>
-                          <span style={{  fontSize: "15px" ,fontWeight: "bold" }}>
+                          <span
+                            style={{ fontSize: "15px", fontWeight: "bold" }}
+                          >
                             {rowData.particular}
                           </span>
                           <br />
-                          <span
-                            style={{  fontWeight: "normal" }}
-                          >
+                          <span style={{ fontWeight: "normal" }}>
                             {rowData.details}
                           </span>
                         </>
@@ -617,7 +616,7 @@ const SingleAccountDetails = ({ params }: any) => {
               maxButtons={5}
               size="lg"
               layout={["total", "-", "limit", "|", "pager", "skip"]}
-              limitOptions={[5, 10, 20, 30, 50]}
+              limitOptions={[10, 20, 50, 100, 200, 300, 400, 500]}
               limit={size}
               onChangeLimit={(limitChange: any) => setSize(limitChange)}
               activePage={page}

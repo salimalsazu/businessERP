@@ -10,6 +10,7 @@ import prisma from '../../../shared/prisma';
 import { ITransactionCreateRequest, ITransactionFilterRequest } from './transaction.interface';
 import { TransactionRelationalFields, TransactionRelationalFieldsMapper, TransactionSearchableFields } from './transaction.constants';
 import { generateTransactionId } from './trIdAutoIncrement';
+import { logger } from '../../../shared/logger';
 
 const createTransaction = async (data: ITransactionCreateRequest): Promise<any> => {
   // Check if account exists
@@ -65,6 +66,8 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
   if (!result) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Transaction');
   }
+
+  logger.info(`Transaction created successfully with ID: ${result.transactionId}`);
 
   // Fetch current balance
   const debitAccount = await prisma.account.findUnique({
@@ -230,6 +233,8 @@ const getTransaction = async (filters: ITransactionFilterRequest, options: IPagi
     orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: 'desc' },
   });
 
+  logger.info(`Transaction fetched successfully`);
+
   // Count total matching orders for pagination
   const total = await prisma.transaction.count({
     where: whereConditions,
@@ -270,6 +275,8 @@ const updateTransaction = async (requisitionId: string, payload: any): Promise<a
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Update Failed');
   }
+
+  logger.info(`Requisition updated successfully with ID: ${result.requisitionId}`);
 
   return result;
 };
