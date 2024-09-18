@@ -40,6 +40,7 @@ const myFormat = printf(({ level, message, timestamp }) => {
   return `📅${date.toDateString()}  ⏲${formattedTime} ▶ ${level}: ${message} `;
 });
 
+//Logger Format
 const logger = createLogger({
   level: 'info',
   format: combine(label({ label: 'HR' }), timestamp(), myFormat),
@@ -48,12 +49,11 @@ const logger = createLogger({
     new DailyRotateFile({
       filename: path.join(process.cwd(), 'logs', 'winston', 'successes', 'HR-%DATE%-success.log'),
       datePattern: 'YYYY-ww', // Year and ISO week number
-      zippedArchive: false,   // No compression
-      maxFiles: '1',          // Keep only one log file (delete old one when a new one is created)
+      zippedArchive: false, // No compression
+      maxFiles: '1', // Keep only one log file (delete old one when a new one is created)
     }),
   ],
 });
-
 
 const errorFormat = printf(({ level, message, timestamp, ...srv }) => {
   const date = new Date(timestamp);
