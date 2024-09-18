@@ -48,9 +48,9 @@ const logger = createLogger({
     new transports.Console(),
     new DailyRotateFile({
       filename: path.join(process.cwd(), 'logs', 'winston', 'successes', 'HR-%DATE%-success.log'),
-      datePattern: 'YYYY-ww', // Year and ISO week number
+      datePattern: 'YYYY-MM-DD', // Daily log pattern
       zippedArchive: false, // No compression
-      maxFiles: '1', // Keep only one log file (delete old one when a new one is created)
+      maxFiles: '14d', // Keep logs for 14 days
     }),
   ],
 });
