@@ -24,6 +24,7 @@ const createRequisition = async (data: IRequisitionCreateRequest): Promise<Requi
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
   }
 
+  //Console.log
   console.log('isAccountExist', isAccountExist);
 
   //create requisition record
