@@ -36,6 +36,7 @@ const SingleAccountDetails = ({ params }: any) => {
     startDate: "",
     endDate: "",
   });
+  //Use State 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
 
