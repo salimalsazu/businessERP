@@ -17,6 +17,7 @@ const AddGroupDrawer = ({
     tbType: string;
   }
 
+  // post method
   const [addGroup, { isLoading, isSuccess }] = useAddGroupMutation();
 
   const {
