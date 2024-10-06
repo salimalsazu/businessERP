@@ -107,7 +107,15 @@ const DashboardCount = () => {
             <div className="flex flex-col justify-center items-center gap-2 px-5 py-8 bg-lime-50 shadow-md rounded-md">
               <h1 className="text-4xl font-bold">Cash Balance</h1>
               <div className="text-lg font-extrabold">
-                <p>{dataCount?.data?.pettyCashBalance?.closingBalance}</p>
+                <p>
+                  {new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "BDT",
+                    minimumFractionDigits: 2,
+                  }).format(
+                    dataCount?.data?.pettyCashBalance?.closingBalance || 0
+                  )}
+                </p>
               </div>
             </div>
           )}
@@ -129,7 +137,13 @@ const DashboardCount = () => {
             <div className="flex flex-col justify-center items-center gap-2 px-5 py-8 bg-lime-50 shadow-md rounded-md">
               <h1 className="text-4xl font-bold">Bank Balance</h1>
               <div className="text-lg font-extrabold">
-                <p>{dataCount?.data?.bankBalance?.closingBalance}</p>
+                <p>
+                  {new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "BDT",
+                    minimumFractionDigits: 2,
+                  }).format(dataCount?.data?.bankBalance?.closingBalance || 0)}
+                </p>
               </div>
             </div>
           )}
