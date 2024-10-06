@@ -1,6 +1,7 @@
 "use client";
 
 import { formatNumber } from "@/components/ledger/FormatNumber";
+import TransactionModal from "@/components/transaction/TransactionModal";
 import { useGetAccountByNameQuery } from "@/redux/api/features/accountApi";
 import { useDebounced } from "@/redux/hooks";
 import { headerCss } from "@/utils/TableCSS";
@@ -38,6 +39,9 @@ const SingleAccountDetails = ({ params }: any) => {
   });
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
+
+  const [open, setOpen] = useState(false);
+  const [singleTransaction, setSingleTransaction] = useState<any>({});
 
   // for queries
   query["startDate"] = selectedDate.startDate;
@@ -325,6 +329,13 @@ const SingleAccountDetails = ({ params }: any) => {
     );
   };
 
+  const handleOpen = (data: any) => {
+    setOpen(true);
+    setSingleTransaction(data);
+  };
+
+  const handleClose = () => setOpen(false);
+
   return (
     <div style={{ padding: "20px" }}>
       <div>
@@ -590,6 +601,21 @@ const SingleAccountDetails = ({ params }: any) => {
                       {(rowData) => formatNumber(rowData.closingBalance)}
                     </Cell>
                   </Column>
+
+                  <Column flexGrow={1}>
+                    <HeaderCell style={headerCss}>Details</HeaderCell>
+                    <Cell
+                      dataKey="transactionId"
+                      verticalAlign="middle"
+                      style={{ padding: 10, fontSize: 14, fontWeight: 500 }}
+                    >
+                      {(rowData) => (
+                        <Button onClick={() => handleOpen(rowData)}>
+                          Details
+                        </Button>
+                      )}
+                    </Cell>
+                  </Column>
                 </Table>
               </Panel>
             </div>
@@ -621,6 +647,14 @@ const SingleAccountDetails = ({ params }: any) => {
               onChangeLimit={(limitChange: any) => setSize(limitChange)}
               activePage={page}
               onChangePage={setPage}
+            />
+          </div>
+
+          <div>
+            <TransactionModal
+              open={open}
+              handleClose={handleClose}
+              singleTransaction={singleTransaction}
             />
           </div>
         </div>

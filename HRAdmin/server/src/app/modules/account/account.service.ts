@@ -593,6 +593,7 @@ const getAccountByName = async (
     },
     select: {
       debitAccount: true,
+      creditAccount: true,
       transactionAmount: true,
       trId: true,
       transactionDescription: true,
@@ -616,6 +617,7 @@ const getAccountByName = async (
     },
     select: {
       creditAccount: true,
+      debitAccount: true,
       transactionAmount: true,
       trId: true,
       transactionDescription: true,

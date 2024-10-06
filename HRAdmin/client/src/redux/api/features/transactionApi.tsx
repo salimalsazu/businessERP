@@ -21,7 +21,7 @@ const transactionApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.account, tagTypes.transaction],
     }),
     getTransactionById: builder.query({
-      query: ({ transactionId }) => ({
+      query: (transactionId) => ({
         url: `${TRANSACTION_API}/${transactionId}`,
         method: "GET",
       }),

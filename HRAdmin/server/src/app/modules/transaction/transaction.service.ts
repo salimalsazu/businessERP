@@ -281,8 +281,29 @@ const updateTransaction = async (requisitionId: string, payload: any): Promise<a
   return result;
 };
 
+const getSingleTransaction = async (transactionId: string): Promise<Transaction | null> => {
+  console.log(transactionId);
+
+  const result = await prisma.transaction.findUnique({
+    where: {
+      transactionId,
+    },
+    include: {
+      creditAccount: true,
+      debitAccount: true,
+    },
+  });
+
+  if (!result || !result.transactionId) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Transaction Not Found');
+  }
+
+  return result;
+};
+
 export const TransactionService = {
   createTransaction,
   getTransaction,
   updateTransaction,
+  getSingleTransaction,
 };
