@@ -18,6 +18,8 @@ router.post(
 // ! Get all Requisition ----------------------------------->>>
 router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), TransactionController.getTransaction);
 
+router.get('/:transactionId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), TransactionController.getSingleTransaction);
+
 // ! Update Requisition ----------------------------------->>>
 
 router.patch('/:transactionId', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), TransactionController.updateTransaction);
