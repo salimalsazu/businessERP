@@ -51,8 +51,20 @@ const updateTransaction = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getSingleTransaction = catchAsync(async (req: Request, res: Response) => {
+  const { transactionId } = req.params;
+  const result = await TransactionService.getSingleTransaction(transactionId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Transaction fetched successfully',
+    data: result,
+  });
+});
+
 export const TransactionController = {
   createNewTransaction,
   getTransaction,
   updateTransaction,
+  getSingleTransaction,
 };
