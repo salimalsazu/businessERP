@@ -13,8 +13,9 @@ import AccountModal from "./AccountModal";
 
 const SubGroupSectionTable = () => {
   const query: Record<string, any> = {};
-  const [searchTerm, setSearchTerm] = useState<string>("");
 
+//use State
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
 
