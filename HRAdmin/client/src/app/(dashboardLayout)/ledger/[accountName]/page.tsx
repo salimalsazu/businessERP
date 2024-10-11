@@ -37,7 +37,7 @@ const SingleAccountDetails = ({ params }: any) => {
     startDate: "",
     endDate: "",
   });
-  //Use State 
+  //Use State
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
 
@@ -58,6 +58,7 @@ const SingleAccountDetails = ({ params }: any) => {
     query["searchTerm"] = debouncedTerm;
   }
 
+  //data query
   const { data } = useGetAccountByNameQuery({
     accountName: params.accountName,
     ...query,
