@@ -48,11 +48,13 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client.rule=Host(`account.24-7sourcingbd.com`)"
-      - "traefik.http.routers.client.entrypoints=websecure"
+      - "traefik.http.routers.client.entrypoints=web,websecure"
       - "traefik.http.services.client.loadbalancer.server.port=3000" # Internal port
       - "traefik.http.routers.client.tls.certresolver=myresolver" # Use Let's Encrypt
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Middleware to redirect HTTP to HTTPS
+      - "traefik.http.routers.client.middlewares=redirect-to-https" # Apply the middleware
       - "traefik.http.routers.client.timeout.read=10s" # Read timeout
-      - "traefik.http.routers.client.timeout.write=10s" # Write timeout
+      - "traefik.http.routers.client.timeout.write=10s" # Write timeou
     restart: unless-stopped
     networks:
       - web
