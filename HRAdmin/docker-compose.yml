@@ -45,11 +45,11 @@ services:
 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.client.rule=Host(`account.24-7sourcingbd.com`)" # Replace with subdomain
-      - "traefik.http.services.client.loadbalancer.server.port=3000"
+      - "traefik.http.routers.client.rule=Host(`account.24-7sourcingbd.com`)"
+      - "traefik.http.routers.client.entrypoints=websecure"
+      - "traefik.http.services.client.loadbalancer.server.port=3000" # Internal port
+      - "traefik.http.routers.client.tls.certresolver=myresolver" # Use Let's Encrypt
 
-    ports:
-      - 3000:3000
     restart: unless-stopped
 
   backup-service:
