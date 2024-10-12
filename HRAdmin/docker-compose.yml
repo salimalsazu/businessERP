@@ -33,6 +33,16 @@ services:
       - type: bind
         source: /root/volumes/erp/data
         target: /app/uploads
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server.rule=Host(`account.24-7sourcingbd.com`) && PathPrefix(`/api/v1`)"
+      - "traefik.http.routers.server.entrypoints=web,websecure"
+      - "traefik.http.services.server.loadbalancer.server.port=7000" # Internal port for your server API
+      - "traefik.http.routers.server.tls.certresolver=myresolver"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.server.middlewares=redirect-to-https"
+
     networks:
       - web
 
