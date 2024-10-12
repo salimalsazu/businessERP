@@ -21,6 +21,7 @@ app.use(
       'https://account.24-7sourcingbd.com',
       '*',
     ],
+    //credentials
     credentials: true,
     // methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   })
