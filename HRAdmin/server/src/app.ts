@@ -18,6 +18,7 @@ app.use(
       'http://157.173.108.109:3100',
       'http://192.168.0.109:3000',
       'http://192.168.0.102:3000',
+      'https://account.24-7sourcingbd.com',
       '*',
     ],
     credentials: true,
