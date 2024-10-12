@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   postgres:
     image: postgres:latest
@@ -11,10 +12,11 @@ services:
       POSTGRES_DB: erp
     volumes:
       - type: bind
-        # source: C:\data\db
         source: /root/volumes/erp/db
         target: /var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - web
 
   server:
     stdin_open: true
@@ -29,9 +31,10 @@ services:
       - 7000:7000
     volumes:
       - type: bind
-        # source: C:\data\data
         source: /root/volumes/erp/data
         target: /app/uploads
+    networks:
+      - web
 
   client:
     stdin_open: true
@@ -42,8 +45,18 @@ services:
     container_name: client-container
     depends_on:
       - server
-    ports:
-      - 3000:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.rule=Host(`account.24-7sourcingbd.com`)"
+      - "traefik.http.routers.client.entrypoints=web,websecure"
+      - "traefik.http.services.client.loadbalancer.server.port=3000" # Internal port
+      - "traefik.http.routers.client.tls.certresolver=myresolver" # Use Let's Encrypt
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Middleware to redirect HTTP to HTTPS
+      - "traefik.http.routers.client.middlewares=redirect-to-https"
+
+    restart: unless-stopped
+    networks:
+      - web
 
   backup-service:
     build:
@@ -51,9 +64,14 @@ services:
     container_name: backup-service
     volumes:
       - type: bind
-        # source: C:/data/backup
         source: /var/backups
         target: /backup
     depends_on:
       - postgres
     restart: unless-stopped
+    networks:
+      - web
+
+networks:
+  web:
+    external: true # Ensure this matches your Traefik compose file

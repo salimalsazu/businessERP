@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=true" # Enable the Traefik dashboard (remove in production)
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=salim@24-7sourcingbd.com" # Replace with your email
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+      - "8080:8080" # Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock" # Docker socket to read container labels
+      - "./letsencrypt:/letsencrypt" # Persist SSL certificates
+    networks:
+      - web # Connect to the same network
+    restart: unless-stopped
+
+networks:
+  web:
+    external: true # Ensure this matches your application compose file
