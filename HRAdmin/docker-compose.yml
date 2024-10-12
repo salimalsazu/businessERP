@@ -1,4 +1,9 @@
 version: "3.8"
+
+networks:
+  my-network:
+    driver: bridge
+
 services:
   postgres:
     image: postgres:latest
@@ -11,10 +16,16 @@ services:
       POSTGRES_DB: erp
     volumes:
       - type: bind
-        # source: C:\data\db
         source: /root/volumes/erp/db
         target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: unless-stopped
+    networks:
+      - my-network
 
   server:
     stdin_open: true
@@ -29,9 +40,11 @@ services:
       - 7000:7000
     volumes:
       - type: bind
-        # source: C:\data\data
         source: /root/volumes/erp/data
         target: /app/uploads
+    restart: unless-stopped
+    networks:
+      - my-network
 
   client:
     stdin_open: true
@@ -42,6 +55,8 @@ services:
     container_name: client-container
     depends_on:
       - server
+    ports:
+      - 3000:3000 # Expose internal port for local access (if needed)
 
     labels:
       - "traefik.enable=true"
@@ -51,6 +66,8 @@ services:
       - "traefik.http.routers.client.tls.certresolver=myresolver" # Use Let's Encrypt
 
     restart: unless-stopped
+    networks:
+      - my-network
 
   backup-service:
     build:
@@ -58,9 +75,10 @@ services:
     container_name: backup-service
     volumes:
       - type: bind
-        # source: C:/data/backup
         source: /var/backups
         target: /backup
     depends_on:
       - postgres
     restart: unless-stopped
+    networks:
+      - my-network
