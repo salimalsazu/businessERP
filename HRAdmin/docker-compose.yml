@@ -42,8 +42,15 @@ services:
     container_name: client-container
     depends_on:
       - server
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.rule=Host(`account.24-7sourcingbd.com`)" # Replace with subdomain
+      - "traefik.http.services.client.loadbalancer.server.port=3000"
+
     ports:
       - 3000:3000
+    restart: unless-stopped
 
   backup-service:
     build:
