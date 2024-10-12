@@ -15,6 +15,8 @@ services:
         source: /root/volumes/erp/db
         target: /var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - web
 
   server:
     stdin_open: true
@@ -31,6 +33,8 @@ services:
       - type: bind
         source: /root/volumes/erp/data
         target: /app/uploads
+    networks:
+      - web
 
   client:
     stdin_open: true
@@ -47,7 +51,11 @@ services:
       - "traefik.http.routers.client.entrypoints=websecure"
       - "traefik.http.services.client.loadbalancer.server.port=3000" # Internal port
       - "traefik.http.routers.client.tls.certresolver=myresolver" # Use Let's Encrypt
+      - "traefik.http.routers.client.timeout.read=10s" # Read timeout
+      - "traefik.http.routers.client.timeout.write=10s" # Write timeout
     restart: unless-stopped
+    networks:
+      - web
 
   backup-service:
     build:
@@ -60,3 +68,9 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+    networks:
+      - web
+
+networks:
+  web:
+    external: true # Ensure this matches your Traefik compose file

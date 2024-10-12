@@ -19,4 +19,10 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock" # Docker socket to read container labels
       - "./letsencrypt:/letsencrypt" # Persist SSL certificates
+    networks:
+      - web # Connect to the same network
     restart: unless-stopped
+
+networks:
+  web:
+    external: true # Ensure this matches your application compose file
