@@ -1,9 +1,5 @@
 version: "3.8"
 
-networks:
-  my-network:
-    driver: bridge
-
 services:
   postgres:
     image: postgres:latest
@@ -18,11 +14,6 @@ services:
       - type: bind
         source: /root/volumes/erp/db
         target: /var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     restart: unless-stopped
     networks:
       - my-network
@@ -42,7 +33,6 @@ services:
       - type: bind
         source: /root/volumes/erp/data
         target: /app/uploads
-    restart: unless-stopped
     networks:
       - my-network
 
@@ -55,16 +45,12 @@ services:
     container_name: client-container
     depends_on:
       - server
-    ports:
-      - 3000:3000 # Expose internal port for local access (if needed)
-
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client.rule=Host(`account.24-7sourcingbd.com`)"
       - "traefik.http.routers.client.entrypoints=websecure"
       - "traefik.http.services.client.loadbalancer.server.port=3000" # Internal port
       - "traefik.http.routers.client.tls.certresolver=myresolver" # Use Let's Encrypt
-
     restart: unless-stopped
     networks:
       - my-network
@@ -82,3 +68,29 @@ services:
     restart: unless-stopped
     networks:
       - my-network
+
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=true" # Enable the Traefik dashboard (remove in production)
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=salim@24-7sourcingbd.com" # Replace with your email
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+      - "8080:8080" # Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock" # Docker socket to read container labels
+      - "./letsencrypt:/letsencrypt" # Persist SSL certificates
+    restart: unless-stopped
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
