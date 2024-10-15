@@ -40,7 +40,7 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
   }
 
   // Generate transaction ID
-  const trAutoIncrement = generateTransactionId(isDebitAccountExist.accountName);
+  const trRandomNumber = generateTransactionId();
 
   const debitAccountClosingBalance = isDebitAccountExist.closingBalance + data.transactionAmount;
   const creditAccountClosingBalance = isCreditAccountExist.closingBalance - data.transactionAmount;
@@ -51,7 +51,7 @@ const createTransaction = async (data: ITransactionCreateRequest): Promise<any> 
     transactionType: data.transactionType,
     transactionAmount: data.transactionAmount,
     transactionDescription: data.transactionDescription,
-    trId: trAutoIncrement,
+    trId: trRandomNumber,
     debitAccountClosingBalance: debitAccountClosingBalance,
     creditAccountClosingBalance: creditAccountClosingBalance,
     debitAccountId: data.debitAccountId,
