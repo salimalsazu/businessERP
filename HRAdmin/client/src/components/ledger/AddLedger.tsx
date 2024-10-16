@@ -2,11 +2,23 @@
 
 import { useAddAccountMutation } from "@/redux/api/features/accountApi";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, Drawer, Input, InputPicker, Tooltip, Whisper } from "rsuite";
+import {
+  Button,
+  Drawer,
+  Input,
+  InputPicker,
+  toaster,
+  Tooltip,
+  Whisper,
+} from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
-import { useEffect } from "react";
-import { toast } from "sonner";
 import { useGetSubGroupQuery } from "@/redux/api/features/subGroupApi";
+import {
+  TransactionErrorMessage,
+  TransactionSuccessful,
+} from "../toast/Transaction";
+import { useEffect } from "react";
+import { AddLedger, LedgerCreationFailed } from "../toast/Ledger";
 
 const AddLedgerSection = ({ openDrawer, setOpenDrawer }: any) => {
   const { data: subGroupData } = useGetSubGroupQuery({});
@@ -17,7 +29,8 @@ const AddLedgerSection = ({ openDrawer, setOpenDrawer }: any) => {
     closingBalance: number;
   }
 
-  const [addAccount, { isLoading, isSuccess }] = useAddAccountMutation();
+  const [addAccount, { isLoading, isSuccess, data, isError, error }] =
+    useAddAccountMutation();
 
   const {
     handleSubmit,
@@ -39,12 +52,21 @@ const AddLedgerSection = ({ openDrawer, setOpenDrawer }: any) => {
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      reset();
-      setOpenDrawer(false);
-      toast.success("Account Created Successfully");
+    //
+    if (isSuccess && !isLoading && !isError && !error && data) {
+      toaster.push(AddLedger(data?.message), {
+        placement: "topCenter",
+      });
     }
-  }, [isSuccess, reset, setOpenDrawer]);
+
+    // if error
+    if (!isSuccess && !isLoading && isError && error && !data) {
+      //@ts-ignore
+      toaster.push(LedgerCreationFailed(error?.message), {
+        placement: "topCenter",
+      });
+    }
+  }, [isSuccess, isLoading, isError, error, data]);
 
   return (
     <div>

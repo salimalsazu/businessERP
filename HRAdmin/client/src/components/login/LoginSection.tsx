@@ -1,13 +1,13 @@
 "use client";
 
-import { Button, Input, TagPicker, Tooltip, Whisper } from "rsuite";
+import { Button, Input, TagPicker, toaster, Tooltip, Whisper } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useUserLoginMutation } from "@/redux/api/authApi";
 import { isLoggedIn, storeUserInfo } from "@/hooks/services/auth.service";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { LoginError, LoginSuccess } from "../toast/Login";
 
 const LoginSection = () => {
   const userLoggedIn = isLoggedIn();
@@ -39,16 +39,22 @@ const LoginSection = () => {
   };
 
   useEffect(() => {
+    //
     if (isSuccess && !isLoading && !isError && !error && data) {
       router.push("/dashboard");
-      toast.success(data?.message);
+      toaster.push(LoginSuccess(data?.message), {
+        placement: "bottomEnd",
+      });
     }
 
+    // if error
     if (!isSuccess && !isLoading && isError && error && !data) {
       //@ts-ignore
-      toast.error(error?.message);
+      toaster.push(LoginError(error?.message), {
+        placement: "bottomEnd",
+      });
     }
-  }, [isSuccess, isLoading, isError, error, router, data]);
+  }, [isSuccess, isLoading, isError, error, data]);
 
   return (
     <div className="border m-3 p-5 rounded  shadow-sm bg-sidebar ">

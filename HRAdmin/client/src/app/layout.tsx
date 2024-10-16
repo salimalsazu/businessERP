@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "rsuite/dist/rsuite.min.css";
 import Providers from "@/utils/provider";
-import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <Providers>
       <html lang="en">
-        <Toaster position="top-right" />
         <body className={inter.className}>{children}</body>
       </html>
     </Providers>

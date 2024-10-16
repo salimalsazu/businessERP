@@ -64,8 +64,6 @@ const SingleAccountDetails = ({ params }: any) => {
     ...query,
   });
 
-  console.log("data", data);
-
   const [totalDebit, setTotalDebit] = useState<number>(0);
   const [totalCredit, setTotalCredit] = useState<number>(0);
 
@@ -126,8 +124,6 @@ const SingleAccountDetails = ({ params }: any) => {
       credit: "-",
     })),
   ];
-
-  console.log("transactions", transactions);
 
   //Format Closing Balance
   const formattedClosingBalance = new Intl.NumberFormat("en-US", {

@@ -5,17 +5,22 @@ import {
   DatePicker,
   Input,
   InputPicker,
+  toaster,
   Tooltip,
   Whisper,
 } from "rsuite";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+
 import {
   useAddAccountMutation,
   useGetAccountQuery,
 } from "@/redux/api/features/accountApi";
 import { useAddTransactionMutation } from "@/redux/api/features/transactionApi";
+import {
+  TransactionErrorMessage,
+  TransactionSuccessful,
+} from "../toast/Transaction";
 
 const AddTransactionSection = () => {
   const query: Record<string, any> = {};
@@ -53,8 +58,10 @@ const AddTransactionSection = () => {
     reset,
   } = useForm<ITransactionList>();
 
-  const [addTransaction, { isLoading, isSuccess, isError, data: messageData }] =
-    useAddTransactionMutation();
+  const [
+    addTransaction,
+    { isLoading, isSuccess, isError, error, data: messageData },
+  ] = useAddTransactionMutation();
 
   const handleCreateItemList: SubmitHandler<ITransactionList> = async (
     data: ITransactionList
@@ -73,13 +80,21 @@ const AddTransactionSection = () => {
   };
 
   useEffect(() => {
-    if (isSuccess && !isError) {
-      toast.success(messageData?.message);
+    //
+    if (isSuccess && !isLoading && !isError && !error && messageData) {
+      toaster.push(TransactionSuccessful(messageData), {
+        placement: "topCenter",
+      });
     }
-    if (isError && !isSuccess) {
-      toast.error("Failed to add transaction");
+
+    // if error
+    if (!isSuccess && !isLoading && isError && error && !messageData) {
+      //@ts-ignore
+      toaster.push(TransactionErrorMessage(error?.message), {
+        placement: "topCenter",
+      });
     }
-  });
+  }, [isSuccess, isLoading, isError, error, messageData]);
 
   return (
     <div className="m-5">
