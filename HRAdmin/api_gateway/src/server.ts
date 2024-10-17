@@ -1,13 +1,16 @@
 import { Server } from 'http';
 import app from './app';
 import config from './config';
-import { errorLogger, logger } from './shared/logger';
+import logger from './shared/logger';
 import { RedisClient } from './shared/redis';
 
 async function bootstrap() {
+  //Redis Connect start
   await RedisClient.connect();
+  //redis connect end
 
   const server: Server = app.listen(config.port, () => {
+    // logger.info(`Server running on port ${config.port}`);
     console.log(`Server running on port ${config.port}`);
   });
 
@@ -15,13 +18,15 @@ async function bootstrap() {
     if (server) {
       server.close(() => {
         logger.info('Server closed');
+        process.exit(1);
       });
+    } else {
+      process.exit(1);
     }
-    process.exit(1);
   };
 
   const unexpectedErrorHandler = (error: unknown) => {
-    errorLogger.error(error);
+    logger.error(error);
     exitHandler();
   };
 
@@ -29,7 +34,7 @@ async function bootstrap() {
   process.on('unhandledRejection', unexpectedErrorHandler);
 
   process.on('SIGTERM', () => {
-    console.info('SIGTERM received');
+    logger.info('SIGTERM received');
     if (server) {
       server.close();
     }
