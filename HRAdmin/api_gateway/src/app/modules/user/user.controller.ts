@@ -1,46 +1,48 @@
-import { NextFunction, Request, Response } from 'express';
-import { authService } from './user.service';
-import sendResponse from '../../../shared/response';
+import { NextFunction, Request, Response } from "express";
+import sendResponse from "../../../shared/response";
+import { userService } from "./user.service";
 
-const createUserController = async (req: Request, res: Response, next: NextFunction) => {
+const getUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const result = await authService.createUserService(req);
+    const result = await userService.getUserService(req);
     sendResponse(res, result);
   } catch (error) {
     next(error);
   }
 };
 
-const getUserController = async (req: Request, res: Response, next: NextFunction) => {
+const updateUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const result = await authService.getUserService(req);
+    const result = await userService.updateUserService(req);
     sendResponse(res, result);
   } catch (error) {
     next(error);
   }
 };
 
-const updateUserController = async (req: Request, res: Response, next: NextFunction) => {
+const deleteUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const result = await authService.updateUserService(req);
+    const result = await userService.deleteUserService(req);
     sendResponse(res, result);
   } catch (error) {
     next(error);
   }
 };
 
-const deleteUserController = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const result = await authService.deleteUserService(req);
-    sendResponse(res, result);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const authController = {
-  createUserController,
+export const userController = {
   getUserController,
   updateUserController,
-  deleteUserController
+  deleteUserController,
 };

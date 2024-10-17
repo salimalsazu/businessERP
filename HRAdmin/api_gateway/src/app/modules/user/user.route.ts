@@ -1,11 +1,10 @@
-import express from 'express';
-import { authController } from './user.controller';
+import express from "express";
+import { userController } from "./user.controller";
 
 const router = express.Router();
 
-router.get('/get-users', authController.getUserController);
-router.post('/create-user', authController.createUserController);
-router.patch('/:id', authController.updateUserController);
-router.delete('/:id', authController.deleteUserController);
+router.get("/get-users", userController.getUserController);
+router.patch("/:id", userController.updateUserController);
+router.delete("/:id", userController.deleteUserController);
 
-export const authRoutes = router;
+export const userRoutes = router;

@@ -1,14 +1,24 @@
-import { authRoutes } from '../modules/user/user.route';
+import { authRoutes } from "../modules/auth/auth.route";
+import { dashboardRoutes } from "../modules/dashboard/dashboard.route";
+import { userRoutes } from "../modules/user/user.route";
 
-import express from 'express';
+import express from "express";
 
 const router = express.Router();
 
 const moduleRoutes = [
   {
-    path: '/auth',
-    routes: authRoutes
-  }
+    path: "/user",
+    routes: userRoutes,
+  },
+  {
+    path: "/auth",
+    routes: authRoutes,
+  },
+  {
+    path: "/dashboard",
+    routes: dashboardRoutes,
+  },
 ];
 
 moduleRoutes.forEach((route) => {

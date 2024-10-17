@@ -9,7 +9,7 @@ import prisma from '../../../shared/prisma';
 import { ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from './auth.interface';
 import { UserStatus } from '@prisma/client';
 import { logger } from '../../../shared/logger';
-import { log } from 'winston';
+// import { log } from 'winston';
 
 const createNewUser = async (req: Request) => {
   const data = req.body as IUserCreate;
