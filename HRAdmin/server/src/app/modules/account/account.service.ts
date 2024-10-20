@@ -549,6 +549,8 @@ const getAccountByName = async (
     }
   }
 
+  console.log('Account-Name:', accountName);
+
   // Check if account exists
   const accountExists = await prisma.account.findFirst({
     where: { accountName },
