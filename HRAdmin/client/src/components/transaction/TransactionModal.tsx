@@ -11,9 +11,7 @@ const TransactionModal = ({ open, handleClose, singleTransaction }: any) => {
   return (
     <Modal backdrop={true} keyboard={false} open={open} onClose={handleClose}>
       <Modal.Header>
-        <Modal.Title>
-          Transaction Details : {transaction?.transactionId}
-        </Modal.Title>
+        <Modal.Title>Transaction Details : {transaction?.trId}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>

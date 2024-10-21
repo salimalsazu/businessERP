@@ -15,6 +15,7 @@ const getAccount = async (req: Request): Promise<IGenericResponse> => {
 
 const getAccountByName = async (req: Request): Promise<IGenericResponse> => {
   const response: IGenericResponse = await HttpService.get(`/account/${req.params.accountName}`, {
+    params: req.query,
     headers: {
       //@ts-ignore
       Authorization: req.headers.authorization

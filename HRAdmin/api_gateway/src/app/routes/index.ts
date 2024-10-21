@@ -1,6 +1,7 @@
 import { accountRoutes } from '../modules/account/account.route';
 import { authRoutes } from '../modules/auth/auth.route';
 import { dashboardRoutes } from '../modules/dashboard/dashboard.route';
+import { TransactionRoutes } from '../modules/transaction/transaaction.route';
 import { userRoutes } from '../modules/user/user.route';
 
 import express from 'express';
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path: '/account',
     routes: accountRoutes
+  },
+  {
+    path: '/transaction',
+    routes: TransactionRoutes
   }
 ];
 
