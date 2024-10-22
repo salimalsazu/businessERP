@@ -17,7 +17,22 @@ export const dashboardAPI = baseApi.injectEndpoints({
         tagTypes.transaction,
       ],
     }),
+
+    getDailyTransactionCount: builder.query({
+      query: (arg: Record<string, any>) => ({
+        url: `${DASHBOARD_API}/daily-transaction`,
+        method: "GET",
+        params: arg,
+      }),
+      providesTags: [
+        tagTypes.dashboard,
+        tagTypes.transaction,
+        tagTypes.account,
+        tagTypes.group,
+      ],
+    }),
   }),
 });
 
-export const { useGetAllCountQuery } = dashboardAPI;
+export const { useGetAllCountQuery, useGetDailyTransactionCountQuery } =
+  dashboardAPI;

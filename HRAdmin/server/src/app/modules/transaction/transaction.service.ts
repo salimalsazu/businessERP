@@ -11,6 +11,7 @@ import { ITransactionCreateRequest, ITransactionFilterRequest } from './transact
 import { TransactionRelationalFields, TransactionRelationalFieldsMapper, TransactionSearchableFields } from './transaction.constants';
 import { generateTransactionId } from './trIdAutoIncrement';
 import { logger } from '../../../shared/logger';
+import moment from 'moment';
 
 const createTransaction = async (data: ITransactionCreateRequest): Promise<any> => {
   // Check if account exists
@@ -301,9 +302,68 @@ const getSingleTransaction = async (transactionId: string): Promise<Transaction 
   return result;
 };
 
+const dailyTransactionCount = async (filters: { month?: string; year?: number }): Promise<any> => {
+  let startOfMonth, endOfMonth;
+
+  if (filters.month && filters.year) {
+    // Use the provided month and year for filtering
+    startOfMonth = moment(`${filters.year}-${filters.month}-01`, 'YYYY-MMMM-DD');
+    endOfMonth = startOfMonth.clone().endOf('month');
+  } else {
+    // No filters, use the current month
+    startOfMonth = moment().startOf('month');
+    endOfMonth = moment().endOf('month');
+  }
+
+  // Create an array of the days in the specified month
+  const daysInMonth = endOfMonth.date(); // Total number of days in the month
+  const monthDays = Array.from({ length: daysInMonth }, (_, i) => {
+    return startOfMonth
+      .clone()
+      .date(i + 1)
+      .format('YYYY-MM-DD');
+  });
+
+  // Initialize a map to track transaction counts for each day
+  const dayMap: { [key: string]: number } = monthDays.reduce((acc, day) => {
+    acc[day] = 0;
+    return acc;
+  }, {} as { [key: string]: number });
+
+  // Fetch transactions created in the specified month
+  const result = await prisma.transaction.findMany({
+    where: {
+      createdAt: {
+        gte: startOfMonth.toDate(),
+        lt: endOfMonth.clone().add(1, 'day').toDate(), // Include the last day of the month
+      },
+    },
+    select: {
+      createdAt: true,
+    },
+  });
+
+  // Loop through each transaction and increment the corresponding day
+  result.forEach(transaction => {
+    const date = moment(transaction.createdAt).format('YYYY-MM-DD');
+    if (dayMap[date] !== undefined) {
+      dayMap[date] += 1; // Increment transaction count for the day
+    }
+  });
+
+  // Format the result for the frontend
+  const formattedResult = Object.keys(dayMap).map(day => ({
+    day,
+    transactionCount: dayMap[day],
+  }));
+
+  return formattedResult;
+};
+
 export const TransactionService = {
   createTransaction,
   getTransaction,
   updateTransaction,
   getSingleTransaction,
+  dailyTransactionCount,
 };

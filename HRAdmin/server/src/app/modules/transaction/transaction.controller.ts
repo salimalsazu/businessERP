@@ -5,6 +5,7 @@ import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
 import { TransactionService } from './transaction.service';
 import { TransactionFilterableFields } from './transaction.constants';
+import moment from 'moment';
 
 // !----------------------------------Create New Courier---------------------------------------->>>
 
@@ -62,9 +63,33 @@ const getSingleTransaction = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const dailyTransactionCount = catchAsync(async (req: Request, res: Response) => {
+  // Extract filters from query parameters
+  const filters = {
+    month: req.query.month as string,
+    year: req.query.year ? Number(req.query.year) : undefined,
+  };
+
+  // Check if month and year are provided in the query parameters
+  if (!filters.month || !filters.year) {
+    filters.month = moment().format('MMMM');
+    filters.year = moment().year();
+  }
+
+  const result = await TransactionService.dailyTransactionCount(filters);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Daily transaction counts fetched successfully',
+    data: result,
+  });
+});
+
 export const TransactionController = {
   createNewTransaction,
   getTransaction,
   updateTransaction,
   getSingleTransaction,
+  dailyTransactionCount,
 };

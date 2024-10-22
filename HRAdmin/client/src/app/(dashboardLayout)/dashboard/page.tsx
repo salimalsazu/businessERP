@@ -1,6 +1,6 @@
-
+import DailyTransactionCount from "@/components/dashboard/DailyTransactionCount";
 import DashboardCount from "@/components/dashboard/DashboardCount";
-import LogsCount from "@/components/dashboard/LogsCount";
+// import LogsCount from "@/components/dashboard/LogsCount";
 
 const DashboardHomePage = () => {
   return (
@@ -9,8 +9,9 @@ const DashboardHomePage = () => {
         <DashboardCount />
       </div>
       <div>
-        <LogsCount/>
+        <DailyTransactionCount />
       </div>
+      <div>{/* <LogsCount/> */}</div>
     </div>
   );
 };

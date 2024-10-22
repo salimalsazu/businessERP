@@ -15,6 +15,8 @@ router.post(
   TransactionController.createNewTransaction
 );
 
+router.get('/daily', TransactionController.dailyTransactionCount);
+
 // ! Get all Requisition ----------------------------------->>>
 router.get('/', auth(UserRoles.ADMIN, UserRoles.SUPERADMIN), TransactionController.getTransaction);
 
