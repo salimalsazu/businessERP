@@ -1,6 +1,8 @@
 import { accountRoutes } from '../modules/account/account.route';
 import { authRoutes } from '../modules/auth/auth.route';
 import { dashboardRoutes } from '../modules/dashboard/dashboard.route';
+import { GroupRoutes } from '../modules/group/group.route';
+import { SubGroupRoutes } from '../modules/subgroup/subGroup.route';
 import { TransactionRoutes } from '../modules/transaction/transaaction.route';
 import { userRoutes } from '../modules/user/user.route';
 
@@ -28,6 +30,14 @@ const moduleRoutes = [
   {
     path: '/transaction',
     routes: TransactionRoutes
+  },
+  {
+    path: '/group',
+    routes: GroupRoutes
+  },
+  {
+    path: '/subGroup',
+    routes: SubGroupRoutes
   }
 ];
 

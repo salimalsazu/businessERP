@@ -12,7 +12,6 @@ import {
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useAddRequisitionMutation } from "@/redux/api/features/requisitionApi";
 import { useEffect } from "react";
-import { toast } from "sonner";
 import {
   useAddAccountMutation,
   useGetAccountQuery,
@@ -20,7 +19,6 @@ import {
 
 const AddRequisitionForm = () => {
   const { data: allAccounts } = useGetAccountQuery({});
-
 
   const [addAccount] = useAddAccountMutation();
 
@@ -67,14 +65,14 @@ const AddRequisitionForm = () => {
     await addRequisition({ data: objRequisition });
   };
 
-  useEffect(() => {
-    if (isSuccess && !isError) {
-      toast.success("Requisition added successfully");
-    }
-    if (isError && !isSuccess) {
-      toast.error("Failed to add requisition");
-    }
-  });
+  // useEffect(() => {
+  //   if (isSuccess && !isError) {
+  //     toast.success("Requisition added successfully");
+  //   }
+  //   if (isError && !isSuccess) {
+  //     toast.error("Failed to add requisition");
+  //   }
+  // });
 
   return (
     <div className="m-5">

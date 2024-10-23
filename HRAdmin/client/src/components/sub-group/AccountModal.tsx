@@ -2,7 +2,6 @@ import { Modal, Table, IconButton, Whisper, Tooltip } from "rsuite";
 const { Column, HeaderCell, Cell } = Table;
 import TrashIcon from "@rsuite/icons/Trash";
 import { useDeleteAccountMutation } from "@/redux/api/features/accountApi";
-import { toast } from "sonner";
 import { useEffect } from "react";
 
 const AccountModal = ({ size, open, handleClose, data }: any) => {
@@ -15,13 +14,13 @@ const AccountModal = ({ size, open, handleClose, data }: any) => {
     await deleteAccount(accountId);
   };
 
-  useEffect(() => {
-    if (isSuccess && !isError) {
-      toast.success(messageData?.message);
-    } else if (isError && !isSuccess) {
-      toast.error("Failed to delete account");
-    }
-  }, [messageData, error, isError, isSuccess]);
+  // useEffect(() => {
+  //   if (isSuccess && !isError) {
+  //     toast.success(messageData?.message);
+  //   } else if (isError && !isSuccess) {
+  //     toast.error("Failed to delete account");
+  //   }
+  // }, [messageData, error, isError, isSuccess]);
 
   return (
     <div>

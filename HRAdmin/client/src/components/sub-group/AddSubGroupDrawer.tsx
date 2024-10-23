@@ -2,7 +2,6 @@ import { useAddSubGroupMutation } from "@/redux/api/features/subGroupApi";
 import React, { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Drawer, Input, InputPicker, Tooltip, Whisper } from "rsuite";
-import { toast } from "sonner";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 import { useGetGroupQuery } from "@/redux/api/features/groupApi";
 
@@ -44,13 +43,13 @@ const AddSubGroupDrawer = ({
     await addSubGroup(objAccount);
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      reset();
-      setOpenSubGroupDrawer(false);
-      toast.success("Sub Group Created Successfully");
-    }
-  }, [isSuccess, reset, setOpenSubGroupDrawer]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     reset();
+  //     setOpenSubGroupDrawer(false);
+  //     toast.success("Sub Group Created Successfully");
+  //   }
+  // }, [isSuccess, reset, setOpenSubGroupDrawer]);
 
   return (
     <div>

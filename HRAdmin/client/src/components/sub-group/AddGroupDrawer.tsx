@@ -4,7 +4,6 @@ import { useAddGroupMutation } from "@/redux/api/features/groupApi";
 import React, { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Drawer, Input, InputPicker, Tooltip, Whisper } from "rsuite";
-import { toast } from "sonner";
 import InfoOutlineIcon from "@rsuite/icons/InfoOutline";
 
 const AddGroupDrawer = ({
@@ -38,13 +37,13 @@ const AddGroupDrawer = ({
     await addGroup(objAccount);
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      reset();
-      setOpenGroupDrawer(false);
-      toast.success("Group Created Successfully");
-    }
-  }, [isSuccess, reset, setOpenGroupDrawer]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     reset();
+  //     setOpenGroupDrawer(false);
+  //     toast.success("Group Created Successfully");
+  //   }
+  // }, [isSuccess, reset, setOpenGroupDrawer]);
 
   return (
     <div>

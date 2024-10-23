@@ -333,19 +333,19 @@ const dailyTransactionCount = async (filters: { month?: string; year?: number })
   // Fetch transactions created in the specified month
   const result = await prisma.transaction.findMany({
     where: {
-      createdAt: {
+      transactionDate: {
         gte: startOfMonth.toDate(),
         lt: endOfMonth.clone().add(1, 'day').toDate(), // Include the last day of the month
       },
     },
     select: {
-      createdAt: true,
+      transactionDate: true,
     },
   });
 
   // Loop through each transaction and increment the corresponding day
   result.forEach(transaction => {
-    const date = moment(transaction.createdAt).format('YYYY-MM-DD');
+    const date = moment(transaction.transactionDate).format('YYYY-MM-DD');
     if (dayMap[date] !== undefined) {
       dayMap[date] += 1; // Increment transaction count for the day
     }
